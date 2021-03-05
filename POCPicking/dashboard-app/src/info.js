@@ -1,28 +1,5 @@
-const workersList = new Vue({
-    el: '#workersList',
-    mounted() {
-        this.$socket.invoke("GetAvailablePickers")
-    },
-    data: {
-        header: 'Available pickers:',
-        names: [],
-        tasks: []
-    },
-    methods: {
-        onClick: function (name) {
-            this.socket
-                ? this.$socket.send('Tasks request:assign:' + name)
-                : alert('socket is null')
-        }
-    },
-    sockets: {
-        availablePickers(data) {
-            this.names = data.map(function(picker) {
-                return picker.name;
-            });
-        }
-    }
-});
+import Vue from "vue";
+
 const tasksList = new Vue({
     el: '#tasksList',
     data: {

@@ -1,12 +1,12 @@
 using System;
 
-namespace POCPicking
+namespace POCPicking.Models
 {
+    [Serializable]
     public class Picker
     {
-        
-        private string Id { get; set; } 
-        private string Name { get; }
+        public string Id { get; set; } 
+        public string Name { get; set; }
 
         public Picker(string id, string name)
         {

@@ -54,7 +54,8 @@ namespace POCPicking
             app.UseEndpoints(endpoints =>  
             {  
                 endpoints.MapControllers();
-                endpoints.MapHub<PickersHub>("/pickinghub");
+                endpoints.MapHub<DashboardHub>("/dashboardhub");
+                endpoints.MapHub<PickersHub>("/pickershub");
             });  
   
             // use middleware and launch server for Vue  

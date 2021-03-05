@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Subjects;
+using POCPicking.Models;
 
 namespace POCPicking.Repositories
 {
@@ -8,11 +10,20 @@ namespace POCPicking.Repositories
     {
         private readonly Dictionary<Picker, PickerTask> _pickersInfo = new();
 
+        private readonly BehaviorSubject<Dictionary<Picker, PickerTask>> _observablePickersInfo
+            = new(new());
+
         public PickerRepository()
         {
             _pickersInfo.Add(new Picker("", "Markus"), null);
             _pickersInfo.Add(new Picker("", "Jens"), null);
             _pickersInfo.Add(new Picker("", "Andreas"), null);
+            _observablePickersInfo.OnNext(_pickersInfo);
+        }
+
+        public IObservable<Dictionary<Picker, PickerTask>> Observe()
+        {
+            return _observablePickersInfo;
         }
 
         public bool StartShift(Picker picker)
@@ -20,6 +31,7 @@ namespace POCPicking.Repositories
             try
             {
                 _pickersInfo.Add(picker, null);
+                _observablePickersInfo.OnNext(_pickersInfo);
                 return true;
             }
             catch (Exception e)
@@ -31,7 +43,13 @@ namespace POCPicking.Repositories
 
         public bool StopShift(Picker picker)
         {
-            return _pickersInfo.Remove(picker);
+            if (_pickersInfo.Remove(picker))
+            {
+                _observablePickersInfo.OnNext(_pickersInfo);
+                return true;
+            }
+
+            return false;
         }
 
         public List<Picker> FindAll()
