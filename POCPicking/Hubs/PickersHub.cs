@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using POCPicking.Models;
@@ -27,21 +26,17 @@ namespace POCPicking.Hubs
             _pickerRepository = pickerRepository;
         }
 
-        public override async Task OnConnectedAsync()
+        public async Task StartShift(string name)
         {
-            // await Clients.Caller.AvailablePickers(_pickerRepository.FindAll());
-            await base.OnConnectedAsync();
-        }
-
-        public async Task<Boolean> StartShift(string name)
-        {
-            var result = _pickerRepository.StartShift(new Picker(name, Context.ConnectionId));
-            return result;
+            var result = _pickerRepository.StartShift(new Picker(Context.ConnectionId, name));
+            if (result) await Clients.Caller.ShiftStartConfirmed();
+            
         }
         
-        public Boolean StopShift(string name)
+        public async Task StopShift(string name)
         {
-            return _pickerRepository.StopShift(new Picker(name, Context.ConnectionId));
+            var result = _pickerRepository.StopShift(new Picker(Context.ConnectionId, name));
+            if (result) await Clients.Caller.ShiftStopConfirmed();
         }
 
     }

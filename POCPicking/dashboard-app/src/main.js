@@ -3,7 +3,7 @@ import App from './App.vue'
 import VueSignalR from '@latelier/vue-signalr'
 
 Vue.config.productionTip = false
-Vue.use(VueSignalR, 'https://localhost:5001/dashboardhub')
+Vue.use(VueSignalR, 'http://localhost:5000/dashboardhub')
 
 new Vue({
   el: "#app",

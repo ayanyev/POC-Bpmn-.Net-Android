@@ -38,7 +38,7 @@ namespace POCPicking.Hubs
 
         protected override void Dispose(bool disposing)
         {
-            _disposable?.Dispose();
+            // _disposable?.Dispose();
         }
 
         public DashboardHub(IPickerRepository pickerRepository)
