@@ -1,9 +1,11 @@
+using System.Net.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using POCPicking.Hubs;
+using POCPicking.Processes.Rest;
 using POCPicking.Repositories;
 using VueCliMiddleware;
 
@@ -24,6 +26,7 @@ namespace POCPicking
             services.AddControllers();  
             services.AddSignalR();
             services.AddSingleton<IPickerRepository>(new PickerRepository());
+            services.AddSingleton(new ProcessesHttpClient());
             // connect vue app - middleware  
             services.AddSpaStaticFiles(options => 
                 options.RootPath = "dashboard-app"

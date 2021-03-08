@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive.Subjects;
 using POCPicking.Models;
@@ -11,7 +12,7 @@ namespace POCPicking.Repositories
         private readonly Dictionary<Picker, PickerTask> _pickersInfo = new();
 
         private readonly BehaviorSubject<Dictionary<Picker, PickerTask>> _observablePickersInfo
-            = new(new());
+            = new(new Dictionary<Picker, PickerTask>());
 
         public PickerRepository()
         {
@@ -55,6 +56,11 @@ namespace POCPicking.Repositories
         public List<Picker> FindAll()
         {
             return _pickersInfo.Keys.ToList();
+        }
+
+        public Picker FindByName([NotNull] string name)
+        {
+            return _pickersInfo.First(p => p.Key.Name.Equals(name)).Key;
         }
     }
 }

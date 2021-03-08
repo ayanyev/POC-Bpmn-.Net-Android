@@ -1,13 +1,16 @@
 using System;
-using System.Collections.Generic;
+using System.Text.Json.Serialization;
+using POCPicking.Processes.Rest.Models;
 
 namespace POCPicking.Models
 {
     [Serializable]
-    public class Picker
+    public class Picker : IInstanceToken
     {
         public string Id { get; set; } 
         public string Name { get; set; }
+        [JsonIgnore]
+        public string InstanceId { get; set; }
 
         public Picker(string id, string name)
         {
@@ -32,5 +35,6 @@ namespace POCPicking.Models
         {
             return (Name != null ? Name.GetHashCode() : 0);
         }
+        
     }
 }

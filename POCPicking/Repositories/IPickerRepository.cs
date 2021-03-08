@@ -12,6 +12,8 @@ namespace POCPicking.Repositories
         
         Boolean StopShift(Picker picker);
 
+        Picker FindByName(string name);
+
         List<Picker> FindAll();
         
     }
