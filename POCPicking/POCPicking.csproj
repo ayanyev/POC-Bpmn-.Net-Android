@@ -24,6 +24,8 @@
     </Target>
 
     <ItemGroup>
+        <PackageReference Include="AtlasEngine.Client" Version="1.2.0" />
+        <PackageReference Include="AtlasEngine.Client.Extensions.Hosting" Version="1.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="5.0.3" />
         <PackageReference Include="System.Net.Http" Version="4.3.4" />
         <PackageReference Include="System.Reactive" Version="5.0.0" />

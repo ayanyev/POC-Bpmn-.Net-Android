@@ -1,7 +1,10 @@
+using POCPicking.Models;
+
 namespace POCPicking.Repositories
 {
-    public class ITaskRepository
+    public interface ITaskRepository
     {
+        public PickerTask GetTaskForPicker(Picker picker);
         
     }
 }
