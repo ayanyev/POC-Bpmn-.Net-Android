@@ -6,13 +6,16 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
+using AtlasEngine.ProcessDefinitions.Requests;
 using POCPicking.Processes.Rest.Models;
 
 namespace POCPicking.Processes.Rest
 {
-    public class ProcessesHttpClient
+    public class ProcessesHttpClient : IProcessClient
     {
         private readonly HttpClient _httpClient = new();
+        
+
 
         private const string BaseUrl = "http://localhost:56000/atlas_engine/api/v1";
 
@@ -26,7 +29,7 @@ namespace POCPicking.Processes.Rest
                 new AuthenticationHeaderValue("Bearer", "ZHVtbXlfdG9rZW4='");
         }
 
-        public async void GetAllProcessModels(string process)
+        private async Task GetAllProcessModels(string process)
         {
             var url = $"{BaseUrl}/process_definitions";
             var defs = (await _httpClient.GetFromJsonAsync<ProcessDefinitions>(url))
@@ -35,8 +38,10 @@ namespace POCPicking.Processes.Rest
         }
         
         [return: NotNull]
-        public async Task<IInstanceToken> CreateProcessInstanceByModelId<T>(string modelId, T token)
+        public async Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string modelId, string startEvent, T token)
         {
+            await GetAllProcessModels(modelId);
+            
             var model = _models.Find(m => m.ProcessModelId.Equals(modelId));
 
             if (model == null) return default;
@@ -48,15 +53,11 @@ namespace POCPicking.Processes.Rest
                 var startPayload = new StartProcessPayload<T>(model, token);
 
                 var result = await (await _httpClient.PostAsJsonAsync(url, startPayload))
-                    .Content.ReadFromJsonAsync<StartProcessResponse<T>>();
+                    .Content.ReadFromJsonAsync<StartProcessInstanceResponse>();
 
                 if (result == null) throw new Exception("CreateProcessInstanceByModelId failed: result is null");
 
-                var instanceToken = result.TokenPayload as IInstanceToken;
-
-                instanceToken.InstanceId = result.ProcessInstanceId;
-
-                return instanceToken;
+                return result;
             }
             catch (Exception e)
             {

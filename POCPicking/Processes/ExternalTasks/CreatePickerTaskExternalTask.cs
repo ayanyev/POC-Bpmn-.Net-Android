@@ -1,10 +1,12 @@
 using System.Threading.Tasks;
+using AtlasEngine;
 using AtlasEngine.ExternalTasks;
 using POCPicking.Models;
 using POCPicking.Repositories;
 
 namespace POCPicking.Processes.ExternalTasks
 {
+    [ExternalTaskHandler(topic: "GetOrCreateTaskForPicker")]
     public class CreatePickerTaskExternalTask : IExternalTaskHandler<Picker, PickerTask>
     {
         private readonly ITaskRepository _repository;
