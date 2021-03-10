@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Subjects;
+using Microsoft.AspNetCore.SignalR;
+using POCPicking.Hubs;
 using POCPicking.Models;
 
 namespace POCPicking.Repositories
@@ -9,24 +10,14 @@ namespace POCPicking.Repositories
     public class TasksRepository : ITaskRepository
     {
         private readonly Queue<PickerTask> _tasksNotAssigned = new();
-        
+
         private readonly HashSet<PickerTask> _tasksAssigned = new();
 
-        private readonly BehaviorSubject<List<PickerTask>> _observableData
-            = new(new List<PickerTask>());
+        private readonly IHubContext<DashboardHub> _dashboardHubContext;
 
-        
-        public TasksRepository()
+        public TasksRepository(IHubContext<DashboardHub> hubContext)
         {
-            // _tasksNotAssigned.Update(new PickerTask());
-            // _tasksNotAssigned.Update(new PickerTask());
-            // _tasksNotAssigned.Update(new PickerTask());
-            // _observableData.OnNext(_tasksNotAssigned);
-        }
-
-        public IObservable<List<PickerTask>> Observe()
-        {
-            return _observableData;
+            _dashboardHubContext = hubContext;
         }
 
         public void Update(PickerTask task)
@@ -36,6 +27,7 @@ namespace POCPicking.Repositories
                 _tasksAssigned.Remove(task);
                 _tasksAssigned.Add(task);
             }
+
             Emit();
         }
 
@@ -73,11 +65,16 @@ namespace POCPicking.Repositories
             return _tasksNotAssigned.Concat(_tasksAssigned).ToList();
         }
 
+        private void SendAvailablePickersToDashboard(IEnumerable<PickerTask> tasks)
+        {
+            _dashboardHubContext.Clients.Group("Dashboard")
+                .SendAsync("AvailableTasks", tasks.ToList());
+        }
+        
         private void Emit()
         {
             var list = _tasksNotAssigned.Concat(_tasksAssigned).ToList();
-            _observableData.OnNext(list);
+            SendAvailablePickersToDashboard(list);
         }
-        
     }
 }

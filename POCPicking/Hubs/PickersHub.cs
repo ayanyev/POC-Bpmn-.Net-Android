@@ -11,6 +11,7 @@ namespace POCPicking.Hubs
         Task ShiftStartConfirmed();
 
         Task ShiftStopConfirmed();
+
     }
 
     public class PickersHub : Hub<IPickerClient>

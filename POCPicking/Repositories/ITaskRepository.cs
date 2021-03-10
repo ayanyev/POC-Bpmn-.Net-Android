@@ -7,8 +7,6 @@ namespace POCPicking.Repositories
     public interface ITaskRepository
     {
         
-        IObservable<List<PickerTask>> Observe();
-
         public PickerTask Create();
         
         public void Update(PickerTask task);

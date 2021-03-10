@@ -6,8 +6,6 @@ namespace POCPicking.Repositories
 {
     public interface IPickerRepository
     {
-        IObservable<HashSet<Picker>> Observe();
-
         bool StartShift(Picker picker);
 
         bool ResumeShift(Picker picker, string connectionId);

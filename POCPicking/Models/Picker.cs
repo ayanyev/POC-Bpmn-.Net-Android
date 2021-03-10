@@ -7,20 +7,19 @@ namespace POCPicking.Models
     [Serializable]
     public class Picker : IInstanceToken
     {
-        public string Id { get; set; } 
         public string Name { get; set; }
+        public string ConnectionId { get; set; }
         [JsonIgnore]
         public string InstanceId { get; set; }
-        
         public PickerTask Task { get; set; }
 
         public Picker()
         {
         }
 
-        public Picker(string id, string name)
+        public Picker(string connectionId, string name)
         {
-            Id = id;
+            ConnectionId = connectionId;
             Name = name;
         }
 
