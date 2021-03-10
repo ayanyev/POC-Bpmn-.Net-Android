@@ -6,12 +6,12 @@ using POCPicking.Repositories;
 
 namespace POCPicking.Processes.ExternalTasks
 {
-    [ExternalTaskHandler(topic: "GetOrCreateTaskForPicker")]
-    public class CreatePickerTaskExternalTask : IExternalTaskHandler<Picker, PickerTask>
+    [ExternalTaskHandler(topic: "Picker.Task.GetOrCreate")]
+    public class CreatePickerTaskHandler : IExternalTaskHandler<Picker, PickerTask>
     {
         private readonly ITaskRepository _repository;
 
-        public CreatePickerTaskExternalTask(ITaskRepository repository)
+        public CreatePickerTaskHandler(ITaskRepository repository)
         {
             _repository = repository;
         }

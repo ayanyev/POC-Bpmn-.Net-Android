@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using POCPicking.Hubs;
 using POCPicking.Processes.Extensions;
+using POCPicking.Processes.ExternalTasks;
 using POCPicking.Repositories.Extensions;
 using VueCliMiddleware;
 
@@ -25,7 +26,8 @@ namespace POCPicking
             services.AddControllers();  
             services.AddSignalR();
             services.AddRepositories();
-            services.AddExternalTaskHandlers();
+            services.AddProcessServices();
+            // services.AddSingleton<CreatePickerTaskHandler>();
             // connect vue app - middleware  
             services.AddSpaStaticFiles(options => 
                 options.RootPath = "dashboard-app"

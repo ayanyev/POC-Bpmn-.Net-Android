@@ -4,11 +4,11 @@ namespace POCPicking
 {
     public class PickerTask
     {
-        public Guid guid  { get; }
+        public Guid Guid  { get; }
         
         public PickerTask()
         {
-            guid = Guid.NewGuid();
+            Guid = Guid.NewGuid();
         }
 
     }

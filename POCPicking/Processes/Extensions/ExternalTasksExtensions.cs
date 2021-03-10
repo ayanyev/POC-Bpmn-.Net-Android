@@ -1,19 +1,19 @@
+using System;
 using AtlasEngine;
+using AtlasEngine.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using POCPicking.Processes.ExternalTasks;
-using POCPicking.Processes.Rest;
 
 namespace POCPicking.Processes.Extensions
 {
-    [ExternalTaskHandler(topic: "GetOrCreateTaskForPicker")]
-    public static class EndpointExternalTasksExtensions
+    public static class ExternalTasksExtensions
     {
-        public static IServiceCollection AddExternalTaskHandlers(this IServiceCollection services)
+        public static IServiceCollection AddProcessServices(this IServiceCollection services)
         {
-            services.AddTransient<CreatePickerTaskExternalTask>();
-            services.AddSingleton<IProcessClient>(new ProcessEngineClient());
-            // services.AddSingleton<IProcessClient>(new ProcessesHttpClient());
-
+            services.AddSingleton(ClientFactory.CreateExternalTaskClient(new Uri("http://localhost:56000"), logger: ConsoleLogger.Default));
+            services.AddSingleton<CreatePickerTaskHandler>();
+            services.AddSingleton<IProcessClient, ProcessEngineClient>();
+            // services.AddSingleton<IProcessClient, ProcessesHttpClient>();
             return services;
         }
     }

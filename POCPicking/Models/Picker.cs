@@ -11,6 +11,11 @@ namespace POCPicking.Models
         public string Name { get; set; }
         [JsonIgnore]
         public string InstanceId { get; set; }
+
+        public Picker()
+        {
+        }
+
         public Picker(string id, string name)
         {
             Id = id;

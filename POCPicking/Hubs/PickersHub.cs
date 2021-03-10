@@ -1,7 +1,13 @@
+using System;
 using System.Threading.Tasks;
+using AtlasEngine;
+using AtlasEngine.ExternalTasks;
+using AtlasEngine.Logging;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Hosting;
 using POCPicking.Models;
 using POCPicking.Processes;
+using POCPicking.Processes.ExternalTasks;
 using POCPicking.Repositories;
 
 namespace POCPicking.Hubs
