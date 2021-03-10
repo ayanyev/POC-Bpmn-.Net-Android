@@ -1,12 +1,25 @@
 <template>
   <div id="tasksList">
     <h3>{{ header }}</h3>
-    <ol>
-      <li v-for="(task, key) in tasks" :key="key">{{ task }}</li>
-    </ol>
-    <div id="createButton">
-      <button v-on:click="onClick">{{ label }}</button>
-    </div>
+    <table>
+      <thead>
+      <tr>
+        <td>#</td>
+        <td>Guid</td>
+        <td>Status</td>
+      </tr>
+      </thead>
+      <tr v-for="(task, key) in tasks" :key="key">
+        <td>{{ key + 1 }}</td>
+        <td>{{ task }}</td>
+        <td></td>
+      </tr>
+      <tfoot>
+      <tr><td id="button-cell" colspan="3">
+        <button v-on:click="onClick">{{ label }}</button>
+      </td></tr>
+      </tfoot>
+    </table>
   </div>
 </template>
 
@@ -27,7 +40,7 @@ export default {
   },
   sockets: {
     AvailableTasks(data) {
-      this.tasks = data.map(function(task) {
+      this.tasks = data.map(function (task) {
         return task.guid;
       });
     }
@@ -36,5 +49,7 @@ export default {
 </script>
 
 <style scoped>
-
+#button-cell {
+  text-align: center;
+}
 </style>

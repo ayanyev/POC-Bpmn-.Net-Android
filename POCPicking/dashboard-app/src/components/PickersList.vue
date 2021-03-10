@@ -12,6 +12,7 @@
       <tr v-for="(name, key) in names" :key="key">
         <td>{{ key + 1 }}</td>
         <td>{{ name }}</td>
+        <td></td>
 <!--        <td v-if="tasks[key] == null">-->
 <!--          <button v-on:click="onClick(name)">assign task</button>-->
 <!--        </td>-->
