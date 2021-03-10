@@ -1,5 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using POCPicking.Processes.ExternalTasks;
 
 namespace POCPicking.Repositories.Extensions
 {
@@ -7,9 +6,8 @@ namespace POCPicking.Repositories.Extensions
     {
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
-            var repo = new TaskPickerRepository();
-            services.AddSingleton<IPickerRepository>(repo);
-            services.AddSingleton<ITaskRepository>(repo);
+            services.AddSingleton<IPickerRepository, PickersRepository>();
+            services.AddSingleton<ITaskRepository, TasksRepository>();
             return services;
         }
     }

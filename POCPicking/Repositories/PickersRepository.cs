@@ -7,24 +7,24 @@ using POCPicking.Models;
 
 namespace POCPicking.Repositories
 {
-    public class TaskPickerRepository : IPickerRepository, ITaskRepository
+    public class PickersRepository : IPickerRepository
     {
         private readonly Dictionary<Picker, PickerTask> _pickersInfo = new();
 
-        private readonly BehaviorSubject<Dictionary<Picker, PickerTask>> _observablePickersInfo
+        private readonly BehaviorSubject<Dictionary<Picker, PickerTask>> _observablePickers
             = new(new Dictionary<Picker, PickerTask>());
 
-        public TaskPickerRepository()
+        public PickersRepository()
         {
             _pickersInfo.Add(new Picker("", "Markus"), null);
             _pickersInfo.Add(new Picker("", "Jens"), null);
             _pickersInfo.Add(new Picker("", "Andreas"), null);
-            _observablePickersInfo.OnNext(_pickersInfo);
+            _observablePickers.OnNext(_pickersInfo);
         }
 
         public IObservable<Dictionary<Picker, PickerTask>> Observe()
         {
-            return _observablePickersInfo;
+            return _observablePickers;
         }
 
         public bool StartShift(Picker picker)
@@ -32,7 +32,7 @@ namespace POCPicking.Repositories
             try
             {
                 _pickersInfo.Add(picker, null);
-                _observablePickersInfo.OnNext(_pickersInfo);
+                _observablePickers.OnNext(_pickersInfo);
                 return true;
             }
             catch (Exception e)
@@ -46,7 +46,7 @@ namespace POCPicking.Repositories
         {
             if (_pickersInfo.Remove(picker))
             {
-                _observablePickersInfo.OnNext(_pickersInfo);
+                _observablePickers.OnNext(_pickersInfo);
                 return true;
             }
             return false;
@@ -61,15 +61,6 @@ namespace POCPicking.Repositories
         {
             return _pickersInfo.First(p => p.Key.Name.Equals(name)).Key;
         }
-
-        public PickerTask GetTaskForPicker(Picker picker)
-        {
-            var task = _pickersInfo[picker];
-            if (task != null) return task;
-            task = new PickerTask();
-            _pickersInfo[picker] = task;
-            _observablePickersInfo.OnNext(_pickersInfo);
-            return task;
-        }
+        
     }
 }

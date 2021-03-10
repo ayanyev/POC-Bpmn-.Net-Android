@@ -12,10 +12,10 @@
       <tr v-for="(name, key) in names" :key="key">
         <td>{{ key + 1 }}</td>
         <td>{{ name }}</td>
-        <td v-if="tasks[key] == null">
-          <button v-on:click="onClick(name)">assign task</button>
-        </td>
-        <td v-else>{{ tasks[key] }}</td>
+<!--        <td v-if="tasks[key] == null">-->
+<!--          <button v-on:click="onClick(name)">assign task</button>-->
+<!--        </td>-->
+<!--        <td v-else-if>{{ tasks[key] }}</td>-->
       </tr>
     </table>
   </div>
@@ -27,8 +27,7 @@ export default {
   data() {
     return {
       header: 'Available pickers:',
-      names: [],
-      tasks: []
+      names: []
     }
   },
   mounted() {

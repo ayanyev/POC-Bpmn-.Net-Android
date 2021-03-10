@@ -1,26 +1,20 @@
 <template>
   <div id="app">
     <PickersList></PickersList>
-<!--    <div id="tasksList">-->
-<!--      <h3>{{ header }}</h3>-->
-<!--      <ol>-->
-<!--        <li v-for="(item, key) in items" :key="key">{{ item }}</li>-->
-<!--      </ol>-->
-<!--    </div>-->
-<!--    <div id="createButton">-->
-<!--      <button v-on:click="onClick">{{ label }}</button>-->
-<!--    </div>-->
+    <TaskList></TaskList>
   </div>
 </template>
 
 <script>
 
 import PickersList from "./components/PickersList.vue";
+import TaskList from "./components/TaskList.vue";
 
 export default {
   name: 'App',
-  components: { 
-    PickersList 
+  components: {
+    TaskList,
+    PickersList
   }
 }
 </script>
