@@ -38,7 +38,7 @@ namespace POCPicking.Processes.Rest
         }
         
         [return: NotNull]
-        public async Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string modelId, string startEvent, T token)
+        protected async Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string modelId, string startEvent, T token)
         {
             await GetAllProcessModels(modelId);
             
@@ -66,6 +66,11 @@ namespace POCPicking.Processes.Rest
 
         }
 
+        Task<StartProcessInstanceResponse> IProcessClient.CreateProcessInstanceByModelId<T>(string modelId, string startEvent, T token)
+        {
+            return CreateProcessInstanceByModelId(modelId, startEvent, token);
+        }
+
         public async Task<bool> TerminateProcessInstanceById(string processId)
         {
             var url = $"{BaseUrl}/process_instances/{processId}/terminate";
@@ -80,6 +85,11 @@ namespace POCPicking.Processes.Rest
                 Console.WriteLine(e);
                 return false;
             }
+        }
+
+        public Task<bool> IsProcessInstanceRunning(string processId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

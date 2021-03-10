@@ -39,28 +39,24 @@ namespace POCPicking.Repositories
 
         public bool StartShift(Picker picker)
         {
-            try
-            {
-                _pickers.Add(picker);
-                _observableData.OnNext(_pickers);
-                return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return false;
-            }
+            if (!_pickers.Add(picker)) return false;
+            _observableData.OnNext(_pickers);
+            return true;
+        }
+        
+        public bool ResumeShift(Picker picker, string connectionId)
+        {
+            _pickers.Remove(picker);
+            picker.Id = connectionId;
+            return StartShift(picker);
         }
 
         public bool StopShift(Picker picker)
         {
-            if (_pickers.Remove(picker))
-            {
-                _observableData.OnNext(_pickers);
-                return true;
-            }
+            if (!_pickers.Remove(picker)) return false;
+            _observableData.OnNext(_pickers);
+            return true;
 
-            return false;
         }
 
         public List<Picker> FindAll()
@@ -70,7 +66,7 @@ namespace POCPicking.Repositories
 
         public Picker FindByName([NotNull] string name)
         {
-            return _pickers.First(p => p.Name.Equals(name));
+            return _pickers.FirstOrDefault(p => p.Name.Equals(name));
         }
     }
 }

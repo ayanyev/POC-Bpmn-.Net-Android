@@ -1,13 +1,7 @@
-using System;
 using System.Threading.Tasks;
-using AtlasEngine;
-using AtlasEngine.ExternalTasks;
-using AtlasEngine.Logging;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.Hosting;
 using POCPicking.Models;
 using POCPicking.Processes;
-using POCPicking.Processes.ExternalTasks;
 using POCPicking.Repositories;
 
 namespace POCPicking.Hubs
@@ -21,11 +15,10 @@ namespace POCPicking.Hubs
 
     public class PickersHub : Hub<IPickerClient>
     {
-        
         private const string ProcessModelId = "PickerShiftProcess";
 
         private const string ProcessStartEvent = ""; //"StartEvent_1mox3jl";
-        
+
         private readonly IPickerRepository _pickerRepository;
 
         private readonly IProcessClient _processClient;
@@ -36,18 +29,46 @@ namespace POCPicking.Hubs
             _processClient = processClient;
         }
 
-        public async Task StartShift(string name)
+        public async Task CheckActiveShift(string name)
         {
-            var picker = new Picker(Context.ConnectionId, name);
-            var startResponse = await _processClient.CreateProcessInstanceByModelId(ProcessModelId, ProcessStartEvent, picker);
-            picker.InstanceId = startResponse.ProcessInstanceId;
-            if (_pickerRepository.StartShift(picker))
+            var picker = _pickerRepository.FindByName(name);
+            if (picker != null && _pickerRepository.ResumeShift(picker, Context.ConnectionId))
             {
                 await Clients.Caller.ShiftStartConfirmed();
             }
             else
             {
-                await _processClient.TerminateProcessInstanceById(startResponse.ProcessInstanceId);
+                await Clients.Caller.ShiftStopConfirmed();
+            }
+        }
+
+        public async Task StartShift(string name)
+        {
+            var picker = _pickerRepository.FindByName(name) ?? new Picker(Context.ConnectionId, name);
+            if (picker.InstanceId == null || !await _processClient.IsProcessInstanceRunning(picker.InstanceId))
+            {
+                var startResponse =
+                    await _processClient.CreateProcessInstanceByModelId(ProcessModelId, ProcessStartEvent, picker);
+                picker.InstanceId = startResponse.ProcessInstanceId;
+                if (_pickerRepository.StartShift(picker))
+                {
+                    await Clients.Caller.ShiftStartConfirmed();
+                }
+                else
+                {
+                    await _processClient.TerminateProcessInstanceById(startResponse.ProcessInstanceId);
+                }
+            }
+            else
+            {
+                if (_pickerRepository.ResumeShift(picker, Context.ConnectionId))
+                {
+                    await Clients.Caller.ShiftStartConfirmed();
+                }
+                else
+                {
+                    // terminate process
+                }
             }
         }
 
@@ -57,7 +78,7 @@ namespace POCPicking.Hubs
             if (picker == null) return;
 
             if (await _processClient.TerminateProcessInstanceById(picker.InstanceId) &&
-                _pickerRepository.StopShift(new Picker(Context.ConnectionId, name)))
+                _pickerRepository.StopShift(picker))
             {
                 await Clients.Caller.ShiftStopConfirmed();
             }

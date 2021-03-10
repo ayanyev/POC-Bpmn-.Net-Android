@@ -1,4 +1,6 @@
 using System;
+using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using AtlasEngine;
 using AtlasEngine.ProcessDefinitions;
@@ -16,7 +18,15 @@ namespace POCPicking.Processes
         
         private readonly IProcessInstancesClient _instanceClient = 
             ClientFactory.CreateProcessInstancesClient(new Uri(BaseUrl));
-        
+
+        public async Task<bool> IsProcessInstanceRunning(string processId)
+        {
+            var res = (await _instanceClient.QueryAsync(
+                options => options.FilterByProcessInstanceId(processId)
+            )).ToList();
+            return res.Count > 0 && res.First().State == ProcessState.Running;
+        }
+
         public async Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string modelId, string startEvent, T token)
         {
             try

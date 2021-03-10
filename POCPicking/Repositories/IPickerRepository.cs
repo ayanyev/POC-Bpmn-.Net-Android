@@ -8,9 +8,11 @@ namespace POCPicking.Repositories
     {
         IObservable<HashSet<Picker>> Observe();
 
-        Boolean StartShift(Picker picker);
+        bool StartShift(Picker picker);
+
+        bool ResumeShift(Picker picker, string connectionId);
         
-        Boolean StopShift(Picker picker);
+        bool StopShift(Picker picker);
 
         Picker AssignTask(Picker picker, PickerTask task);
 

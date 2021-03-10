@@ -8,6 +8,8 @@ namespace POCPicking.Processes
         Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string modelId, string startEvent, T token);
 
         Task<bool> TerminateProcessInstanceById(string processId);
+        
+        Task<bool> IsProcessInstanceRunning(string processId);
 
     }
 }
