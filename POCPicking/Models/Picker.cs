@@ -11,6 +11,8 @@ namespace POCPicking.Models
         public string Name { get; set; }
         [JsonIgnore]
         public string InstanceId { get; set; }
+        
+        public PickerTask Task { get; set; }
 
         public Picker()
         {
@@ -31,7 +33,7 @@ namespace POCPicking.Models
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((Picker) obj);
         }
 

@@ -8,29 +8,42 @@ namespace POCPicking.Repositories
 {
     public class TasksRepository : ITaskRepository
     {
-        private readonly Queue<KeyValuePair<PickerTask, Picker>> _tasks = new();
+        private readonly Queue<PickerTask> _tasksNotAssigned = new();
         
-        private readonly BehaviorSubject<Dictionary<PickerTask, Picker>> _observableTasks
-            = new(new Dictionary<PickerTask, Picker>());
+        private readonly HashSet<PickerTask> _tasksAssigned = new();
 
+        private readonly BehaviorSubject<List<PickerTask>> _observableData
+            = new(new List<PickerTask>());
+
+        
         public TasksRepository()
         {
-            // _tasks.Add(new PickerTask(), null);
-            // _tasks.Add(new PickerTask(), null);
-            // _tasks.Add(new PickerTask(), null);
-            // _observableTasks.OnNext(_tasks);
+            // _tasksNotAssigned.Update(new PickerTask());
+            // _tasksNotAssigned.Update(new PickerTask());
+            // _tasksNotAssigned.Update(new PickerTask());
+            // _observableData.OnNext(_tasksNotAssigned);
         }
 
-        public IObservable<Dictionary<PickerTask, Picker>> Observe()
+        public IObservable<List<PickerTask>> Observe()
         {
-            return _observableTasks;
+            return _observableData;
         }
 
-        public PickerTask Peek()
+        public void Update(PickerTask task)
+        {
+            if (!_tasksAssigned.Add(task))
+            {
+                _tasksAssigned.Remove(task);
+                _tasksAssigned.Add(task);
+            }
+            Emit();
+        }
+
+        public PickerTask Dequeue()
         {
             try
             {
-                return _tasks.Peek().Key;
+                return _tasksNotAssigned.Dequeue();
             }
             catch (InvalidOperationException e)
             {
@@ -41,14 +54,11 @@ namespace POCPicking.Repositories
 
         public PickerTask Create()
         {
-            var t = new PickerTask();
             try
             {
-                _tasks.Enqueue(new KeyValuePair<PickerTask, Picker>(t, null));
-                _observableTasks.OnNext(_tasks.ToDictionary(
-                    x => x.Key,
-                    y => y.Value
-                    ));
+                var t = new PickerTask();
+                _tasksNotAssigned.Enqueue(t);
+                Emit();
                 return t;
             }
             catch (Exception e)
@@ -60,21 +70,14 @@ namespace POCPicking.Repositories
 
         public List<PickerTask> FindAll()
         {
-            return _tasks.Select( d => d.Key).ToList();
+            return _tasksNotAssigned.Concat(_tasksAssigned).ToList();
         }
 
-        public PickerTask FindByPicker(Picker picker)
+        private void Emit()
         {
-            try
-            {
-                return _tasks
-                    .First(p => p.Value?.Equals(picker) ?? false)
-                    .Key;
-            }
-            catch (InvalidOperationException e)
-            {
-                return null;
-            }
+            var list = _tasksNotAssigned.Concat(_tasksAssigned).ToList();
+            _observableData.OnNext(list);
         }
+        
     }
 }

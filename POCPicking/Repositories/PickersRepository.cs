@@ -9,30 +9,40 @@ namespace POCPicking.Repositories
 {
     public class PickersRepository : IPickerRepository
     {
-        private readonly Dictionary<Picker, PickerTask> _pickersInfo = new();
+        private readonly HashSet<Picker> _pickers = new();
 
-        private readonly BehaviorSubject<Dictionary<Picker, PickerTask>> _observablePickers
-            = new(new Dictionary<Picker, PickerTask>());
+        private readonly BehaviorSubject<HashSet<Picker>> _observableData
+            = new(new HashSet<Picker>());
 
         public PickersRepository()
         {
-            _pickersInfo.Add(new Picker("", "Markus"), null);
-            _pickersInfo.Add(new Picker("", "Jens"), null);
-            _pickersInfo.Add(new Picker("", "Andreas"), null);
-            _observablePickers.OnNext(_pickersInfo);
+            // _pickers.Add(new Picker("", "Markus"));
+            // _pickers.Add(new Picker("", "Jens"));
+            // _pickers.Add(new Picker("", "Andreas"));
+            // _observableData.OnNext(_pickers);
         }
 
-        public IObservable<Dictionary<Picker, PickerTask>> Observe()
+        public IObservable<HashSet<Picker>> Observe()
         {
-            return _observablePickers;
+            return _observableData;
+        }
+
+        public Picker AssignTask(Picker picker, PickerTask task)
+        {
+            _pickers.Remove(picker);
+            picker.Task = task;
+            picker.Task.Status = "assigned";
+            _pickers.Add(picker);
+            _observableData.OnNext(_pickers);
+            return picker;
         }
 
         public bool StartShift(Picker picker)
         {
             try
             {
-                _pickersInfo.Add(picker, null);
-                _observablePickers.OnNext(_pickersInfo);
+                _pickers.Add(picker);
+                _observableData.OnNext(_pickers);
                 return true;
             }
             catch (Exception e)
@@ -44,23 +54,23 @@ namespace POCPicking.Repositories
 
         public bool StopShift(Picker picker)
         {
-            if (_pickersInfo.Remove(picker))
+            if (_pickers.Remove(picker))
             {
-                _observablePickers.OnNext(_pickersInfo);
+                _observableData.OnNext(_pickers);
                 return true;
             }
+
             return false;
         }
 
         public List<Picker> FindAll()
         {
-            return _pickersInfo.Keys.ToList();
+            return _pickers.ToList();
         }
 
         public Picker FindByName([NotNull] string name)
         {
-            return _pickersInfo.First(p => p.Key.Name.Equals(name)).Key;
+            return _pickers.First(p => p.Name.Equals(name));
         }
-        
     }
 }

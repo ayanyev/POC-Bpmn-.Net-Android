@@ -27,7 +27,7 @@ namespace POCPicking
             services.AddSignalR();
             services.AddRepositories();
             services.AddProcessServices();
-            // services.AddSingleton<GetPickerTaskHandler>();
+            // services.AddSingleton<AssignTaskHandler>();
             // connect vue app - middleware  
             services.AddSpaStaticFiles(options => 
                 options.RootPath = "dashboard-app"

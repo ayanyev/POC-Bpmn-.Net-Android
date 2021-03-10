@@ -9,14 +9,11 @@
         <td>Task</td>
       </tr>
       </thead>
-      <tr v-for="(name, key) in names" :key="key">
+      <tr v-for="(picker, key) in pickers" :key="key">
         <td>{{ key + 1 }}</td>
-        <td>{{ name }}</td>
-        <td></td>
-<!--        <td v-if="tasks[key] == null">-->
-<!--          <button v-on:click="onClick(name)">assign task</button>-->
-<!--        </td>-->
-<!--        <td v-else-if>{{ tasks[key] }}</td>-->
+        <td>{{ picker.name }}</td>
+        <td v-if="picker.task != null">{{ picker.task.guid }}</td>
+        <td v-else></td>
       </tr>
     </table>
   </div>
@@ -28,7 +25,7 @@ export default {
   data() {
     return {
       header: 'Available pickers:',
-      names: []
+      pickers: []
     }
   },
   mounted() {
@@ -43,9 +40,7 @@ export default {
   },
   sockets: {
     AvailablePickers(data) {
-      this.names = data.map(function(picker) {
-        return picker.name;
-      });
+      this.pickers = data;
     }
   }
 }

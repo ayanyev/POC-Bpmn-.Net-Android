@@ -6,11 +6,13 @@ namespace POCPicking.Repositories
 {
     public interface IPickerRepository
     {
-        IObservable<Dictionary<Picker, PickerTask>> Observe();
+        IObservable<HashSet<Picker>> Observe();
 
         Boolean StartShift(Picker picker);
         
         Boolean StopShift(Picker picker);
+
+        Picker AssignTask(Picker picker, PickerTask task);
 
         Picker FindByName(string name);
 

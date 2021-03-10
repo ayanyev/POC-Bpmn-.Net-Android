@@ -7,13 +7,13 @@ namespace POCPicking.Repositories
     public interface ITaskRepository
     {
         
-        IObservable<Dictionary<PickerTask, Picker>> Observe();
+        IObservable<List<PickerTask>> Observe();
 
         public PickerTask Create();
         
-        public PickerTask FindByPicker(Picker picker);
-
-        public PickerTask Peek();
+        public void Update(PickerTask task);
+        
+        public PickerTask Dequeue();
         
         List<PickerTask> FindAll();
         

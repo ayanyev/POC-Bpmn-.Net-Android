@@ -11,7 +11,7 @@ namespace POCPicking.Processes.Extensions
         public static IServiceCollection AddProcessServices(this IServiceCollection services)
         {
             services.AddSingleton(ClientFactory.CreateExternalTaskClient(new Uri("http://localhost:56000"), logger: ConsoleLogger.Default));
-            services.AddSingleton<GetPickerTaskHandler>();
+            services.AddSingleton<AssignTaskHandler>();
             services.AddSingleton<PeekTaskHandler>();
             services.AddSingleton<IProcessClient, ProcessEngineClient>();
             // services.AddSingleton<IProcessClient, ProcessesHttpClient>();

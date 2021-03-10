@@ -11,8 +11,8 @@
       </thead>
       <tr v-for="(task, key) in tasks" :key="key">
         <td>{{ key + 1 }}</td>
-        <td>{{ task }}</td>
-        <td></td>
+        <td>{{ task.guid }}</td>
+        <td>{{ task.status }}</td>
       </tr>
       <tfoot>
       <tr><td id="button-cell" colspan="3">
@@ -40,9 +40,7 @@ export default {
   },
   sockets: {
     AvailableTasks(data) {
-      this.tasks = data.map(function (task) {
-        return task.guid;
-      });
+      this.tasks = data;
     }
   }
 }

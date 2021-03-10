@@ -34,12 +34,11 @@ namespace POCPicking.Hubs
         public override Task OnConnectedAsync()
         {
             _disposables.Add(_pickerRepository.Observe()
-                .Select(data => data.Keys.ToList())
+                .Select(data => data.ToList())
                 .Subscribe(
                     data => Clients.Caller.AvailablePickers(data)
                 ));
             _disposables.Add(_taskRepository.Observe()
-                .Select(data => data.Keys.ToList())
                 .Subscribe(
                     data => Clients.Caller.AvailableTasks(data)
                 ));
