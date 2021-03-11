@@ -27,8 +27,7 @@ namespace POCPicking.Repositories
                 _tasksAssigned.Remove(task);
                 _tasksAssigned.Add(task);
             }
-
-            Emit();
+            SendAvailableTasksToDashboard();
         }
 
         public PickerTask Dequeue()
@@ -50,7 +49,7 @@ namespace POCPicking.Repositories
             {
                 var t = new PickerTask();
                 _tasksNotAssigned.Enqueue(t);
-                Emit();
+                SendAvailableTasksToDashboard();
                 return t;
             }
             catch (Exception e)
@@ -65,16 +64,12 @@ namespace POCPicking.Repositories
             return _tasksNotAssigned.Concat(_tasksAssigned).ToList();
         }
 
-        private void SendAvailablePickersToDashboard(IEnumerable<PickerTask> tasks)
+        private void SendAvailableTasksToDashboard()
         {
+            var tasks = _tasksNotAssigned.Concat(_tasksAssigned).ToList();
             _dashboardHubContext.Clients.Group("Dashboard")
-                .SendAsync("AvailableTasks", tasks.ToList());
+                .SendAsync("AvailableTasks", tasks);
         }
         
-        private void Emit()
-        {
-            var list = _tasksNotAssigned.Concat(_tasksAssigned).ToList();
-            SendAvailablePickersToDashboard(list);
-        }
     }
 }

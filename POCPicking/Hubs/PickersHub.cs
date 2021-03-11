@@ -11,6 +11,8 @@ namespace POCPicking.Hubs
         Task ShiftStartConfirmed();
 
         Task ShiftStopConfirmed();
+        
+        Task TaskAssigned(string guid);
 
     }
 
@@ -36,6 +38,10 @@ namespace POCPicking.Hubs
             if (picker != null && _pickerRepository.ResumeShift(picker, Context.ConnectionId))
             {
                 await Clients.Caller.ShiftStartConfirmed();
+                if (picker.Task != null)
+                {
+                    await Clients.Caller.TaskAssigned(picker.Task.Guid.ToString());
+                }
             }
             else
             {

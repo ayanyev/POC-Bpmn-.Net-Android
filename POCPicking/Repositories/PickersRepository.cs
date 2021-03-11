@@ -30,7 +30,7 @@ namespace POCPicking.Repositories
             _pickers.Add(updated);
             SendAvailablePickersToDashboard(_pickers);
             SendTaskToPickerClient(updated);
-            return picker;
+            return updated;
         }
 
         public bool StartShift(Picker picker)
