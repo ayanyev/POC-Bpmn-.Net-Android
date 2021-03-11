@@ -29,14 +29,7 @@ export default {
     }
   },
   mounted() {
-    // this.$socket.invoke('GetAvailablePickers')
-  },
-  methods: {
-    onClick: function () {
-      // this.socket
-      //     ? this.$socket.send('Tasks request:assign:' + name)
-      //     : alert('socket is null')
-    }
+    this.$socket.invoke('GetAvailablePickers')
   },
   sockets: {
     AvailablePickers(data) {

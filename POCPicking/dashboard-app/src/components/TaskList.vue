@@ -33,6 +33,9 @@ export default {
       tasks: []
     }
   },
+  mounted() {
+    this.$socket.invoke('GetAvailableTasks')
+  },
   methods: {
     onClick: function () {
       this.$socket.invoke('CreateNewTask')

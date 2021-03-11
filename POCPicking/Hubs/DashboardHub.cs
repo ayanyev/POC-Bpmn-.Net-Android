@@ -46,6 +46,12 @@ namespace POCPicking.Hubs
             var res = _pickerRepository.FindAll();
             await Clients.Client(Context.ConnectionId).AvailablePickers(res);
         }
+        
+        public async void GetAvailableTasks()
+        {
+            var res = _taskRepository.FindAll();
+            await Clients.Client(Context.ConnectionId).AvailableTasks(res);
+        }
 
         public async void CreateNewTask()
         {
