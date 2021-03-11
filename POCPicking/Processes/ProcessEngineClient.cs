@@ -1,11 +1,13 @@
 using System;
-using System.Data;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AtlasEngine;
 using AtlasEngine.ProcessDefinitions;
 using AtlasEngine.ProcessDefinitions.Requests;
 using AtlasEngine.ProcessInstances;
+using AtlasEngine.UserTasks;
+using AtlasEngine.UserTasks.Requests;
 
 namespace POCPicking.Processes
 {
@@ -18,6 +20,22 @@ namespace POCPicking.Processes
         
         private readonly IProcessInstancesClient _instanceClient = 
             ClientFactory.CreateProcessInstancesClient(new Uri(BaseUrl));
+        
+        private readonly IUserTaskClient _userTaskClient = 
+            ClientFactory.CreateUserTaskClient(new Uri(BaseUrl));
+
+        public async Task FinishUserTask(UserTask task, Dictionary<string, object> result)
+        {
+            await _userTaskClient.FinishUserTaskAsync(task, new UserTaskResult(result));
+        }
+
+        public async Task<List<UserTask>> GetAllUserTasks(string processId)
+        {
+            var tasks = await _userTaskClient.QueryAsync(
+                q => q.FilterByProcessInstanceId(processId)
+            );
+            return tasks.ToList();
+        }
 
         public async Task<bool> IsProcessInstanceRunning(string processId)
         {

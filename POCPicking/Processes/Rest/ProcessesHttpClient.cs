@@ -7,6 +7,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 using AtlasEngine.ProcessDefinitions.Requests;
+using AtlasEngine.UserTasks;
 using POCPicking.Processes.Rest.Models;
 
 namespace POCPicking.Processes.Rest
@@ -14,8 +15,6 @@ namespace POCPicking.Processes.Rest
     public class ProcessesHttpClient : IProcessClient
     {
         private readonly HttpClient _httpClient = new();
-        
-
 
         private const string BaseUrl = "http://localhost:56000/atlas_engine/api/v1";
 
@@ -88,6 +87,16 @@ namespace POCPicking.Processes.Rest
         }
 
         public Task<bool> IsProcessInstanceRunning(string processId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<UserTask>> GetAllUserTasks(string processId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task FinishUserTask(UserTask task, Dictionary<string, object> result)
         {
             throw new NotImplementedException();
         }

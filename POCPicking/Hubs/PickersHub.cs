@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using POCPicking.Models;
@@ -13,6 +15,8 @@ namespace POCPicking.Hubs
         Task ShiftStopConfirmed();
         
         Task TaskAssigned(string guid);
+        
+        Task TaskRemoved(string guid);
 
     }
 
@@ -23,13 +27,16 @@ namespace POCPicking.Hubs
         private const string ProcessStartEvent = ""; //"StartEvent_1mox3jl";
 
         private readonly IPickerRepository _pickerRepository;
+        
+        private readonly ITaskRepository _taskRepository;
 
         private readonly IProcessClient _processClient;
 
-        public PickersHub(IPickerRepository pickerRepository, IProcessClient processClient)
+        public PickersHub(IPickerRepository pickerRepository, IProcessClient processClient, ITaskRepository taskRepository)
         {
             _pickerRepository = pickerRepository;
             _processClient = processClient;
+            _taskRepository = taskRepository;
         }
 
         public async Task CheckActiveShift(string name)
@@ -89,6 +96,21 @@ namespace POCPicking.Hubs
             {
                 await Clients.Caller.ShiftStopConfirmed();
             }
+        }
+
+        public async Task FinishTask(string name)
+        {
+            var picker = _pickerRepository.FindByName(name);
+            if (picker?.Task == null) return;
+            var task = _pickerRepository.RemoveTask(picker);
+            _taskRepository.Update(task);
+            await Clients.Caller.TaskRemoved(task.Guid.ToString());
+
+            var tasks = await _processClient.GetAllUserTasks(picker.InstanceId);
+            
+            var userTask = tasks.First( t => t.Id.Equals("Task_wait_for_execution"));
+            
+            await _processClient.FinishUserTask(userTask, new Dictionary<string, object>());
         }
     }
 }

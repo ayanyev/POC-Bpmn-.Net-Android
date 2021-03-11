@@ -12,6 +12,7 @@ namespace POCPicking.Processes.Extensions
         {
             services.AddSingleton(ClientFactory.CreateExternalTaskClient(new Uri("http://localhost:56000"), logger: ConsoleLogger.Default));
             services.AddSingleton<AssignTaskHandler>();
+            services.AddSingleton<ShiftStatusHandler>();
             services.AddSingleton<PeekTaskHandler>();
             services.AddSingleton<IProcessClient, ProcessEngineClient>();
             // services.AddSingleton<IProcessClient, ProcessesHttpClient>();

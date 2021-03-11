@@ -10,9 +10,11 @@ namespace POCPicking.Repositories
 
         bool ResumeShift(Picker picker, string connectionId);
         
-        bool StopShift(Picker picker);
+        bool StopShift(Picker picker, bool informClient = false);
 
         Picker AssignTask(Picker picker, PickerTask task);
+        
+        PickerTask RemoveTask(Picker picker);
 
         Picker FindByName(string name);
 
