@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AtlasEngine;
+using AtlasEngine.ExternalTasks;
+using AtlasEngine.Logging;
 using AtlasEngine.ProcessDefinitions;
 using AtlasEngine.ProcessDefinitions.Requests;
 using AtlasEngine.ProcessInstances;
@@ -23,6 +25,12 @@ namespace Warehouse.Picking.Api.Processes
         
         private readonly IUserTaskClient _userTaskClient = 
             ClientFactory.CreateUserTaskClient(new Uri(BaseUrl));
+
+        public static IExternalTaskClient CreateExternalTaskClient()
+        {
+            return ClientFactory.CreateExternalTaskClient(new Uri(BaseUrl),
+                logger: ConsoleLogger.Default);
+        }
 
         public async Task FinishUserTask(UserTask task, Dictionary<string, object> result)
         {

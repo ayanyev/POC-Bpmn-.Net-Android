@@ -11,7 +11,7 @@ namespace warehouse.picking.api.Processes.Extensions
     {
         public static IServiceCollection AddProcessServices(this IServiceCollection services)
         {
-            services.AddSingleton(ClientFactory.CreateExternalTaskClient(new Uri("http://localhost:56000"), logger: ConsoleLogger.Default));
+            services.AddSingleton(ProcessEngineClient.CreateExternalTaskClient());
             services.AddSingleton<AssignTaskHandler>();
             services.AddSingleton<ShiftStatusHandler>();
             services.AddSingleton<DequeueTaskHandler>();
