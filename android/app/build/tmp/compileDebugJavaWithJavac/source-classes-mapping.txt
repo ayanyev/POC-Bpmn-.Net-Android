@@ -1,4 +1,0 @@
-com/eazzyapps/example/android/BuildConfig.java
- com.eazzyapps.example.android.BuildConfig
-com/eazzyapps/example/android/HttpsTrustManager.java
- com.eazzyapps.example.android.HttpsTrustManager
