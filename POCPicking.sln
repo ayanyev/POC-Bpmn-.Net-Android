@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POCPicking", "POCPicking\POCPicking.csproj", "{C6160899-8610-4B54-A3F6-C08B279F7A60}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warehouse.Picking", "Warehouse.Picking\Warehouse.Picking.csproj", "{C6160899-8610-4B54-A3F6-C08B279F7A60}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

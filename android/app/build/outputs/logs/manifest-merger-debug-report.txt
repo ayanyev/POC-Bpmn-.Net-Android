@@ -1,0 +1,317 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:2:1-27:12
+INJECTED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:2:1-27:12
+INJECTED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:2:1-27:12
+INJECTED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:2:1-27:12
+MERGED from [androidx.compose.ui:ui-tooling:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/b674e6a5f44aa24a51b384831a0fbfb0/transformed/jetified-ui-tooling-1.0.0-beta01/AndroidManifest.xml:17:1-30:12
+MERGED from [androidx.activity:activity-compose:1.3.0-alpha03] /Users/oleksandryanyev/.gradle/caches/transforms-3/5bbd63017d65883c23a53235ec5ae667/transformed/jetified-activity-compose-1.3.0-alpha03/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.activity:activity-ktx:1.3.0-alpha03] /Users/oleksandryanyev/.gradle/caches/transforms-3/f83b0e911a8376d25cd6590e99e4959d/transformed/jetified-activity-ktx-1.3.0-alpha03/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.core:core-ktx:1.3.2] /Users/oleksandryanyev/.gradle/caches/transforms-3/af929c8447e45d0cfacc0dd72c98ba3b/transformed/jetified-core-ktx-1.3.2/AndroidManifest.xml:2:1-9:12
+MERGED from [androidx.compose.material:material:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/05bbe8e9c2f018a2ca4e588379de2218/transformed/jetified-material-1.0.0-beta01/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha02] /Users/oleksandryanyev/.gradle/caches/transforms-3/3dbef2de3711d7f332870f4e6ac95ffb/transformed/jetified-lifecycle-viewmodel-compose-1.0.0-alpha02/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.compose.material:material-ripple:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/4f84be2987061347ce6f5ccb3137f29d/transformed/jetified-material-ripple-1.0.0-beta01/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.compose.foundation:foundation:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/f83766ec5adabcf61a2c8354922ebedf/transformed/jetified-foundation-1.0.0-beta01/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.compose.material:material-icons-core:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/c7260489a1c2e8964e6962b783f09e63/transformed/jetified-material-icons-core-1.0.0-beta01/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.compose.animation:animation:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/af3ccbc807e2ffdddfe45943fcf2c702/transformed/jetified-animation-1.0.0-beta01/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.compose.foundation:foundation-layout:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/e79feb51d7cb2ca6e0bd9e4e38be10a6/transformed/jetified-foundation-layout-1.0.0-beta01/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.compose.ui:ui-tooling-data:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/13e49325eb6bfb47d1811323ac8ea7c4/transformed/jetified-ui-tooling-data-1.0.0-beta01/AndroidManifest.xml:17:1-28:12
+MERGED from [androidx.compose.ui:ui:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/14435e2b907fdb52b02ea97ae2e0c823/transformed/jetified-ui-1.0.0-beta01/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.compose.animation:animation-core:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/e66623fd0d605f9816eadf853266e453/transformed/jetified-animation-core-1.0.0-beta01/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.compose.ui:ui-text:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/9c949e47b93b074a838a690979d1ed5c/transformed/jetified-ui-text-1.0.0-beta01/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.compose.runtime:runtime-saveable:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/2c53c1d6704aa46fed973b933518a4b1/transformed/jetified-runtime-saveable-1.0.0-beta01/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.compose.ui:ui-graphics:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/9d295ab0f5716a1c163ebb518ec251e2/transformed/jetified-ui-graphics-1.0.0-beta01/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.compose.ui:ui-unit:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/4b38d3defd16dcf056a7e1011007960b/transformed/jetified-ui-unit-1.0.0-beta01/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.compose.ui:ui-geometry:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/7ee6942d14940553dddc9883503d5c1e/transformed/jetified-ui-geometry-1.0.0-beta01/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.compose.ui:ui-util:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/6c7f0147772d98d195e5059a95786c11/transformed/jetified-ui-util-1.0.0-beta01/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.compose.runtime:runtime:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/42de269c8424e45144a97c87b1fbc2a3/transformed/jetified-runtime-1.0.0-beta01/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx:2.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/50e381ca7ef4b31d92a99dca92fa90f5/transformed/jetified-lifecycle-runtime-ktx-2.3.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/0acca80407852fe4ae652b13ae99c04c/transformed/jetified-lifecycle-viewmodel-ktx-2.3.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.savedstate:savedstate-ktx:1.1.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/38b2773750f39516efe24f1c1d1c5fca/transformed/jetified-savedstate-ktx-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.material:material:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/77c6e2bd9682b2a586480e4a70737eab/transformed/material-1.3.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /Users/oleksandryanyev/.gradle/caches/transforms-3/b02b376b9f4a57e926c1486365e61341/transformed/constraintlayout-2.0.1/AndroidManifest.xml:2:1-11:12
+MERGED from [androidx.appcompat:appcompat:1.3.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/810d678d9085c041908bb0c517c82a3a/transformed/appcompat-1.3.0-beta01/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.cardview:cardview:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/0847ec203f5f251aef4b8d780e760dac/transformed/cardview-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/4b57d8e35f173ecfaaa925182aac9caa/transformed/coordinatorlayout-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.transition:transition:1.2.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/b7c1574603c72507dee5bda249166604/transformed/transition-1.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.appcompat:appcompat-resources:1.3.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/c641599c048e2dadb998816acf4bff1e/transformed/jetified-appcompat-resources-1.3.0-beta01/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/83a81f83dfc4a25cb982465cc655e868/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/a3ba21c69eaeae9e8c51b5f19b174693/transformed/vectordrawable-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.viewpager2:viewpager2:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/c1b0edf9ff8174fdc738f4243a4776b1/transformed/jetified-viewpager2-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.fragment:fragment:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/ad23f466d0d3f16d435b3a18acec6fec/transformed/fragment-1.3.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/a4e0c0d41b079b0a9026babe56d7d4a5/transformed/dynamicanimation-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.autofill:autofill:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/72da00a778fc3880ec0c23a77e0ec976/transformed/jetified-autofill-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.recyclerview:recyclerview:1.1.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/db2ff85b42f5fd47892455f9e8e97e7e/transformed/recyclerview-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/67e0aa8eff1bad199260472d21429bad/transformed/viewpager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/e1df10db5109861019cc6dd0c69849a8/transformed/drawerlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.customview:customview:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/6eca72ecfc3884f860dea62c9db34ae6/transformed/customview-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/6c85e7929702c2c911616588ff6c46c9/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.loader:loader:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/5def09c66e04c1f8052e4da2fa1bbf73/transformed/loader-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.activity:activity:1.3.0-alpha03] /Users/oleksandryanyev/.gradle/caches/transforms-3/7a169d2a769e255487276c6059daa8a1/transformed/jetified-activity-1.3.0-alpha03/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.core:core:1.5.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/e8b02a5d5ddf2e2667b72aec9f54d978/transformed/core-1.5.0-beta01/AndroidManifest.xml:17:1-26:12
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/942b267afb3bc8c52c8957ff8c978245/transformed/lifecycle-runtime-2.3.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/9a93f2f8362e4368b690b1083e875ac3/transformed/versionedparcelable-1.1.0/AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/00fe327137305162d69c9fd093db77c0/transformed/jetified-lifecycle-viewmodel-savedstate-2.3.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/0a1d598605837609228d42a8414a6dd3/transformed/lifecycle-viewmodel-2.3.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.savedstate:savedstate:1.1.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/97f0168407ca6c830461b09cb1d2d351/transformed/jetified-savedstate-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/5b6bc2b061da9a52e6083f4f4736ed48/transformed/cursoradapter-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/5c445902b14d32200ff8a40cd3cd59a0/transformed/lifecycle-livedata-2.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/54869fa4f053b6238950270ba5e29cb7/transformed/lifecycle-livedata-core-2.3.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.arch.core:core-runtime:2.1.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/e6e6c25bf713d98009b138b794e8ab90/transformed/core-runtime-2.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.test.ext:junit-ktx:1.1.2] /Users/oleksandryanyev/.gradle/caches/transforms-3/61d21200df323176f298f5da28749437/transformed/jetified-junit-ktx-1.1.2/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.test.ext:junit:1.1.2] /Users/oleksandryanyev/.gradle/caches/transforms-3/5b63cb1a04c3b4f91a86ce17966eb9e2/transformed/jetified-junit-1.1.2/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.test:core:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/98b923838cf474d11e029ebe5ab37ebb/transformed/jetified-core-1.3.0/AndroidManifest.xml:17:1-50:12
+MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/c020c97f102fc7c70623f4a40b0d6f1f/transformed/documentfile-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/91110ed97080af9be934c6c32a6d82a3/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.print:print:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/1bd74f8bb15c66239ac700b8af2127a2/transformed/print-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.tracing:tracing:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/f5ff447c180d2fc8d409dadd4c26d40e/transformed/jetified-tracing-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.test:monitor:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/9237f354ffa2bc5f11f552d553021b18/transformed/monitor-1.3.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/500f53bfb789abde71b9786d5ce63197/transformed/interpolator-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.annotation:annotation-experimental:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/b0b476ce90843d524f3131aaf8bf0653/transformed/jetified-annotation-experimental-1.0.0/AndroidManifest.xml:17:1-24:12
+INJECTED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:2:1-27:12
+INJECTED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:2:1-27:12
+INJECTED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:2:1-27:12
+	package
+		ADDED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:3:5-44
+		INJECTED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml
+		ADDED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:2:1-27:12
+		INJECTED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml
+		ADDED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:2:1-27:12
+		INJECTED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:2:11-69
+uses-permission#android.permission.INTERNET
+ADDED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:5:5-67
+	android:name
+		ADDED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:5:22-64
+application
+ADDED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:7:5-25:19
+MERGED from [androidx.compose.ui:ui-tooling:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/b674e6a5f44aa24a51b384831a0fbfb0/transformed/jetified-ui-tooling-1.0.0-beta01/AndroidManifest.xml:24:5-28:19
+MERGED from [androidx.compose.ui:ui-tooling:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/b674e6a5f44aa24a51b384831a0fbfb0/transformed/jetified-ui-tooling-1.0.0-beta01/AndroidManifest.xml:24:5-28:19
+MERGED from [androidx.compose.ui:ui-tooling-data:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/13e49325eb6bfb47d1811323ac8ea7c4/transformed/jetified-ui-tooling-data-1.0.0-beta01/AndroidManifest.xml:24:5-26:19
+MERGED from [androidx.compose.ui:ui-tooling-data:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/13e49325eb6bfb47d1811323ac8ea7c4/transformed/jetified-ui-tooling-data-1.0.0-beta01/AndroidManifest.xml:24:5-26:19
+MERGED from [com.google.android.material:material:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/77c6e2bd9682b2a586480e4a70737eab/transformed/material-1.3.0/AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.material:material:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/77c6e2bd9682b2a586480e4a70737eab/transformed/material-1.3.0/AndroidManifest.xml:22:5-20
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /Users/oleksandryanyev/.gradle/caches/transforms-3/b02b376b9f4a57e926c1486365e61341/transformed/constraintlayout-2.0.1/AndroidManifest.xml:9:5-20
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /Users/oleksandryanyev/.gradle/caches/transforms-3/b02b376b9f4a57e926c1486365e61341/transformed/constraintlayout-2.0.1/AndroidManifest.xml:9:5-20
+MERGED from [androidx.core:core:1.5.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/e8b02a5d5ddf2e2667b72aec9f54d978/transformed/core-1.5.0-beta01/AndroidManifest.xml:24:5-89
+MERGED from [androidx.core:core:1.5.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/e8b02a5d5ddf2e2667b72aec9f54d978/transformed/core-1.5.0-beta01/AndroidManifest.xml:24:5-89
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/9a93f2f8362e4368b690b1083e875ac3/transformed/versionedparcelable-1.1.0/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/9a93f2f8362e4368b690b1083e875ac3/transformed/versionedparcelable-1.1.0/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.test:core:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/98b923838cf474d11e029ebe5ab37ebb/transformed/jetified-core-1.3.0/AndroidManifest.xml:26:5-48:19
+MERGED from [androidx.test:core:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/98b923838cf474d11e029ebe5ab37ebb/transformed/jetified-core-1.3.0/AndroidManifest.xml:26:5-48:19
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.5.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/e8b02a5d5ddf2e2667b72aec9f54d978/transformed/core-1.5.0-beta01/AndroidManifest.xml:24:18-86
+	android:supportsRtl
+		ADDED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:12:9-35
+	android:label
+		ADDED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:10:9-41
+	android:roundIcon
+		ADDED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:11:9-54
+	android:icon
+		ADDED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:9:9-43
+	android:allowBackup
+		ADDED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:8:9-35
+	android:theme
+		ADDED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:14:9-45
+	android:usesCleartextTraffic
+		ADDED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:13:9-44
+activity#com.eazzyapps.example.android.MainActivity
+ADDED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:15:9-24:20
+	android:label
+		ADDED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:17:13-45
+	android:theme
+		ADDED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:18:13-61
+	android:name
+		ADDED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:16:13-41
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:19:13-23:29
+action#android.intent.action.MAIN
+ADDED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:20:17-69
+	android:name
+		ADDED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:20:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:22:17-77
+	android:name
+		ADDED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml:22:27-74
+uses-sdk
+INJECTED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml
+INJECTED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml
+MERGED from [androidx.compose.ui:ui-tooling:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/b674e6a5f44aa24a51b384831a0fbfb0/transformed/jetified-ui-tooling-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.ui:ui-tooling:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/b674e6a5f44aa24a51b384831a0fbfb0/transformed/jetified-ui-tooling-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.activity:activity-compose:1.3.0-alpha03] /Users/oleksandryanyev/.gradle/caches/transforms-3/5bbd63017d65883c23a53235ec5ae667/transformed/jetified-activity-compose-1.3.0-alpha03/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.activity:activity-compose:1.3.0-alpha03] /Users/oleksandryanyev/.gradle/caches/transforms-3/5bbd63017d65883c23a53235ec5ae667/transformed/jetified-activity-compose-1.3.0-alpha03/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.activity:activity-ktx:1.3.0-alpha03] /Users/oleksandryanyev/.gradle/caches/transforms-3/f83b0e911a8376d25cd6590e99e4959d/transformed/jetified-activity-ktx-1.3.0-alpha03/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.activity:activity-ktx:1.3.0-alpha03] /Users/oleksandryanyev/.gradle/caches/transforms-3/f83b0e911a8376d25cd6590e99e4959d/transformed/jetified-activity-ktx-1.3.0-alpha03/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core-ktx:1.3.2] /Users/oleksandryanyev/.gradle/caches/transforms-3/af929c8447e45d0cfacc0dd72c98ba3b/transformed/jetified-core-ktx-1.3.2/AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.core:core-ktx:1.3.2] /Users/oleksandryanyev/.gradle/caches/transforms-3/af929c8447e45d0cfacc0dd72c98ba3b/transformed/jetified-core-ktx-1.3.2/AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.compose.material:material:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/05bbe8e9c2f018a2ca4e588379de2218/transformed/jetified-material-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.material:material:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/05bbe8e9c2f018a2ca4e588379de2218/transformed/jetified-material-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha02] /Users/oleksandryanyev/.gradle/caches/transforms-3/3dbef2de3711d7f332870f4e6ac95ffb/transformed/jetified-lifecycle-viewmodel-compose-1.0.0-alpha02/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha02] /Users/oleksandryanyev/.gradle/caches/transforms-3/3dbef2de3711d7f332870f4e6ac95ffb/transformed/jetified-lifecycle-viewmodel-compose-1.0.0-alpha02/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.material:material-ripple:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/4f84be2987061347ce6f5ccb3137f29d/transformed/jetified-material-ripple-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.material:material-ripple:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/4f84be2987061347ce6f5ccb3137f29d/transformed/jetified-material-ripple-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.foundation:foundation:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/f83766ec5adabcf61a2c8354922ebedf/transformed/jetified-foundation-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.foundation:foundation:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/f83766ec5adabcf61a2c8354922ebedf/transformed/jetified-foundation-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.material:material-icons-core:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/c7260489a1c2e8964e6962b783f09e63/transformed/jetified-material-icons-core-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.material:material-icons-core:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/c7260489a1c2e8964e6962b783f09e63/transformed/jetified-material-icons-core-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.animation:animation:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/af3ccbc807e2ffdddfe45943fcf2c702/transformed/jetified-animation-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.animation:animation:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/af3ccbc807e2ffdddfe45943fcf2c702/transformed/jetified-animation-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.foundation:foundation-layout:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/e79feb51d7cb2ca6e0bd9e4e38be10a6/transformed/jetified-foundation-layout-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.foundation:foundation-layout:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/e79feb51d7cb2ca6e0bd9e4e38be10a6/transformed/jetified-foundation-layout-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.ui:ui-tooling-data:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/13e49325eb6bfb47d1811323ac8ea7c4/transformed/jetified-ui-tooling-data-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.ui:ui-tooling-data:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/13e49325eb6bfb47d1811323ac8ea7c4/transformed/jetified-ui-tooling-data-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.ui:ui:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/14435e2b907fdb52b02ea97ae2e0c823/transformed/jetified-ui-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.ui:ui:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/14435e2b907fdb52b02ea97ae2e0c823/transformed/jetified-ui-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.animation:animation-core:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/e66623fd0d605f9816eadf853266e453/transformed/jetified-animation-core-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.animation:animation-core:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/e66623fd0d605f9816eadf853266e453/transformed/jetified-animation-core-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.ui:ui-text:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/9c949e47b93b074a838a690979d1ed5c/transformed/jetified-ui-text-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.ui:ui-text:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/9c949e47b93b074a838a690979d1ed5c/transformed/jetified-ui-text-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.runtime:runtime-saveable:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/2c53c1d6704aa46fed973b933518a4b1/transformed/jetified-runtime-saveable-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.runtime:runtime-saveable:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/2c53c1d6704aa46fed973b933518a4b1/transformed/jetified-runtime-saveable-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.ui:ui-graphics:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/9d295ab0f5716a1c163ebb518ec251e2/transformed/jetified-ui-graphics-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.ui:ui-graphics:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/9d295ab0f5716a1c163ebb518ec251e2/transformed/jetified-ui-graphics-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.ui:ui-unit:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/4b38d3defd16dcf056a7e1011007960b/transformed/jetified-ui-unit-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.ui:ui-unit:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/4b38d3defd16dcf056a7e1011007960b/transformed/jetified-ui-unit-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.ui:ui-geometry:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/7ee6942d14940553dddc9883503d5c1e/transformed/jetified-ui-geometry-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.ui:ui-geometry:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/7ee6942d14940553dddc9883503d5c1e/transformed/jetified-ui-geometry-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.ui:ui-util:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/6c7f0147772d98d195e5059a95786c11/transformed/jetified-ui-util-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.ui:ui-util:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/6c7f0147772d98d195e5059a95786c11/transformed/jetified-ui-util-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.runtime:runtime:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/42de269c8424e45144a97c87b1fbc2a3/transformed/jetified-runtime-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.runtime:runtime:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/42de269c8424e45144a97c87b1fbc2a3/transformed/jetified-runtime-1.0.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx:2.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/50e381ca7ef4b31d92a99dca92fa90f5/transformed/jetified-lifecycle-runtime-ktx-2.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx:2.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/50e381ca7ef4b31d92a99dca92fa90f5/transformed/jetified-lifecycle-runtime-ktx-2.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/0acca80407852fe4ae652b13ae99c04c/transformed/jetified-lifecycle-viewmodel-ktx-2.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/0acca80407852fe4ae652b13ae99c04c/transformed/jetified-lifecycle-viewmodel-ktx-2.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.savedstate:savedstate-ktx:1.1.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/38b2773750f39516efe24f1c1d1c5fca/transformed/jetified-savedstate-ktx-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.savedstate:savedstate-ktx:1.1.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/38b2773750f39516efe24f1c1d1c5fca/transformed/jetified-savedstate-ktx-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.material:material:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/77c6e2bd9682b2a586480e4a70737eab/transformed/material-1.3.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.material:material:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/77c6e2bd9682b2a586480e4a70737eab/transformed/material-1.3.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /Users/oleksandryanyev/.gradle/caches/transforms-3/b02b376b9f4a57e926c1486365e61341/transformed/constraintlayout-2.0.1/AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /Users/oleksandryanyev/.gradle/caches/transforms-3/b02b376b9f4a57e926c1486365e61341/transformed/constraintlayout-2.0.1/AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.appcompat:appcompat:1.3.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/810d678d9085c041908bb0c517c82a3a/transformed/appcompat-1.3.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat:1.3.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/810d678d9085c041908bb0c517c82a3a/transformed/appcompat-1.3.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.cardview:cardview:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/0847ec203f5f251aef4b8d780e760dac/transformed/cardview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cardview:cardview:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/0847ec203f5f251aef4b8d780e760dac/transformed/cardview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/4b57d8e35f173ecfaaa925182aac9caa/transformed/coordinatorlayout-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/4b57d8e35f173ecfaaa925182aac9caa/transformed/coordinatorlayout-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.transition:transition:1.2.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/b7c1574603c72507dee5bda249166604/transformed/transition-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.transition:transition:1.2.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/b7c1574603c72507dee5bda249166604/transformed/transition-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat-resources:1.3.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/c641599c048e2dadb998816acf4bff1e/transformed/jetified-appcompat-resources-1.3.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat-resources:1.3.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/c641599c048e2dadb998816acf4bff1e/transformed/jetified-appcompat-resources-1.3.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/83a81f83dfc4a25cb982465cc655e868/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/83a81f83dfc4a25cb982465cc655e868/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/a3ba21c69eaeae9e8c51b5f19b174693/transformed/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/a3ba21c69eaeae9e8c51b5f19b174693/transformed/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.viewpager2:viewpager2:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/c1b0edf9ff8174fdc738f4243a4776b1/transformed/jetified-viewpager2-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.viewpager2:viewpager2:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/c1b0edf9ff8174fdc738f4243a4776b1/transformed/jetified-viewpager2-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/ad23f466d0d3f16d435b3a18acec6fec/transformed/fragment-1.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/ad23f466d0d3f16d435b3a18acec6fec/transformed/fragment-1.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/a4e0c0d41b079b0a9026babe56d7d4a5/transformed/dynamicanimation-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/a4e0c0d41b079b0a9026babe56d7d4a5/transformed/dynamicanimation-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.autofill:autofill:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/72da00a778fc3880ec0c23a77e0ec976/transformed/jetified-autofill-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.autofill:autofill:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/72da00a778fc3880ec0c23a77e0ec976/transformed/jetified-autofill-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.recyclerview:recyclerview:1.1.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/db2ff85b42f5fd47892455f9e8e97e7e/transformed/recyclerview-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.recyclerview:recyclerview:1.1.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/db2ff85b42f5fd47892455f9e8e97e7e/transformed/recyclerview-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/67e0aa8eff1bad199260472d21429bad/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/67e0aa8eff1bad199260472d21429bad/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/e1df10db5109861019cc6dd0c69849a8/transformed/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/e1df10db5109861019cc6dd0c69849a8/transformed/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/6eca72ecfc3884f860dea62c9db34ae6/transformed/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/6eca72ecfc3884f860dea62c9db34ae6/transformed/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/6c85e7929702c2c911616588ff6c46c9/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/6c85e7929702c2c911616588ff6c46c9/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/5def09c66e04c1f8052e4da2fa1bbf73/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/5def09c66e04c1f8052e4da2fa1bbf73/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.3.0-alpha03] /Users/oleksandryanyev/.gradle/caches/transforms-3/7a169d2a769e255487276c6059daa8a1/transformed/jetified-activity-1.3.0-alpha03/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.activity:activity:1.3.0-alpha03] /Users/oleksandryanyev/.gradle/caches/transforms-3/7a169d2a769e255487276c6059daa8a1/transformed/jetified-activity-1.3.0-alpha03/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core:1.5.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/e8b02a5d5ddf2e2667b72aec9f54d978/transformed/core-1.5.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core:1.5.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/e8b02a5d5ddf2e2667b72aec9f54d978/transformed/core-1.5.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/942b267afb3bc8c52c8957ff8c978245/transformed/lifecycle-runtime-2.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/942b267afb3bc8c52c8957ff8c978245/transformed/lifecycle-runtime-2.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/9a93f2f8362e4368b690b1083e875ac3/transformed/versionedparcelable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/9a93f2f8362e4368b690b1083e875ac3/transformed/versionedparcelable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/00fe327137305162d69c9fd093db77c0/transformed/jetified-lifecycle-viewmodel-savedstate-2.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/00fe327137305162d69c9fd093db77c0/transformed/jetified-lifecycle-viewmodel-savedstate-2.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/0a1d598605837609228d42a8414a6dd3/transformed/lifecycle-viewmodel-2.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/0a1d598605837609228d42a8414a6dd3/transformed/lifecycle-viewmodel-2.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.savedstate:savedstate:1.1.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/97f0168407ca6c830461b09cb1d2d351/transformed/jetified-savedstate-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.savedstate:savedstate:1.1.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/97f0168407ca6c830461b09cb1d2d351/transformed/jetified-savedstate-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/5b6bc2b061da9a52e6083f4f4736ed48/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/5b6bc2b061da9a52e6083f4f4736ed48/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/5c445902b14d32200ff8a40cd3cd59a0/transformed/lifecycle-livedata-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/5c445902b14d32200ff8a40cd3cd59a0/transformed/lifecycle-livedata-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/54869fa4f053b6238950270ba5e29cb7/transformed/lifecycle-livedata-core-2.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/54869fa4f053b6238950270ba5e29cb7/transformed/lifecycle-livedata-core-2.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.arch.core:core-runtime:2.1.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/e6e6c25bf713d98009b138b794e8ab90/transformed/core-runtime-2.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.arch.core:core-runtime:2.1.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/e6e6c25bf713d98009b138b794e8ab90/transformed/core-runtime-2.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.test.ext:junit-ktx:1.1.2] /Users/oleksandryanyev/.gradle/caches/transforms-3/61d21200df323176f298f5da28749437/transformed/jetified-junit-ktx-1.1.2/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.test.ext:junit-ktx:1.1.2] /Users/oleksandryanyev/.gradle/caches/transforms-3/61d21200df323176f298f5da28749437/transformed/jetified-junit-ktx-1.1.2/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.test.ext:junit:1.1.2] /Users/oleksandryanyev/.gradle/caches/transforms-3/5b63cb1a04c3b4f91a86ce17966eb9e2/transformed/jetified-junit-1.1.2/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.test.ext:junit:1.1.2] /Users/oleksandryanyev/.gradle/caches/transforms-3/5b63cb1a04c3b4f91a86ce17966eb9e2/transformed/jetified-junit-1.1.2/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.test:core:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/98b923838cf474d11e029ebe5ab37ebb/transformed/jetified-core-1.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.test:core:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/98b923838cf474d11e029ebe5ab37ebb/transformed/jetified-core-1.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/c020c97f102fc7c70623f4a40b0d6f1f/transformed/documentfile-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/c020c97f102fc7c70623f4a40b0d6f1f/transformed/documentfile-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/91110ed97080af9be934c6c32a6d82a3/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/91110ed97080af9be934c6c32a6d82a3/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/1bd74f8bb15c66239ac700b8af2127a2/transformed/print-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/1bd74f8bb15c66239ac700b8af2127a2/transformed/print-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.tracing:tracing:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/f5ff447c180d2fc8d409dadd4c26d40e/transformed/jetified-tracing-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.tracing:tracing:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/f5ff447c180d2fc8d409dadd4c26d40e/transformed/jetified-tracing-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.test:monitor:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/9237f354ffa2bc5f11f552d553021b18/transformed/monitor-1.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.test:monitor:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/9237f354ffa2bc5f11f552d553021b18/transformed/monitor-1.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/500f53bfb789abde71b9786d5ce63197/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/500f53bfb789abde71b9786d5ce63197/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/b0b476ce90843d524f3131aaf8bf0653/transformed/jetified-annotation-experimental-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.annotation:annotation-experimental:1.0.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/b0b476ce90843d524f3131aaf8bf0653/transformed/jetified-annotation-experimental-1.0.0/AndroidManifest.xml:20:5-22:41
+INJECTED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml
+INJECTED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml
+		ADDED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml
+		ADDED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/oleksandryanyev/.dev/bpmn/POCPicking/android/app/src/main/AndroidManifest.xml
+activity#androidx.compose.ui.tooling.preview.PreviewActivity
+ADDED from [androidx.compose.ui:ui-tooling:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/b674e6a5f44aa24a51b384831a0fbfb0/transformed/jetified-ui-tooling-1.0.0-beta01/AndroidManifest.xml:25:9-27:39
+	android:exported
+		ADDED from [androidx.compose.ui:ui-tooling:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/b674e6a5f44aa24a51b384831a0fbfb0/transformed/jetified-ui-tooling-1.0.0-beta01/AndroidManifest.xml:27:13-36
+	android:name
+		ADDED from [androidx.compose.ui:ui-tooling:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/b674e6a5f44aa24a51b384831a0fbfb0/transformed/jetified-ui-tooling-1.0.0-beta01/AndroidManifest.xml:26:13-79
+activity#androidx.compose.ui.tooling.data.TestActivity
+ADDED from [androidx.compose.ui:ui-tooling-data:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/13e49325eb6bfb47d1811323ac8ea7c4/transformed/jetified-ui-tooling-data-1.0.0-beta01/AndroidManifest.xml:25:9-82
+	android:name
+		ADDED from [androidx.compose.ui:ui-tooling-data:1.0.0-beta01] /Users/oleksandryanyev/.gradle/caches/transforms-3/13e49325eb6bfb47d1811323ac8ea7c4/transformed/jetified-ui-tooling-data-1.0.0-beta01/AndroidManifest.xml:25:19-79
+uses-permission#android.permission.REORDER_TASKS
+ADDED from [androidx.test:core:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/98b923838cf474d11e029ebe5ab37ebb/transformed/jetified-core-1.3.0/AndroidManifest.xml:24:5-72
+	android:name
+		ADDED from [androidx.test:core:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/98b923838cf474d11e029ebe5ab37ebb/transformed/jetified-core-1.3.0/AndroidManifest.xml:24:22-69
+activity#androidx.test.core.app.InstrumentationActivityInvoker$BootstrapActivity
+ADDED from [androidx.test:core:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/98b923838cf474d11e029ebe5ab37ebb/transformed/jetified-core-1.3.0/AndroidManifest.xml:27:9-33:20
+	android:theme
+		ADDED from [androidx.test:core:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/98b923838cf474d11e029ebe5ab37ebb/transformed/jetified-core-1.3.0/AndroidManifest.xml:29:13-49
+	android:name
+		ADDED from [androidx.test:core:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/98b923838cf474d11e029ebe5ab37ebb/transformed/jetified-core-1.3.0/AndroidManifest.xml:28:13-99
+intent-filter#action:name:android.intent.action.MAIN
+ADDED from [androidx.test:core:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/98b923838cf474d11e029ebe5ab37ebb/transformed/jetified-core-1.3.0/AndroidManifest.xml:30:13-32:29
+activity#androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity
+ADDED from [androidx.test:core:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/98b923838cf474d11e029ebe5ab37ebb/transformed/jetified-core-1.3.0/AndroidManifest.xml:34:9-40:20
+	android:theme
+		ADDED from [androidx.test:core:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/98b923838cf474d11e029ebe5ab37ebb/transformed/jetified-core-1.3.0/AndroidManifest.xml:36:13-49
+	android:name
+		ADDED from [androidx.test:core:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/98b923838cf474d11e029ebe5ab37ebb/transformed/jetified-core-1.3.0/AndroidManifest.xml:35:13-95
+activity#androidx.test.core.app.InstrumentationActivityInvoker$EmptyFloatingActivity
+ADDED from [androidx.test:core:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/98b923838cf474d11e029ebe5ab37ebb/transformed/jetified-core-1.3.0/AndroidManifest.xml:41:9-47:20
+	android:theme
+		ADDED from [androidx.test:core:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/98b923838cf474d11e029ebe5ab37ebb/transformed/jetified-core-1.3.0/AndroidManifest.xml:43:13-56
+	android:name
+		ADDED from [androidx.test:core:1.3.0] /Users/oleksandryanyev/.gradle/caches/transforms-3/98b923838cf474d11e029ebe5ab37ebb/transformed/jetified-core-1.3.0/AndroidManifest.xml:42:13-103
