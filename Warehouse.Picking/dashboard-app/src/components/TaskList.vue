@@ -1,26 +1,9 @@
 <template>
-  <div id="tasksList">
-    <h3>{{ header }}</h3>
-    <table>
-      <thead>
-      <tr>
-        <td>#</td>
-        <td>Guid</td>
-        <td>Status</td>
-      </tr>
-      </thead>
-      <tr v-for="(task, key) in tasks" :key="key">
-        <td>{{ key + 1 }}</td>
-        <td>{{ task.guid }}</td>
-        <td>{{ task.status }}</td>
-      </tr>
-      <tfoot>
-      <tr><td id="button-cell" colspan="3">
-        <button v-on:click="onClick">{{ label }}</button>
-      </td></tr>
-      </tfoot>
-    </table>
-  </div>
+  <b-container id="tasksList">
+    <h4>{{ header }}</h4>
+    <b-table bordered hover :fields="fields" :items="tasks" head-variant="dark"></b-table>
+    <b-button squared variant="dark" v-on:click="onClick">{{ label }}</b-button>
+  </b-container>
 </template>
 
 <script>
@@ -30,6 +13,11 @@ export default {
     return {
       header: 'Current tasks:',
       label: 'Create task',
+      fields: [
+        {key: 'index', label: '#'},
+        {key: 'guid',},
+        {key: 'status'},
+      ],
       tasks: []
     }
   },
@@ -43,7 +31,11 @@ export default {
   },
   sockets: {
     AvailableTasks(data) {
-      this.tasks = data;
+      let d = []
+      for (let i = 0; i < data.length; i++) {
+        d[i] = {index: i + 1, guid: data[i].guid, status: data[i].status}
+      }
+      this.tasks = d;
     }
   }
 }

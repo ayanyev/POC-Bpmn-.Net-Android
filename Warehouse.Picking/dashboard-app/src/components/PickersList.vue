@@ -1,22 +1,8 @@
 <template>
-  <div id="pickersList">
-    <h3>{{ header }}</h3>
-    <table>
-      <thead>
-      <tr>
-        <td>#</td>
-        <td>Name</td>
-        <td>Task</td>
-      </tr>
-      </thead>
-      <tr v-for="(picker, key) in pickers" :key="key">
-        <td>{{ key + 1 }}</td>
-        <td>{{ picker.name }}</td>
-        <td v-if="picker.task != null">{{ picker.task.guid }}</td>
-        <td v-else></td>
-      </tr>
-    </table>
-  </div>
+  <b-container id="pickersList">
+    <h4>{{ header }}</h4>
+    <b-table bordered hover :fields="fields" :items="pickers" head-variant="dark"></b-table>
+  </b-container>
 </template>
 
 <script>
@@ -25,6 +11,11 @@ export default {
   data() {
     return {
       header: 'Available pickers:',
+      fields: [
+        {key: 'index', label: '#'},
+        {key: 'name', label: 'Name'},
+        {key: 'guid', label: 'Task'},
+      ],
       pickers: []
     }
   },
@@ -33,7 +24,11 @@ export default {
   },
   sockets: {
     AvailablePickers(data) {
-      this.pickers = data;
+      let d = []
+      for (let i = 0; i < data.length; i++) {
+        d[i] = {index: i + 1, name: data[i].name, guid: data[i].task?.guid ?? 'n/a'}
+      }
+      this.pickers = d
     }
   }
 }
