@@ -28,12 +28,15 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
-table, td, th {
-  border: 1px solid black;
-  border-collapse: collapse;
+.table-div {
+  padding-left: 25px;
+  padding-right: 25px;
 }
-td, th, tfoot {
-  padding: 10px;
-  text-align: left;
-}
+/*.table-bordered, td, th {*/
+/*  border-collapse: collapse;*/
+/*}*/
+/*td, th, tfoot {*/
+/*  padding: 10px;*/
+/*  text-align: left;*/
+/*}*/
 </style>
