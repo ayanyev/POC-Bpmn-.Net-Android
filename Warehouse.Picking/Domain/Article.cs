@@ -4,20 +4,31 @@ namespace warehouse.picking.api.Domain
 {
     public class Article
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
         
         public string NoteId { get; set; }
+        
+        public string Name { get; set; }
 
-        public string Ean { get; set; }
+        public string Gtin { get; set; }
 
         public ArticleQuantity Quantity { get; set; }
 
-        public HashSet<ArticleBundle> Bundles { get; set; }
+        public ArticleBundle Bundle { get; set; }
 
         public void UpdateProcessedQuantity(int q)
         {
             Quantity.Processed = q;
         }
-        
+
+        public Article(int id, string noteId, string name, string gtin, ArticleQuantity quantity, ArticleBundle bundle)
+        {
+            Id = id;
+            NoteId = noteId;
+            Name = name;
+            Gtin = gtin;
+            Quantity = quantity;
+            Bundle = bundle;
+        }
     }
 }

@@ -6,8 +6,10 @@ namespace warehouse.picking.api.Domain
 
         public int Processed { get; set; }
 
-        public ArticleQuantity()
+        public ArticleQuantity(int expected)
         {
+            Expected = expected;
+            Processed = 0;
         }
     }
 }

@@ -28,11 +28,11 @@ namespace Warehouse.Picking.Api.Services
         {
             return _noteArticles[noteId]
                 .Where(a => a.Quantity.Expected > a.Quantity.Processed)
-                .Select(a => a.Ean)
+                .Select(a => a.Gtin)
                 .ToHashSet();
         }
 
-        public Article UpdateArticleQuantity(string noteId, string articleId, int quantity)
+        public Article UpdateArticleQuantity(string noteId, int articleId, int quantity)
         {
             var article = _noteArticles[noteId].Find(a => a.Id == articleId);
             article?.UpdateProcessedQuantity(quantity);

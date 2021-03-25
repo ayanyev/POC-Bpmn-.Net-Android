@@ -8,6 +8,7 @@ namespace Warehouse.Picking.Api.Repositories.Extensions
         {
             services.AddSingleton<IPickerRepository, PickersRepository>();
             services.AddSingleton<ITaskRepository, TasksRepository>();
+            services.AddSingleton<IArticleRepository, FakeArticleRepository>();
             return services;
         }
     }
