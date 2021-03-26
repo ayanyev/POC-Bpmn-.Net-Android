@@ -15,13 +15,24 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "POCPicking": {
+    "Picking": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,
       "applicationUrl": "http://localhost:5000",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "APP_NAME": "PickingApp"
+      }
+    },
+    "Intake": {
+      "commandName": "Project",
+      "dotnetRunMessages": "true",
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5000",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "APP_NAME": "IntakeApp"
       }
     }
   }

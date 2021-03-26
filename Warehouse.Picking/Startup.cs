@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -11,24 +12,31 @@ using Warehouse.Picking.Api.Services.Extensions;
 
 namespace Warehouse.Picking.Api
 {
-    public class Startup  
-    {  
-        public Startup(IConfiguration configuration)  
+    
+    public enum AppName { PickingApp, IntakeApp }
+    
+    public class Startup
+    {
+
+        private readonly AppName _appName;
+        
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)  
         {  
-            Configuration = configuration;  
+            Configuration = configuration;
+            _appName = (AppName) Enum.Parse(typeof(AppName), Configuration["APP_NAME"], true);
         }  
   
         public IConfiguration Configuration { get; }  
   
-        // This method gets called by the runtime. Use this method to add services to the container.  
-        public void ConfigureServices(IServiceCollection services)  
-        {  
+        // This method gets called by the runtime. Use this method to add services to the container. 
+        public void ConfigureServices(IServiceCollection services)
+        {
+            
             services.AddControllers();  
             services.AddSignalR();
-            services.AddRepositories();
-            services.AddServices();
-            services.AddProcessServices();
-            // services.AddSingleton<AssignTaskHandler>();
+            services.AddRepositories(_appName);
+            services.AddServices(_appName);
+            services.AddProcessServices(_appName);
             // connect vue app - middleware  
             services.AddSpaStaticFiles(options => 
                 options.RootPath = "dashboard-app"
@@ -59,8 +67,15 @@ namespace Warehouse.Picking.Api
             app.UseEndpoints(endpoints =>  
             {  
                 endpoints.MapControllers();
-                endpoints.MapHub<DashboardHub>("/dashboardhub");
-                endpoints.MapHub<PickersHub>("/pickershub");
+                switch (_appName)
+                {
+                    case AppName.PickingApp:
+                        endpoints.MapHub<DashboardHub>("/dashboardhub");
+                        endpoints.MapHub<PickersHub>("/pickershub");
+                        break;
+                    case AppName.IntakeApp:
+                        break;
+                }
             });  
   
             // use middleware and launch server for Vue  
