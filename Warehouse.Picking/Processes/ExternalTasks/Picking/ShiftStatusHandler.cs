@@ -5,7 +5,7 @@ using warehouse.picking.api.Domain;
 using Warehouse.Picking.Api.Processes.ExternalTasks.Payloads;
 using Warehouse.Picking.Api.Repositories;
 
-namespace Warehouse.Picking.Api.Processes.ExternalTasks
+namespace Warehouse.Picking.Api.Processes.ExternalTasks.Picking
 {
     [ExternalTaskHandler(topic: "Picker.Shift.Status")]
     public class ShiftStatusHandler : IExternalTaskHandler<ShiftStatusPayload, Picker>

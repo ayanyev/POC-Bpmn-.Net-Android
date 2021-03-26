@@ -14,48 +14,6 @@ Output:
       <bpmn:outgoing>Flow_0nv6e22</bpmn:outgoing>
       <bpmn:outgoing>Flow_0hxsukl</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:userTask id="Activity_06riz3e" name="determine iteration  quantity" camunda:formKey="Form Key">
-      <bpmn:documentation>Input:
-- expected article quantity
-Output:
-{
-    "quantity": xxx;
-    "forced_valid": false;
-}</bpmn:documentation>
-      <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="quantity" label="" type="long" defaultValue="0" />
-          <camunda:formField id="forced_valid" label="" type="boolean" defaultValue="false" />
-        </camunda:formData>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1d6jmuy</bpmn:incoming>
-      <bpmn:outgoing>Flow_0d58h5u</bpmn:outgoing>
-      <bpmn:dataOutputAssociation id="DataOutputAssociation_1hzdauj">
-        <bpmn:extensionElements>
-          <camunda:properties>
-            <camunda:property name="dataSource" value="{&#10;quantity: token.current.quantity&#10;}" />
-          </camunda:properties>
-        </bpmn:extensionElements>
-        <bpmn:targetRef>IterationInfo</bpmn:targetRef>
-      </bpmn:dataOutputAssociation>
-    </bpmn:userTask>
-    <bpmn:scriptTask id="Activity_1qrq2et" name="validate aggregated quantity">
-      <bpmn:documentation>Input:
-{
-    "quantity": int;
-    "forced_valid": boolean; // default false
-}
-Output:
-{
-    "valid": boolean; // default false
-}</bpmn:documentation>
-      <bpmn:incoming>Flow_0d58h5u</bpmn:incoming>
-      <bpmn:incoming>Flow_0mvqisu</bpmn:incoming>
-      <bpmn:outgoing>Flow_0lnum3g</bpmn:outgoing>
-      <bpmn:script>var ex =  dataObjects.ArticleInfo.quantity.expected
-var ag =  dataObjects.IterationInfo.quantity + dataObjects.ArticleInfo.quantity.processed
-return { "valid": ag &lt;= ex };</bpmn:script>
-    </bpmn:scriptTask>
     <bpmn:userTask id="Activity_1x2ih5h" name="scan    stockyard location" camunda:formKey="Form Key">
       <bpmn:documentation>Input:
 - stockyard location (barcode?)
@@ -63,7 +21,7 @@ Output:
 - no</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="barcode" label="Location barcode" type="string" defaultValue="" />
+          <camunda:formField id="barcode" label="Location barcode" type="string" defaultValue="123.456.7.8" />
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0118jh7</bpmn:incoming>
@@ -96,8 +54,6 @@ Output:
         <bpmn:targetRef>IterationInfo</bpmn:targetRef>
       </bpmn:dataOutputAssociation>
     </bpmn:userTask>
-    <bpmn:dataObjectReference id="IterationInfo" name="Iteration info" dataObjectRef="DataObject_0vh8sj2" />
-    <bpmn:dataObject id="DataObject_0vh8sj2" />
     <bpmn:serviceTask id="TaskGetLocation" name="determine stockyard location" camunda:type="external" camunda:topic="Intake.Article.Stockyard">
       <bpmn:documentation>Input:
 - article id
@@ -105,7 +61,7 @@ Output:
 - stockyard location (barcode?)</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:properties>
-          <camunda:property name="payload" value="{&#10;articleId: dataObjects.ArticleInfo.id&#10;quantity: dataObjects.IterationInfo.quantity&#10;}" />
+          <camunda:property name="payload" value="{&#10;noteId: dataObjects.NoteInfo.noteId,&#10;articleId: dataObjects.ArticleInfo.id,&#10;quantity: dataObjects.IterationInfo.quantity&#10;}" />
         </camunda:properties>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0nv6e22</bpmn:incoming>
@@ -125,7 +81,7 @@ Output:
 - updated article object</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:properties>
-          <camunda:property name="payload" value="{&#10;articleId: dataObject.ArticleInfo.id&#10;quantity: dataObject.IterationInfo.quantity&#10;}" />
+          <camunda:property name="payload" value="{&#10;noteId: dataObjects.NoteInfo.noteId,&#10;articleId: dataObjects.ArticleInfo.id,&#10;quantity: dataObjects.IterationInfo.quantity&#10;}" />
         </camunda:properties>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_19toed4</bpmn:incoming>
@@ -133,16 +89,16 @@ Output:
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1d79tkg" name="no" sourceRef="Gateway_0asxaek" targetRef="Activity_1x2ih5h" />
     <bpmn:sequenceFlow id="Flow_19toed4" name="yes" sourceRef="Gateway_0asxaek" targetRef="Activity_1hwv4ke">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">token.current.barcode == token.history.taskGetLocation.barcode</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">token.current.barcode == token.history.TaskGetLocation.barcode</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0fgl0vs" name="no" sourceRef="Gateway_00n2q11" targetRef="Event_0dlm7ha" />
     <bpmn:sequenceFlow id="Flow_1sze9gy" name="yes" sourceRef="Gateway_00n2q11" targetRef="Activity_1bzblg0">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">dataObjects.barcodes.codes.length &gt; 0</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">dataObjects.Barcodes.length &gt; 0</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0nv6e22" name="yes" sourceRef="Gateway_1saly70" targetRef="TaskGetLocation">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">token.current.valid</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0imho6z" sourceRef="Activity_0ekix2r" targetRef="Gateway_11ttssv" />
+    <bpmn:sequenceFlow id="Flow_0imho6z" sourceRef="Activity_0ekix2r" targetRef="Activity_0f7n2at" />
     <bpmn:sequenceFlow id="Flow_0d58h5u" sourceRef="Activity_06riz3e" targetRef="Activity_1qrq2et" />
     <bpmn:sequenceFlow id="Flow_0lnum3g" sourceRef="Activity_1qrq2et" targetRef="Gateway_1saly70" />
     <bpmn:sequenceFlow id="Flow_1v2rmxc" sourceRef="Activity_1x2ih5h" targetRef="Gateway_0asxaek" />
@@ -152,13 +108,65 @@ Output:
     <bpmn:sequenceFlow id="Flow_0118jh7" sourceRef="TaskGetLocation" targetRef="Activity_1x2ih5h" />
     <bpmn:sequenceFlow id="Flow_0pz98iz" sourceRef="Activity_1bzblg0" targetRef="Gateway_0j0867g" />
     <bpmn:sequenceFlow id="Flow_0o9v2wx" name="yes" sourceRef="Gateway_0j0867g" targetRef="Activity_0ekix2r">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">dataObjects.barcodes.codes.includes(token.current.barcode)</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">dataObjects.Barcodes.includes(token.current.barcode)</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0qse2lc" name="no" sourceRef="Gateway_0j0867g" targetRef="Activity_1bzblg0" />
     <bpmn:sequenceFlow id="Flow_0zyxwqu" sourceRef="Activity_1c5h8vu" targetRef="Gateway_00n2q11" />
     <bpmn:sequenceFlow id="Flow_0mlaq89" sourceRef="Activity_1une9zy" targetRef="Activity_1c5h8vu" />
     <bpmn:sequenceFlow id="Flow_1cxsag1" sourceRef="Activity_00pr2r6" targetRef="Activity_1une9zy" />
     <bpmn:sequenceFlow id="Flow_117r828" sourceRef="StartEvent_1mox3jl" targetRef="Activity_00pr2r6" />
+    <bpmn:sequenceFlow id="Flow_1d6jmuy" name="yes" sourceRef="Gateway_11ttssv" targetRef="Activity_06riz3e" />
+    <bpmn:sequenceFlow id="Flow_0sh45hg" name="no " sourceRef="Gateway_11ttssv" targetRef="Activity_1bzblg0">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">JSON.stringify(token.current ) === '{}'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:scriptTask id="Activity_1qrq2et" name="validate aggregated quantity">
+      <bpmn:documentation>Input:
+{
+    "quantity": int;
+    "forced_valid": boolean; // default false
+}
+Output:
+{
+    "valid": boolean; // default false
+}</bpmn:documentation>
+      <bpmn:incoming>Flow_0d58h5u</bpmn:incoming>
+      <bpmn:incoming>Flow_0mvqisu</bpmn:incoming>
+      <bpmn:outgoing>Flow_0lnum3g</bpmn:outgoing>
+      <bpmn:script>var ex =  dataObjects.ArticleInfo.quantity.expected
+var it =  token.current.quantity
+var ag =  it + dataObjects.ArticleInfo.quantity.processed
+return { "valid": token.current.forced_valid | (it &gt; 0 &amp;&amp; ag &lt;= ex) };</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:userTask id="Activity_06riz3e" name="determine iteration  quantity" camunda:formKey="Form Key">
+      <bpmn:documentation>Input:
+- expected article quantity
+Output:
+{
+    "quantity": xxx;
+    "forced_valid": false;
+}</bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="quantity" label="" type="long" defaultValue="20" />
+          <camunda:formField id="forced_valid" label="" type="boolean" defaultValue="false" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1d6jmuy</bpmn:incoming>
+      <bpmn:outgoing>Flow_0d58h5u</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_1hzdauj">
+        <bpmn:extensionElements>
+          <camunda:properties>
+            <camunda:property name="dataSource" value="{&#10;quantity: parseInt(token.current.quantity)&#10;}" />
+          </camunda:properties>
+        </bpmn:extensionElements>
+        <bpmn:targetRef>IterationInfo</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_11ttssv" name="article selected?" default="Flow_1d6jmuy">
+      <bpmn:incoming>Flow_1kdcp3l</bpmn:incoming>
+      <bpmn:outgoing>Flow_1d6jmuy</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0sh45hg</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
     <bpmn:startEvent id="StartEvent_1mox3jl" name="Start Event">
       <bpmn:outgoing>Flow_117r828</bpmn:outgoing>
     </bpmn:startEvent>
@@ -169,13 +177,16 @@ Output:
 - success (true/false)</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="noteId" label="Delivery note id" type="string" defaultValue="" />
+          <camunda:formField id="noteId" label="Delivery note id" type="string" defaultValue="1" />
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_117r828</bpmn:incoming>
       <bpmn:outgoing>Flow_1cxsag1</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_003hykd">
+        <bpmn:targetRef>NoteInfo</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
     </bpmn:userTask>
-    <bpmn:serviceTask id="Activity_1une9zy" name="prefetch all articles" camunda:type="external" camunda:topic="Intake.Articles.FetchAll">
+    <bpmn:serviceTask id="Activity_1une9zy" name="prefetch all articles" camunda:type="external" camunda:topic="Intake.Note.FetchArticles">
       <bpmn:documentation>Input:
 {
     noteId: string
@@ -187,7 +198,7 @@ Output:
       <bpmn:incoming>Flow_1cxsag1</bpmn:incoming>
       <bpmn:outgoing>Flow_0mlaq89</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_1c5h8vu" name="get unfinished articles barcodes" camunda:type="external" camunda:topic="Intake.Articles.Unfinished.Barcodes">
+    <bpmn:serviceTask id="Activity_1c5h8vu" name="get unfinished articles barcodes" camunda:type="external" camunda:topic="Intake.Note.Articles.Unfinished.Barcodes">
       <bpmn:documentation>Input:
 {
     noteId: string
@@ -196,6 +207,11 @@ Output:
 {
     codes: string[]
 }</bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="payload" value="{&#10;noteId: dataObjects.NoteInfo.noteId&#10;}" />
+        </camunda:properties>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0mlaq89</bpmn:incoming>
       <bpmn:incoming>Flow_1gxeppg</bpmn:incoming>
       <bpmn:outgoing>Flow_0zyxwqu</bpmn:outgoing>
@@ -211,13 +227,16 @@ Output:
     <bpmn:userTask id="Activity_1bzblg0" name="scan article" camunda:formKey="Form Key">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="barcode" label="Barcode" type="string" defaultValue="" />
+          <camunda:formField id="barcode" label="Barcode" type="string" defaultValue="1234567" />
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0qse2lc</bpmn:incoming>
       <bpmn:incoming>Flow_1sze9gy</bpmn:incoming>
       <bpmn:incoming>Flow_0sh45hg</bpmn:incoming>
       <bpmn:outgoing>Flow_0pz98iz</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_0anxe1m">
+        <bpmn:targetRef>Barcode</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
     </bpmn:userTask>
     <bpmn:exclusiveGateway id="Gateway_0j0867g" name="is in the list?" default="Flow_0qse2lc">
       <bpmn:documentation>Checks if scanned article in the list of note's ids</bpmn:documentation>
@@ -225,40 +244,7 @@ Output:
       <bpmn:outgoing>Flow_0qse2lc</bpmn:outgoing>
       <bpmn:outgoing>Flow_0o9v2wx</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:userTask id="Activity_0ekix2r" name="determine article by bundle" camunda:formKey="Form Key">
-      <bpmn:documentation>Manually selects correct article from the list of bundles for the given barcode
-Input:
-- barcode
-Output:
-- article info</bpmn:documentation>
-      <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="same_bundle" label="Is expected bundle?" type="boolean" defaultValue="" />
-        </camunda:formData>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0o9v2wx</bpmn:incoming>
-      <bpmn:outgoing>Flow_0imho6z</bpmn:outgoing>
-      <bpmn:dataOutputAssociation id="DataOutputAssociation_0goxu7x">
-        <bpmn:targetRef>ArticleInfo</bpmn:targetRef>
-      </bpmn:dataOutputAssociation>
-    </bpmn:userTask>
-    <bpmn:exclusiveGateway id="Gateway_11ttssv" name="article selected?" default="Flow_1d6jmuy">
-      <bpmn:incoming>Flow_0imho6z</bpmn:incoming>
-      <bpmn:outgoing>Flow_1d6jmuy</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0sh45hg</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_1d6jmuy" name="yes" sourceRef="Gateway_11ttssv" targetRef="Activity_06riz3e" />
-    <bpmn:sequenceFlow id="Flow_0sh45hg" name="no " sourceRef="Gateway_11ttssv" targetRef="Activity_1bzblg0">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">JSON.stringify(token.current ) === '{}'</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:dataObjectReference id="ArticleInfo" name="Article info" dataObjectRef="DataObject_0d452k8">
-      <bpmn:documentation>1. list of articles for given barcode
-2. Article for given barcode and bundle</bpmn:documentation>
-    </bpmn:dataObjectReference>
-    <bpmn:dataObject id="DataObject_0d452k8" />
-    <bpmn:endEvent id="Event_0dlm7ha" name="End event">
-      <bpmn:incoming>Flow_0fgl0vs</bpmn:incoming>
-    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1kdcp3l" sourceRef="Activity_0f7n2at" targetRef="Gateway_11ttssv" />
     <bpmn:dataObjectReference id="Barcodes" name="Article barcodes" dataObjectRef="DataObject_0msduab">
       <bpmn:documentation>contains list of article ids for the given delivery note
 {
@@ -266,63 +252,107 @@ codes: String[]
 }</bpmn:documentation>
     </bpmn:dataObjectReference>
     <bpmn:dataObject id="DataObject_0msduab" />
+    <bpmn:endEvent id="Event_0dlm7ha" name="End event">
+      <bpmn:incoming>Flow_0fgl0vs</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:dataObjectReference id="Barcode" name="Current barcode" dataObjectRef="DataObject_1bc0uwg" />
+    <bpmn:dataObject id="DataObject_1bc0uwg" />
+    <bpmn:dataObjectReference id="NoteInfo" name="Note info" dataObjectRef="DataObject_0erf8oa" />
+    <bpmn:dataObject id="DataObject_0erf8oa" />
+    <bpmn:dataObjectReference id="IterationInfo" name="Iteration info" dataObjectRef="DataObject_0vh8sj2" />
+    <bpmn:dataObject id="DataObject_0vh8sj2" />
+    <bpmn:serviceTask id="Activity_0f7n2at" name="Match article by gtin and bundle" camunda:type="external" camunda:topic="Intake.Article.Match">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="payload" value="{&#10;noteId: dataObjects.NoteInfo.noteId,&#10;gtin: dataObjects.Barcode.barcode,&#10;bundleId: token.current.bundleId&#10;}" />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0imho6z</bpmn:incoming>
+      <bpmn:outgoing>Flow_1kdcp3l</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_0e8xwt4">
+        <bpmn:targetRef>ArticleInfo</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:dataObjectReference id="ArticleInfo" name="Article info" dataObjectRef="DataObject_0d452k8">
+      <bpmn:documentation>1. list of articles for given barcode
+2. Article for given barcode and bundle</bpmn:documentation>
+    </bpmn:dataObjectReference>
+    <bpmn:dataObject id="DataObject_0d452k8" />
+    <bpmn:userTask id="Activity_0ekix2r" name="determine bundle" camunda:formKey="Form Key">
+      <bpmn:documentation>Manually selects correct article from the list of bundles for the given barcode
+Input:
+- barcode
+Output:
+- article info</bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="bundleId" label="Bundle Id" type="string" defaultValue="1" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0o9v2wx</bpmn:incoming>
+      <bpmn:outgoing>Flow_0imho6z</bpmn:outgoing>
+    </bpmn:userTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1cidyxu">
       <bpmndi:BPMNShape id="Participant_0px403d_di" bpmnElement="Participant_0px403d" isHorizontal="true">
-        <dc:Bounds x="-350" y="-210" width="2260" height="580" />
+        <dc:Bounds x="-480" y="-210" width="2390" height="580" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1kdcp3l_di" bpmnElement="Flow_1kdcp3l">
+        <di:waypoint x="760" y="127" />
+        <di:waypoint x="815" y="127" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0sh45hg_di" bpmnElement="Flow_0sh45hg">
-        <di:waypoint x="790" y="152" />
-        <di:waypoint x="790" y="240" />
-        <di:waypoint x="420" y="240" />
-        <di:waypoint x="420" y="167" />
+        <di:waypoint x="840" y="152" />
+        <di:waypoint x="840" y="240" />
+        <di:waypoint x="320" y="240" />
+        <di:waypoint x="320" y="167" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="803" y="183" width="13" height="14" />
+          <dc:Bounds x="853" y="183" width="13" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1d6jmuy_di" bpmnElement="Flow_1d6jmuy">
-        <di:waypoint x="815" y="127" />
-        <di:waypoint x="870" y="127" />
+        <di:waypoint x="865" y="127" />
+        <di:waypoint x="910" y="127" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="834" y="109" width="18" height="14" />
+          <dc:Bounds x="879" y="109" width="18" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_117r828_di" bpmnElement="Flow_117r828">
-        <di:waypoint x="-242" y="127" />
-        <di:waypoint x="-190" y="127" />
+        <di:waypoint x="-352" y="127" />
+        <di:waypoint x="-310" y="127" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1cxsag1_di" bpmnElement="Flow_1cxsag1">
-        <di:waypoint x="-90" y="127" />
-        <di:waypoint x="-40" y="127" />
+        <di:waypoint x="-210" y="127" />
+        <di:waypoint x="-150" y="127" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0mlaq89_di" bpmnElement="Flow_0mlaq89">
-        <di:waypoint x="60" y="127" />
-        <di:waypoint x="110" y="127" />
+        <di:waypoint x="-50" y="127" />
+        <di:waypoint x="20" y="127" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0zyxwqu_di" bpmnElement="Flow_0zyxwqu">
-        <di:waypoint x="210" y="127" />
-        <di:waypoint x="265" y="127" />
+        <di:waypoint x="120" y="127" />
+        <di:waypoint x="165" y="127" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0qse2lc_di" bpmnElement="Flow_0qse2lc">
-        <di:waypoint x="540" y="102" />
-        <di:waypoint x="540" y="20" />
-        <di:waypoint x="420" y="20" />
-        <di:waypoint x="420" y="87" />
+        <di:waypoint x="430" y="102" />
+        <di:waypoint x="430" y="20" />
+        <di:waypoint x="340" y="20" />
+        <di:waypoint x="340" y="87" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="553" y="41" width="13" height="14" />
+          <dc:Bounds x="443" y="41" width="13" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0o9v2wx_di" bpmnElement="Flow_0o9v2wx">
-        <di:waypoint x="565" y="127" />
-        <di:waypoint x="620" y="127" />
+        <di:waypoint x="455" y="127" />
+        <di:waypoint x="504" y="127" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="584" y="109" width="18" height="14" />
+          <dc:Bounds x="473" y="109" width="18" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0pz98iz_di" bpmnElement="Flow_0pz98iz">
-        <di:waypoint x="470" y="127" />
-        <di:waypoint x="515" y="127" />
+        <di:waypoint x="370" y="127" />
+        <di:waypoint x="405" y="127" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0118jh7_di" bpmnElement="Flow_0118jh7">
         <di:waypoint x="1380" y="127" />
@@ -332,13 +362,13 @@ codes: String[]
         <di:waypoint x="1790" y="127" />
         <di:waypoint x="1850" y="127" />
         <di:waypoint x="1850" y="300" />
-        <di:waypoint x="160" y="300" />
-        <di:waypoint x="160" y="170" />
+        <di:waypoint x="70" y="300" />
+        <di:waypoint x="70" y="167" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0mvqisu_di" bpmnElement="Flow_0mvqisu">
         <di:waypoint x="1150" y="-40" />
-        <di:waypoint x="1070" y="-40" />
-        <di:waypoint x="1070" y="87" />
+        <di:waypoint x="1090" y="-40" />
+        <di:waypoint x="1090" y="87" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0hxsukl_di" bpmnElement="Flow_0hxsukl">
         <di:waypoint x="1200" y="102" />
@@ -352,16 +382,16 @@ codes: String[]
         <di:waypoint x="1585" y="127" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0lnum3g_di" bpmnElement="Flow_0lnum3g">
-        <di:waypoint x="1120" y="127" />
+        <di:waypoint x="1140" y="127" />
         <di:waypoint x="1175" y="127" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0d58h5u_di" bpmnElement="Flow_0d58h5u">
-        <di:waypoint x="970" y="127" />
-        <di:waypoint x="1020" y="127" />
+        <di:waypoint x="1010" y="127" />
+        <di:waypoint x="1040" y="127" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0imho6z_di" bpmnElement="Flow_0imho6z">
-        <di:waypoint x="720" y="127" />
-        <di:waypoint x="765" y="127" />
+        <di:waypoint x="604" y="127" />
+        <di:waypoint x="660" y="127" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0nv6e22_di" bpmnElement="Flow_0nv6e22">
         <di:waypoint x="1225" y="127" />
@@ -371,17 +401,17 @@ codes: String[]
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1sze9gy_di" bpmnElement="Flow_1sze9gy">
-        <di:waypoint x="315" y="127" />
-        <di:waypoint x="370" y="127" />
+        <di:waypoint x="215" y="127" />
+        <di:waypoint x="270" y="127" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="334" y="109" width="18" height="14" />
+          <dc:Bounds x="234" y="109" width="18" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0fgl0vs_di" bpmnElement="Flow_0fgl0vs">
-        <di:waypoint x="290" y="102" />
-        <di:waypoint x="290" y="-42" />
+        <di:waypoint x="190" y="102" />
+        <di:waypoint x="190" y="-42" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="299" y="23" width="13" height="14" />
+          <dc:Bounds x="199" y="53" width="13" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_19toed4_di" bpmnElement="Flow_19toed4">
@@ -406,23 +436,11 @@ codes: String[]
           <dc:Bounds x="1186" y="162" width="29" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1inpb8d_di" bpmnElement="Activity_06riz3e">
-        <dc:Bounds x="870" y="87" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_00rld3r_di" bpmnElement="Activity_1qrq2et">
-        <dc:Bounds x="1020" y="87" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1357s5b_di" bpmnElement="Activity_1x2ih5h">
         <dc:Bounds x="1439" y="87" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_10uzocw_di" bpmnElement="Activity_0ah7hdj">
         <dc:Bounds x="1150" y="-100" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="DataObjectReference_04wxunv_di" bpmnElement="IterationInfo">
-        <dc:Bounds x="902" y="-85" width="36" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="887" y="-110" width="61" height="14" />
-        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0h13u47_di" bpmnElement="TaskGetLocation">
         <dc:Bounds x="1280" y="87" width="100" height="80" />
@@ -433,78 +451,113 @@ codes: String[]
       <bpmndi:BPMNShape id="Activity_17va82k_di" bpmnElement="Activity_1hwv4ke">
         <dc:Bounds x="1690" y="87" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="StartEvent_1mox3jl_di" bpmnElement="StartEvent_1mox3jl">
-        <dc:Bounds x="-278" y="109" width="36" height="36" />
+      <bpmndi:BPMNShape id="Activity_00rld3r_di" bpmnElement="Activity_1qrq2et">
+        <dc:Bounds x="1040" y="87" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1inpb8d_di" bpmnElement="Activity_06riz3e">
+        <dc:Bounds x="910" y="87" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_11ttssv_di" bpmnElement="Gateway_11ttssv" isMarkerVisible="true">
+        <dc:Bounds x="815" y="102" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="-287" y="153" width="55" height="14" />
+          <dc:Bounds x="801" y="72" width="80" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_1mox3jl_di" bpmnElement="StartEvent_1mox3jl">
+        <dc:Bounds x="-388" y="109" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-397" y="153" width="55" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1iq1aqg_di" bpmnElement="Activity_00pr2r6">
-        <dc:Bounds x="-190" y="87" width="100" height="80" />
+        <dc:Bounds x="-310" y="87" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0f5cn80_di" bpmnElement="Activity_1une9zy">
-        <dc:Bounds x="-40" y="87" width="100" height="80" />
+        <dc:Bounds x="-150" y="87" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1n2yr0c_di" bpmnElement="Activity_1c5h8vu">
-        <dc:Bounds x="110" y="87" width="100" height="80" />
+        <dc:Bounds x="20" y="87" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_00n2q11_di" bpmnElement="Gateway_00n2q11" isMarkerVisible="true">
-        <dc:Bounds x="265" y="102" width="50" height="50" />
+        <dc:Bounds x="165" y="102" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="248" y="159" width="87" height="14" />
+          <dc:Bounds x="148" y="159" width="87" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1251851_di" bpmnElement="Activity_1bzblg0">
-        <dc:Bounds x="370" y="87" width="100" height="80" />
+        <dc:Bounds x="270" y="87" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0j0867g_di" bpmnElement="Gateway_0j0867g" isMarkerVisible="true">
-        <dc:Bounds x="515" y="102" width="50" height="50" />
+        <dc:Bounds x="405" y="102" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="510" y="159" width="61" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1rt2tzb_di" bpmnElement="Activity_0ekix2r">
-        <dc:Bounds x="620" y="87" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_11ttssv_di" bpmnElement="Gateway_11ttssv" isMarkerVisible="true">
-        <dc:Bounds x="765" y="102" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="751" y="72" width="80" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="DataObjectReference_1yoku0m_di" bpmnElement="ArticleInfo">
-        <dc:Bounds x="652" y="-85" width="36" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="642" y="-109" width="52" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0dlm7ha_di" bpmnElement="Event_0dlm7ha">
-        <dc:Bounds x="272" y="-78" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="265" y="-102" width="50" height="14" />
+          <dc:Bounds x="400" y="159" width="61" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="DataObjectReference_1nopgst_di" bpmnElement="Barcodes">
-        <dc:Bounds x="140" y="-85" width="36" height="50" />
+        <dc:Bounds x="52" y="-85" width="36" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="119" y="-107" width="79" height="14" />
+          <dc:Bounds x="31" y="-107" width="79" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="DataOutputAssociation_1hzdauj_di" bpmnElement="DataOutputAssociation_1hzdauj">
-        <di:waypoint x="920" y="87" />
-        <di:waypoint x="920" y="-35" />
-      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0dlm7ha_di" bpmnElement="Event_0dlm7ha">
+        <dc:Bounds x="172" y="-78" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="165" y="-102" width="50" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_0dwtkzw_di" bpmnElement="Barcode">
+        <dc:Bounds x="282" y="-85" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="260" y="-106" width="80" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_1oq054n_di" bpmnElement="NoteInfo">
+        <dc:Bounds x="-278" y="-85" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-282" y="-115" width="45" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_04wxunv_di" bpmnElement="IterationInfo">
+        <dc:Bounds x="942" y="-85" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="927" y="-110" width="61" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_16d3087_di" bpmnElement="Activity_0f7n2at">
+        <dc:Bounds x="660" y="87" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_1yoku0m_di" bpmnElement="ArticleInfo">
+        <dc:Bounds x="692" y="-85" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="682" y="-109" width="52" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1rt2tzb_di" bpmnElement="Activity_0ekix2r">
+        <dc:Bounds x="504" y="87" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="DataOutputAssociation_0ac0cb5_di" bpmnElement="DataOutputAssociation_0ac0cb5">
         <di:waypoint x="1150" y="-60" />
-        <di:waypoint x="938" y="-60" />
+        <di:waypoint x="978" y="-60" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_1hzdauj_di" bpmnElement="DataOutputAssociation_1hzdauj">
+        <di:waypoint x="960" y="87" />
+        <di:waypoint x="960" y="-35" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_003hykd_di" bpmnElement="DataOutputAssociation_003hykd">
+        <di:waypoint x="-260" y="87" />
+        <di:waypoint x="-258" y="-35" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="DataOutputAssociation_0hxhrid_di" bpmnElement="DataOutputAssociation_0hxhrid">
-        <di:waypoint x="160" y="87" />
-        <di:waypoint x="160" y="-35" />
+        <di:waypoint x="70" y="87" />
+        <di:waypoint x="72" y="-35" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="DataOutputAssociation_0goxu7x_di" bpmnElement="DataOutputAssociation_0goxu7x">
-        <di:waypoint x="670" y="87" />
-        <di:waypoint x="670" y="-35" />
+      <bpmndi:BPMNEdge id="DataOutputAssociation_0anxe1m_di" bpmnElement="DataOutputAssociation_0anxe1m">
+        <di:waypoint x="302" y="87" />
+        <di:waypoint x="302" y="-35" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_0e8xwt4_di" bpmnElement="DataOutputAssociation_0e8xwt4">
+        <di:waypoint x="710" y="87" />
+        <di:waypoint x="710" y="-35" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

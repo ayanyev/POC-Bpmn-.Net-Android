@@ -4,7 +4,7 @@ using AtlasEngine.ExternalTasks;
 using warehouse.picking.api.Domain;
 using Warehouse.Picking.Api.Repositories;
 
-namespace Warehouse.Picking.Api.Processes.ExternalTasks
+namespace Warehouse.Picking.Api.Processes.ExternalTasks.Picking
 {
     [ExternalTaskHandler(topic: "Task.Dequeue")]
     public class DequeueTaskHandler : IExternalTaskHandler<Picker, PickerTask>

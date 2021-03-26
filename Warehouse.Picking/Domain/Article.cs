@@ -18,7 +18,12 @@ namespace warehouse.picking.api.Domain
 
         public void UpdateProcessedQuantity(int q)
         {
-            Quantity.Processed = q;
+            Quantity.Processed += q;
+        }
+
+        public bool IsUnfinished()
+        {
+            return Quantity.Processed < Quantity.Expected;
         }
 
         public Article(int id, string noteId, string name, string gtin, ArticleQuantity quantity, ArticleBundle bundle)

@@ -7,6 +7,7 @@ using VueCliMiddleware;
 using warehouse.picking.api.Hubs;
 using warehouse.picking.api.Processes.Extensions;
 using Warehouse.Picking.Api.Repositories.Extensions;
+using Warehouse.Picking.Api.Services.Extensions;
 
 namespace Warehouse.Picking.Api
 {
@@ -25,6 +26,7 @@ namespace Warehouse.Picking.Api
             services.AddControllers();  
             services.AddSignalR();
             services.AddRepositories();
+            services.AddServices();
             services.AddProcessServices();
             // services.AddSingleton<AssignTaskHandler>();
             // connect vue app - middleware  
