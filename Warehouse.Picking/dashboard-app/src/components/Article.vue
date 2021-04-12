@@ -1,25 +1,25 @@
 <template>
   <b-row>
     <b-col>
-      <b-img src="./assets/icon-stock.svg"/>
+      <b-img :src="require('../assets/icon-stock.svg')"/>
     </b-col>
     <b-col>
-      <b-row>{{ name }}</b-row>
-      <b-row>{{ quantity }}</b-row>
-      <b-row>{{ bundles }}</b-row>
+      <b-row>Name: {{ article.name }}</b-row>
+      <b-row>Quantity: {{ article.quantity }}</b-row>
+      <b-row>Bundle: {{ article.bundle }}</b-row>
     </b-col>
     <b-col>
       <svg class="barcode"
-           jsbarcode-format="ean"
-           :jsbarcode-value="gtin">
-      </svg>
+           jsbarcode-textmargin="0"
+           jsbarcode-height="64"
+           :jsbarcode-value="article.gtin"/>
     </b-col>
   </b-row>
 </template>
 <script>
 export default {
   name: "Article",
-  props: ['pic', 'name', 'bundles', 'quantity', 'gtin']
+  props: ['article']
 }
 </script>
 

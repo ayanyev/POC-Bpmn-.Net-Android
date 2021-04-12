@@ -1,12 +1,18 @@
 <template>
   <b-container id="pickersList">
-    <b-table striped hover :items="articles"></b-table>
+    <div v-for="article in articles" :key="article.id">
+      <Article v-bind:article="article"/>
+    </div>
   </b-container>
 </template>
 
 <script>
+import Article from "@/components/Article";
 export default {
   name: "ArticlesList",
+  components: {
+    Article
+  },
   data() {
     return {
       articles: []
@@ -14,23 +20,27 @@ export default {
   },
   methods: {
     addBarcodeScript() {
-      let yourScript = document.createElement('script')
-      yourScript.setAttribute('src', "https://cdn.jsdelivr.net/npm/jsbarcode@3.11.3/dist/JsBarcode.all.min.js")
-      document.head.appendChild(yourScript)
+      const scriptTag = document.createElement("script");
+      scriptTag.src = "https://cdn.jsdelivr.net/npm/jsbarcode@3.11.3/dist/JsBarcode.all.min.js";
+      scriptTag.type = "text/javascript"
+      document.head.appendChild(scriptTag);
     }
   },
   sockets: {
     DeliveryArticles(data) {
-      console.log(data)
-      this.articles = []
+      this.articles = data
     }
   },
-  mounted() {
+  created() {
     this.addBarcodeScript()
+  },
+  mounted() {
     this.$socket.invoke('GetDeliveryArticles', "noteId")
   },
   updated() {
-    // JsBarcode(".barcode").init();
+    if (!this.articles.empty) {
+      window.JsBarcode(".barcode").init();
+    }
   }
 }
 </script>
