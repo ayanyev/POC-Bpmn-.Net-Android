@@ -1,0 +1,37 @@
+package com.eazzyapps.example.android.ui.viewmodel
+
+import androidx.lifecycle.Observer
+import androidx.lifecycle.viewModelScope
+import eu.durstexpress.modules.scanner.Scanner
+import eu.durstexpress.modules.scanner.view.ScannerViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+
+class DexScannerViewModel(
+    private val scanner: Scanner
+) : ScannerViewModel(scanner) {
+
+    val input = MutableStateFlow("")
+
+    override val inputHint: String = "Rolli-Barcode"
+
+    override val scanResultsObserver: Observer<String> = Observer {
+        input.value = it
+    }
+
+    init {
+        viewModelScope.launch {
+            scanner.apply {
+                observe(scanResultsObserver)
+            }
+        }
+    }
+
+    fun onInputSubmit(value: String) {
+        // TODO validate barcode and proceed to next screen
+        showInput.value = false
+    }
+
+    fun onInputChange(value: String) = scanner.emitResult(value)
+
+}
