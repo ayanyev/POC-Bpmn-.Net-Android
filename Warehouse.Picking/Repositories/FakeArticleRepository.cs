@@ -6,7 +6,7 @@ namespace Warehouse.Picking.Api.Repositories
 {
     public class FakeArticleRepository : IArticleRepository
     {
-        public Task<List<Article>> Fetch(string noteId)
+        public Task<List<Article>> GetByNoteId(string noteId)
         {
             var a1 = new Article(
                 111, "note1", "Pepsi Cola Maxx", "1234567",

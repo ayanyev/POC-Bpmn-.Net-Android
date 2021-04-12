@@ -8,14 +8,14 @@ using Warehouse.Picking.Api.Repositories;
 
 namespace warehouse.picking.api.Hubs
 {
-    public interface IDashboardClient
+    public interface IPickingDashboardClient
     {
         Task AvailablePickers(List<Picker> pickers);
 
         Task AvailableTasks(List<PickerTask> tasks);
     }
 
-    public class DashboardHub : Hub<IDashboardClient>
+    public class PickingDashboardHub : Hub<IPickingDashboardClient>
     {
         private readonly IPickerRepository _pickerRepository;
 
@@ -23,7 +23,7 @@ namespace warehouse.picking.api.Hubs
 
         private readonly CompositeDisposable _disposables = new();
 
-        public DashboardHub(IPickerRepository pickerRepository, ITaskRepository taskRepository)
+        public PickingDashboardHub(IPickerRepository pickerRepository, ITaskRepository taskRepository)
         {
             _pickerRepository = pickerRepository;
             _taskRepository = taskRepository;

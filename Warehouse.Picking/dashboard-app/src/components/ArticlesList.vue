@@ -4,7 +4,7 @@
   </b-container>
 </template>
 
-<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.3/dist/barcodes/JsBarcode.ean-upc.min.js">
+<script>
 export default {
   name: "ArticlesList",
   data() {
@@ -12,14 +12,25 @@ export default {
       articles: []
     }
   },
-  mounted() {
-    this.$socket.invoke('GetDeliveryArticles')
-    JsBarcode(".barcode").init();
+  methods: {
+    addBarcodeScript() {
+      let yourScript = document.createElement('script')
+      yourScript.setAttribute('src', "https://cdn.jsdelivr.net/npm/jsbarcode@3.11.3/dist/JsBarcode.all.min.js")
+      document.head.appendChild(yourScript)
+    }
   },
   sockets: {
     DeliveryArticles(data) {
+      console.log(data)
       this.articles = []
     }
+  },
+  mounted() {
+    this.addBarcodeScript()
+    this.$socket.invoke('GetDeliveryArticles', "noteId")
+  },
+  updated() {
+    // JsBarcode(".barcode").init();
   }
 }
 </script>

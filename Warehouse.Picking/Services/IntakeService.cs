@@ -22,7 +22,7 @@ namespace Warehouse.Picking.Api.Services
 
         public async Task<bool> FetchArticlesForDeliveryNote(string noteId)
         {
-            var articles = await _articleRepository.Fetch(noteId);
+            var articles = await _articleRepository.GetByNoteId(noteId);
             _noteArticles.Add(noteId, articles);
             return true;
         }
