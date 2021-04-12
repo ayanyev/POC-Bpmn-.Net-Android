@@ -38,6 +38,9 @@
     <ItemGroup>
         <Content Remove="$(SpaRoot)**" />
         <Content Include="dashboard-app\src\App.vue" />
+        <Content Include="dashboard-app\src\assets\icon-stock.svg" />
+        <Content Include="dashboard-app\src\components\Article.vue" />
+        <Content Include="dashboard-app\src\components\ArticlesList.vue" />
         <Content Include="dashboard-app\src\IntakeApp.vue" />
         <Content Include="dashboard-app\src\router\index.js" />
         <None Remove="$(SpaRoot)**" />
