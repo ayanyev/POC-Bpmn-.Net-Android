@@ -1,20 +1,20 @@
 <template>
   <div id="app">
-    <PickersList></PickersList>
-    <TaskList></TaskList>
+    <router-view/>
   </div>
 </template>
 
 <script>
-
-import PickersList from "./components/PickersList.vue";
-import TaskList from "./components/TaskList.vue";
-
 export default {
-  name: 'App',
-  components: {
-    TaskList,
-    PickersList
+  name: "App",
+  mounted() {
+    const url = window.location.href
+    console.log('url : ' + url)
+    const name = url.split('/').slice(-1)[0]
+    console.log('appName : ' + name)
+    if (name.length > 0) {
+      this.$router.push({name: name})
+    }
   }
 }
 </script>
@@ -28,10 +28,12 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
+
 .table-div {
   padding-left: 25px;
   padding-right: 25px;
 }
+
 /*.table-bordered, td, th {*/
 /*  border-collapse: collapse;*/
 /*}*/

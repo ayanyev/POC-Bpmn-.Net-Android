@@ -1,21 +1,15 @@
 import Vue from 'vue'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
-import App from './App.vue'
-import VueSignalR from '@latelier/vue-signalr'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import router from './router'
+import App from "./App";
 
 Vue.config.productionTip = false
-Vue.use(VueSignalR, 'http://localhost:5000/dashboardhub')
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 
 new Vue({
-  el: "#app",
-  render: h => h(App),
-  created() {
-    this.$socket.start({
-      log : true
-    });
-  },
-})
+  router,
+  render: (h) => h(App)
+}).$mount('#app')
