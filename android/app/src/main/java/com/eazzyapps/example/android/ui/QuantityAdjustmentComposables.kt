@@ -8,9 +8,11 @@ import androidx.compose.material.icons.filled.Remove
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.eazzyapps.example.android.ui.theme.typography
 import com.eazzyapps.example.android.ui.viewmodel.QuantityAdjustmentViewModel
 import kotlinx.coroutines.launch
@@ -50,30 +52,31 @@ fun QuantityAdjustmentUi(
                 Icon(
                     Icons.Filled.Add,
                     contentDescription = null,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(18.dp)
                 )
+                Text(text = "1", style = typography.button.copy(fontSize = 18.sp))
             }
             Button(
                 onClick = { viewModel.increaseQuantity(10) },
-                modifier = Modifier.padding(start = 8.dp)
+                modifier = Modifier.padding(start = 8.dp).align(Alignment.CenterVertically)
             ) {
                 Icon(
                     Icons.Filled.Add,
                     contentDescription = null,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(18.dp)
                 )
-                Text(text = "10", style = typography.button)
+                Text(text = "10", style = typography.button.copy(fontSize = 18.sp))
             }
             Button(
                 onClick = { viewModel.increaseQuantity(20) },
-                modifier = Modifier.padding(horizontal = 8.dp)
+                modifier = Modifier.padding(start = 8.dp).align(Alignment.CenterVertically)
             ) {
                 Icon(
                     Icons.Filled.Add,
                     contentDescription = null,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(18.dp)
                 )
-                Text(text = "20", style = typography.button)
+                Text(text = "20", style = typography.button.copy(fontSize = 18.sp))
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
@@ -82,30 +85,31 @@ fun QuantityAdjustmentUi(
                 Icon(
                     Icons.Filled.Remove,
                     contentDescription = null,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(18.dp)
                 )
+                Text(text = "1", style = typography.button.copy(fontSize = 18.sp))
             }
             Button(
                 onClick = { viewModel.decreaseQuantity(10) },
-                modifier = Modifier.padding(start = 8.dp)
+                modifier = Modifier.padding(start = 8.dp).align(Alignment.CenterVertically)
             ) {
                 Icon(
                     Icons.Filled.Remove,
                     contentDescription = null,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(18.dp)
                 )
-                Text(text = "10", style = typography.button)
+                Text(text = "10", style = typography.button.copy(fontSize = 18.sp))
             }
             Button(
                 onClick = { viewModel.decreaseQuantity(20) },
-                modifier = Modifier.padding(horizontal = 8.dp)
+                modifier = Modifier.padding(start = 8.dp).align(Alignment.CenterVertically)
             ) {
                 Icon(
                     Icons.Filled.Remove,
                     contentDescription = null,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(18.dp)
                 )
-                Text(text = "20", style = typography.button)
+                Text(text = "20", style = typography.button.copy(fontSize = 18.sp))
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
