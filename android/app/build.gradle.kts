@@ -1,11 +1,13 @@
 plugins {
     id("com.android.application")
     kotlin("android")
+    id("kotlin-android")
 }
 
-val composeVersion = "1.0.0-beta01"
+val composeVersion = "1.0.0-beta04"
 val ktor_version = "1.5.1"
 val lifecycle_version = "2.3.0"
+val koin_version = "2.2.2"
 
 android {
     compileSdkVersion(30)
@@ -53,17 +55,20 @@ android {
 
 dependencies {
 
+    implementation(project(":scanner"))
     implementation("androidx.core:core-ktx:1.3.2")
     implementation("androidx.appcompat:appcompat:1.2.0")
     implementation("com.google.android.material:material:1.3.0")
 
+    implementation ("androidx.compose.compiler:compiler:$composeVersion")
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.runtime:runtime:$composeVersion")
     implementation("androidx.compose.material:material:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling:$composeVersion")
+    implementation("androidx.compose.material:material-icons-extended:$composeVersion")
 
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha02")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha03")
     implementation("androidx.activity:activity-compose:1.3.0-alpha03")
 
     implementation("io.ktor:ktor-client-core:$ktor_version")
@@ -72,6 +77,13 @@ dependencies {
 
     implementation("com.microsoft.signalr:signalr:1.0.0")
     implementation("org.slf4j:slf4j-jdk14:1.7.25")
+
+    implementation("org.koin:koin-android:$koin_version")
+    implementation("org.koin:koin-androidx-ext:$koin_version")
+    implementation("org.koin:koin-androidx-viewmodel:$koin_version")
+    implementation("org.koin:koin-androidx-scope:$koin_version")
+    implementation("org.koin:koin-androidx-compose:$koin_version")
+    implementation("org.koin:koin-test:$koin_version")
 
     testImplementation("junit:junit:4.13.1")
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
