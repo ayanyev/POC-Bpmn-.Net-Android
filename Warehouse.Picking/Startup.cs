@@ -70,10 +70,11 @@ namespace Warehouse.Picking.Api
                 switch (_appName)
                 {
                     case AppName.PickingApp:
-                        endpoints.MapHub<DashboardHub>("/dashboardhub");
+                        endpoints.MapHub<PickingDashboardHub>("/dashboardhub");
                         endpoints.MapHub<PickersHub>("/pickershub");
                         break;
                     case AppName.IntakeApp:
+                        endpoints.MapHub<IntakeDashboardHub>("/intakedashboardhub");
                         break;
                 }
             });  

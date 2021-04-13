@@ -13,9 +13,9 @@ namespace Warehouse.Picking.Api.Repositories
 
         private readonly HashSet<PickerTask> _tasksAssigned = new();
 
-        private readonly IHubContext<DashboardHub> _dashboardHubContext;
+        private readonly IHubContext<PickingDashboardHub> _dashboardHubContext;
 
-        public TasksRepository(IHubContext<DashboardHub> hubContext)
+        public TasksRepository(IHubContext<PickingDashboardHub> hubContext)
         {
             _dashboardHubContext = hubContext;
         }
@@ -68,7 +68,7 @@ namespace Warehouse.Picking.Api.Repositories
         {
             var tasks = _tasksNotAssigned.Concat(_tasksAssigned).ToList();
             _dashboardHubContext.Clients.Group("Dashboard")
-                .SendAsync("AvailableTasks", tasks);
+                .SendAsync("DeliveryArticles", tasks);
         }
         
     }

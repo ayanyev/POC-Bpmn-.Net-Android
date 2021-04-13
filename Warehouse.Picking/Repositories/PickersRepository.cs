@@ -13,10 +13,10 @@ namespace Warehouse.Picking.Api.Repositories
 
         private readonly IHubContext<PickersHub> _pickersHubContext;
 
-        private readonly IHubContext<DashboardHub> _dashboardHubContext;
+        private readonly IHubContext<PickingDashboardHub> _dashboardHubContext;
 
         public PickersRepository(IHubContext<PickersHub> pickersHubContext,
-            IHubContext<DashboardHub> dashboardHubContext)
+            IHubContext<PickingDashboardHub> dashboardHubContext)
         {
             _pickersHubContext = pickersHubContext;
             _dashboardHubContext = dashboardHubContext;

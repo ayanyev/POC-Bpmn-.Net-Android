@@ -37,8 +37,15 @@
 
     <ItemGroup>
         <Content Remove="$(SpaRoot)**" />
+        <Content Include="dashboard-app\src\App.vue" />
+        <Content Include="dashboard-app\src\assets\icon-stock.svg" />
+        <Content Include="dashboard-app\src\components\Article.vue" />
+        <Content Include="dashboard-app\src\components\ArticlesList.vue" />
+        <Content Include="dashboard-app\src\IntakeApp.vue" />
+        <Content Include="dashboard-app\src\router\index.js" />
         <None Remove="$(SpaRoot)**" />
         <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+        <None Include="dashboard-app\public\intake.html" />
     </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

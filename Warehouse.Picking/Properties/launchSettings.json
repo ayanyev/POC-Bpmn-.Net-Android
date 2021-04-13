@@ -20,6 +20,7 @@
       "dotnetRunMessages": "true",
       "launchBrowser": true,
       "applicationUrl": "http://localhost:5000",
+      "launchUrl": "picking",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "APP_NAME": "PickingApp"
@@ -28,8 +29,9 @@
     "Intake": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
-      "launchBrowser": false,
+      "launchBrowser": true,
       "applicationUrl": "http://localhost:5000",
+      "launchUrl": "intake",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "APP_NAME": "IntakeApp"
