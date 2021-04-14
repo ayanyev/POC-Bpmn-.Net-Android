@@ -32,10 +32,10 @@ namespace Warehouse.Picking.Api.Processes
                 logger: ConsoleLogger.Default);
         }
 
-        public async Task FinishUserTask(string processId, string taskId, Dictionary<string, object> result)
+        public async Task FinishUserTask(string taskId, string correlationId, Dictionary<string, object> result)
         {
             var task = (await _userTaskClient.QueryAsync(
-                q => q.FilterByProcessInstanceId(processId)
+                q => q.FilterByCorrelationId(correlationId)
             )).First(t => t.Id.Equals(taskId));
             await FinishUserTask(task, result);
         }
@@ -63,9 +63,14 @@ namespace Warehouse.Picking.Api.Processes
 
         public async Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string modelId, string startEvent, T token)
         {
+            return await CreateProcessInstanceByModelId(modelId, startEvent, token, "");
+        }
+
+        public async Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string modelId, string startEvent, T token, string correlationId)
+        {
             try
             {
-                return await _defClient.StartProcessInstanceAsync(modelId, startEvent, token);
+                return await _defClient.StartProcessInstanceAsync(modelId, startEvent, token, correlationId);
             }
             catch (Exception e)
             {

@@ -6,7 +6,9 @@ namespace Warehouse.Picking.Api.Repositories
 {
     public interface IArticleRepository
     {
-        Task<List<Article>> GetByNoteId(string noteId);
+        Task<List<Article>> FetchByNoteId(string noteId);
+        
+        List<Article> FindByNoteId(string noteId);
         
     }
 }

@@ -18,7 +18,7 @@ namespace Warehouse.Picking.Api.Processes.ExternalTasks.Intake
 
         public Task<SuccessResult> HandleAsync(NoteIdPayload input, ExternalTask task)
         {
-            var r = _service.FetchArticlesForDeliveryNote(input.NoteId);
+            var r = _service.FetchArticlesForDeliveryNote(task.CorrelationId, input.NoteId);
             return Task.FromResult(new SuccessResult());
         }
     }

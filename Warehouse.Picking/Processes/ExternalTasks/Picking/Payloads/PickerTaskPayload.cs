@@ -1,6 +1,6 @@
 using warehouse.picking.api.Domain;
 
-namespace Warehouse.Picking.Api.Processes.ExternalTasks.Payloads
+namespace Warehouse.Picking.Api.Processes.ExternalTasks.Picking.Payloads
 {
     // ReSharper disable once ClassNeverInstantiated.Global
     public class PickerTaskPayload

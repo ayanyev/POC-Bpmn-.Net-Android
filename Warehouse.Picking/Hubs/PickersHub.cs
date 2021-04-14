@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using warehouse.picking.api.Domain;
 using Warehouse.Picking.Api.Processes;
@@ -20,6 +21,7 @@ namespace warehouse.picking.api.Hubs
 
     }
 
+    // [Authorize]
     public class PickersHub : Hub<IPickerClient>
     {
         private const string ProcessModelId = "PickerShiftProcess";
@@ -38,7 +40,7 @@ namespace warehouse.picking.api.Hubs
             _processClient = processClient;
             _taskRepository = taskRepository;
         }
-
+        
         public async Task CheckActiveShift(string name)
         {
             var picker = _pickerRepository.FindByName(name);

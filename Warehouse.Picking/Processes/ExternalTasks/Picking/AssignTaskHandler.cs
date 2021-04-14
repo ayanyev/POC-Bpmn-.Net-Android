@@ -22,7 +22,7 @@ namespace Warehouse.Picking.Api.Processes.ExternalTasks.Picking
 
         public Task<Picker> HandleAsync(PickerTaskPayload input, ExternalTask task)
         {
-            var p = _pickerRepository.AssignTask(input.Worker, input.Task);
+            var p = _pickerRepository.AssignTask(input.Picker, input.Task);
             _taskRepository.Update(p.Task);
             return Task.FromResult(p);
         }

@@ -10,7 +10,7 @@ namespace warehouse.picking.api.Domain
         public string Name { get; set; }
         public string ConnectionId { get; set; }
         [JsonIgnore]
-        public string InstanceId { get; set; }
+        public string ProcessInstanceId { get; set; }
         public PickerTask Task { get; set; }
 
         public Picker()

@@ -65,9 +65,19 @@ namespace Warehouse.Picking.Api.Processes.Rest
 
         }
 
+        public Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string modelId, string startEvent, T token, string correlationId)
+        {
+            throw new NotImplementedException();
+        }
+
         Task<StartProcessInstanceResponse> IProcessClient.CreateProcessInstanceByModelId<T>(string modelId, string startEvent, T token)
         {
             return CreateProcessInstanceByModelId(modelId, startEvent, token);
+        }
+
+        public Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string modelId, string startEvent, string correlationId, T token)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<bool> TerminateProcessInstanceById(string processId)
