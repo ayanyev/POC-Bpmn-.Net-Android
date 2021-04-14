@@ -59,11 +59,11 @@ namespace warehouse.picking.api.Hubs
         public async Task StartShift(string name)
         {
             var picker = _pickerRepository.FindByName(name) ?? new Picker(Context.ConnectionId, name);
-            if (picker.InstanceId == null || !await _processClient.IsProcessInstanceRunning(picker.InstanceId))
+            if (picker.ProcessInstanceId == null || !await _processClient.IsProcessInstanceRunning(picker.ProcessInstanceId))
             {
                 var startResponse =
                     await _processClient.CreateProcessInstanceByModelId(ProcessModelId, ProcessStartEvent, picker);
-                picker.InstanceId = startResponse.ProcessInstanceId;
+                picker.ProcessInstanceId = startResponse.ProcessInstanceId;
                 if (_pickerRepository.StartShift(picker))
                 {
                     await Clients.Caller.ShiftStartConfirmed();
@@ -91,7 +91,7 @@ namespace warehouse.picking.api.Hubs
             var picker = _pickerRepository.FindByName(name);
             if (picker == null) return;
 
-            if (await _processClient.TerminateProcessInstanceById(picker.InstanceId) &&
+            if (await _processClient.TerminateProcessInstanceById(picker.ProcessInstanceId) &&
                 _pickerRepository.StopShift(picker))
             {
                 await Clients.Caller.ShiftStopConfirmed();
@@ -106,7 +106,7 @@ namespace warehouse.picking.api.Hubs
             _taskRepository.Update(task);
             await Clients.Caller.TaskRemoved(task.Guid.ToString());
 
-            var tasks = await _processClient.GetAllUserTasks(picker.InstanceId);
+            var tasks = await _processClient.GetAllUserTasks(picker.ProcessInstanceId);
             
             var userTask = tasks.First( t => t.Id.Equals("Task_wait_for_execution"));
             

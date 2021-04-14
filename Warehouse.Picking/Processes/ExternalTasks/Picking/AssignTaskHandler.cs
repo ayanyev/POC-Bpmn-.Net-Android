@@ -2,10 +2,10 @@ using System.Threading.Tasks;
 using AtlasEngine;
 using AtlasEngine.ExternalTasks;
 using warehouse.picking.api.Domain;
-using Warehouse.Picking.Api.Processes.ExternalTasks.Payloads;
+using Warehouse.Picking.Api.Processes.ExternalTasks.Picking.Payloads;
 using Warehouse.Picking.Api.Repositories;
 
-namespace Warehouse.Picking.Api.Processes.ExternalTasks
+namespace Warehouse.Picking.Api.Processes.ExternalTasks.Picking
 {
     [ExternalTaskHandler(topic: "Picker.Task.Assign")]
     public class AssignTaskHandler : IExternalTaskHandler<PickerTaskPayload, Picker>
@@ -22,7 +22,7 @@ namespace Warehouse.Picking.Api.Processes.ExternalTasks
 
         public Task<Picker> HandleAsync(PickerTaskPayload input, ExternalTask task)
         {
-            var p = _pickerRepository.AssignTask(input.Picker, input.Task);
+            var p = _pickerRepository.AssignTask(input.Worker, input.Task);
             _taskRepository.Update(p.Task);
             return Task.FromResult(p);
         }

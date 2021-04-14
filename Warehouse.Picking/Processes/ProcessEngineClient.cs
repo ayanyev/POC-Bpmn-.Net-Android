@@ -32,6 +32,14 @@ namespace Warehouse.Picking.Api.Processes
                 logger: ConsoleLogger.Default);
         }
 
+        public async Task FinishUserTask(string processId, string taskId, Dictionary<string, object> result)
+        {
+            var task = (await _userTaskClient.QueryAsync(
+                q => q.FilterByProcessInstanceId(processId)
+            )).First(t => t.Id.Equals(taskId));
+            await FinishUserTask(task, result);
+        }
+
         public async Task FinishUserTask(UserTask task, Dictionary<string, object> result)
         {
             await _userTaskClient.FinishUserTaskAsync(task, new UserTaskResult(result));

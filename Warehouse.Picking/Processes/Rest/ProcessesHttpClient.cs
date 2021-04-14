@@ -100,5 +100,10 @@ namespace Warehouse.Picking.Api.Processes.Rest
         {
             throw new NotImplementedException();
         }
+
+        public Task FinishUserTask(string taskId, string processId, Dictionary<string, object> result)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

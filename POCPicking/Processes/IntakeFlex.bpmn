@@ -5,7 +5,7 @@
 - article id
 Output:
 - article info</bpmn:documentation>
-    <bpmn:participant id="Participant_0px403d" name="intake" processRef="intake" />
+    <bpmn:participant id="Participant_0px403d" name="IntakeProcess" processRef="intake" />
   </bpmn:collaboration>
   <bpmn:process id="intake" name="intake" isExecutable="true">
     <bpmn:laneSet />
