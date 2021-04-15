@@ -17,7 +17,7 @@ namespace warehouse.picking.api.Hubs
 
     public class IntakeDeviceHub : Hub<IIntakeClient>
     {
-        private const string ProcessModelId = "IntakeProcess";
+        private const string ProcessModelId = "intake";
 
         private const string ProcessStartEvent = "";
 
@@ -29,7 +29,7 @@ namespace warehouse.picking.api.Hubs
         }
 
         public override Task OnConnectedAsync()
-        {
+        { 
             Groups.AddToGroupAsync(Context.ConnectionId, Context.GetUserId());
             return base.OnConnectedAsync();
         }
@@ -40,10 +40,10 @@ namespace warehouse.picking.api.Hubs
             return base.OnDisconnectedAsync(exception);
         }
 
-        public async Task StartIntakeProcess(string workerId)
+        public async Task StartIntakeProcess()
         {
             var correlationId = Context.GetUserId();
-            await _processClient.CreateProcessInstanceByModelId<>(ProcessModelId, ProcessStartEvent, null, correlationId);
+            await _processClient.CreateProcessInstanceByModelId<string>(ProcessModelId, ProcessStartEvent, null, correlationId);
             await Clients.Caller.ProcessStartConfirmed();
         }
 
@@ -52,6 +52,7 @@ namespace warehouse.picking.api.Hubs
             var correlationId = Context.GetUserId();
             const string taskId = "Intake.UT.Input.NoteId";
             var result = new Dictionary<string, object> {{"noteId", noteId}};
+            // await Clients.Caller.ArticlesListReceived(new List<Article>());
             await _processClient.FinishUserTask(taskId, correlationId, result);
         }
     }

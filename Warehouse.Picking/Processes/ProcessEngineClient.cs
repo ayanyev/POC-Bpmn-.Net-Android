@@ -16,14 +16,14 @@ namespace Warehouse.Picking.Api.Processes
     public class ProcessEngineClient : IProcessClient
     {
         private const string BaseUrl = "http://localhost:56000";
-        
-        private readonly IProcessDefinitionsClient _defClient = 
+
+        private readonly IProcessDefinitionsClient _defClient =
             ClientFactory.CreateProcessDefinitionsClient(new Uri(BaseUrl));
-        
-        private readonly IProcessInstancesClient _instanceClient = 
+
+        private readonly IProcessInstancesClient _instanceClient =
             ClientFactory.CreateProcessInstancesClient(new Uri(BaseUrl));
-        
-        private readonly IUserTaskClient _userTaskClient = 
+
+        private readonly IUserTaskClient _userTaskClient =
             ClientFactory.CreateUserTaskClient(new Uri(BaseUrl));
 
         public static IExternalTaskClient CreateExternalTaskClient()
@@ -34,9 +34,10 @@ namespace Warehouse.Picking.Api.Processes
 
         public async Task FinishUserTask(string taskId, string correlationId, Dictionary<string, object> result)
         {
-            var task = (await _userTaskClient.QueryAsync(
+            var tasks = await _userTaskClient.QueryAsync(
                 q => q.FilterByCorrelationId(correlationId)
-            )).First(t => t.Id.Equals(taskId));
+            );
+            var task = tasks.First(t => t.Id.Equals(taskId));
             await FinishUserTask(task, result);
         }
 
@@ -61,12 +62,14 @@ namespace Warehouse.Picking.Api.Processes
             return res.Count > 0 && res.First().State == ProcessState.Running;
         }
 
-        public async Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string modelId, string startEvent, T token)
+        public async Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string modelId,
+            string startEvent, T token)
         {
             return await CreateProcessInstanceByModelId(modelId, startEvent, token, "");
         }
 
-        public async Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string modelId, string startEvent, T token, string correlationId)
+        public async Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string modelId,
+            string startEvent, T token, string correlationId)
         {
             try
             {
@@ -92,6 +95,5 @@ namespace Warehouse.Picking.Api.Processes
                 return false;
             }
         }
-        
     }
 }

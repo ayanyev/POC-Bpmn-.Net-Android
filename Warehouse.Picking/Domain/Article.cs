@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 
 namespace warehouse.picking.api.Domain
 {
+    [Serializable]
     public class Article
     {
         public int Id { get; set; }
@@ -35,5 +37,17 @@ namespace warehouse.picking.api.Domain
             Quantity = quantity;
             Bundle = bundle;
         }
+    }
+
+    [Serializable]
+    public class Articles
+    {
+        public Articles(List<Article> articles)
+        {
+            Items = articles;
+        }
+
+        public List<Article> Items { get; }
+        
     }
 }
