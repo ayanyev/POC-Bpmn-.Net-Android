@@ -12,15 +12,15 @@ import java.util.Base64.getEncoder
 
 class SignalRViewModel : ViewModel() {
 
-    private val credentials = Base64.encodeToString("Maik:ertryrtytr".toByteArray(), Base64.NO_WRAP);
+    val name = arrayOf("Max", /*"Jorg", "Michael"*/).random()
+
+    private val credentials = Base64.encodeToString("$name:ertryrtytr".toByteArray(), Base64.NO_WRAP);
 
     private val hubConnection =
         HubConnectionBuilder
             .create("http://10.0.2.2:5000/pickershub")
             .withHeader("Authorization", "Basic $credentials")
             .build()
-
-    val name = arrayOf("Max", "Jorg", "Michael").random()
 
     val isOnShift = MutableStateFlow(false)
 

@@ -52,7 +52,6 @@ namespace warehouse.picking.api.Hubs
             var correlationId = Context.GetUserId();
             const string taskId = "Intake.UT.Input.NoteId";
             var result = new Dictionary<string, object> {{"noteId", noteId}};
-            // await Clients.Caller.ArticlesListReceived(new List<Article>());
             await _processClient.FinishUserTask(taskId, correlationId, result);
         }
     }

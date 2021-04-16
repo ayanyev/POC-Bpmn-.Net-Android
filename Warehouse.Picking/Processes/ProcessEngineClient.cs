@@ -73,6 +73,13 @@ namespace Warehouse.Picking.Api.Processes
         {
             try
             {
+                // terminate process with same correlationId before start new
+                // temporary solution
+                (await _instanceClient.QueryAsync(
+                    options => options.FilterByCorrelationId(correlationId)
+                )).ToList().ForEach(
+                    p => _instanceClient.TerminateProcessInstanceAsync(p.Id)
+                );
                 return await _defClient.StartProcessInstanceAsync(modelId, startEvent, token, correlationId);
             }
             catch (Exception e)
