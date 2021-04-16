@@ -8,7 +8,7 @@ using Warehouse.Picking.Api.Services;
 namespace Warehouse.Picking.Api.Processes.ExternalTasks.Intake
 {
     [ExternalTaskHandler(topic: "Intake.Note.Articles.Unfinished.Barcodes")]
-    public class UnfinishedArticlesBarcodesHandler : IExternalTaskHandler<NoteIdPayload, HashSet<string>>
+    public class UnfinishedArticlesBarcodesHandler : IExternalTaskHandler<NoteIdPayload, UnfinishedBarcodes>
     {
         private readonly IntakeService _service;
 
@@ -17,9 +17,19 @@ namespace Warehouse.Picking.Api.Processes.ExternalTasks.Intake
             _service = service;
         }
 
-        public Task<HashSet<string>> HandleAsync(NoteIdPayload input, ExternalTask task)
+        public Task<UnfinishedBarcodes> HandleAsync(NoteIdPayload input, ExternalTask task)
         {
-            return Task.FromResult(_service.GetBarcodesForUnfinishedArticles(input.NoteId));
+            var barcodes = _service.GetBarcodesForUnfinishedArticles(input.NoteId);
+            return Task.FromResult(new UnfinishedBarcodes(barcodes));
+        }
+    }
+    
+    public class UnfinishedBarcodes
+    {
+        public HashSet<string> Barcodes { get; }
+        public UnfinishedBarcodes(HashSet<string> barcodes)
+        {
+            Barcodes = barcodes;
         }
     }
 

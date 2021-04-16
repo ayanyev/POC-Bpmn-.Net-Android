@@ -69,4 +69,6 @@ class IntakeViewModel : ViewModel() {
 
     fun sendNoteId(noteId: String) = hubConnection.send("ProvideNoteId", noteId)
 
+    fun sendScannedData(barcode: String) = hubConnection.send("SendScanResult", barcode)
+
 }

@@ -54,5 +54,13 @@ namespace warehouse.picking.api.Hubs
             var result = new Dictionary<string, object> {{"noteId", noteId}};
             await _processClient.FinishUserTask(taskId, correlationId, result);
         }
+
+        public async Task SendScanResult(string barcode)
+        {
+            var correlationId = Context.GetUserId();
+            const string taskId = "Intake.UT.Input.Scan";
+            var result = new Dictionary<string, object> {{"barcode", barcode}};
+            await _processClient.FinishUserTask(taskId, correlationId, result);
+        }
     }
 }

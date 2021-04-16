@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -38,25 +37,32 @@ fun TextScreenUi() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "Grab articles",
-                style = MaterialTheme.typography.h6,
-                textAlign = TextAlign.Center
-            )
+            OutlinedButton(
+                modifier = Modifier
+                    .wrapContentHeight()
+                    .fillMaxWidth(),
+                onClick = { viewModel.sendNoteId("1234567890") },
+                enabled = isRunning
+            ) {
+                Text(
+                    textAlign = TextAlign.Center,
+                    text = "Grab articles"
+                )
+            }
             Spacer(modifier = Modifier.height(32.dp))
             OutlinedButton(
                 modifier = Modifier
                     .wrapContentHeight()
                     .fillMaxWidth(),
-                onClick = { viewModel.sendNoteId("note1") },
+                onClick = { viewModel.sendScannedData("567.456.7.9") },
                 enabled = isRunning
             ) {
                 Text(
                     textAlign = TextAlign.Center,
-                    text = "Start shift"
+                    text = "Scan article"
                 )
             }
-
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }

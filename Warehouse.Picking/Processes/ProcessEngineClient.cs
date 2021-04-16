@@ -34,11 +34,23 @@ namespace Warehouse.Picking.Api.Processes
 
         public async Task FinishUserTask(string taskId, string correlationId, Dictionary<string, object> result)
         {
-            var tasks = await _userTaskClient.QueryAsync(
-                q => q.FilterByCorrelationId(correlationId)
-            );
-            var task = tasks.First(t => t.Id.Equals(taskId));
-            await FinishUserTask(task, result);
+            try
+            {
+                var tasks = await _userTaskClient.QueryAsync(
+                    options =>
+                    {
+                        options.FilterByState(UserTaskState.Suspended);
+                        options.FilterByCorrelationId(correlationId);
+                    });
+                var task = tasks.First(t => t.Id.Equals(taskId));
+                await FinishUserTask(task, result);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
 
         public async Task FinishUserTask(UserTask task, Dictionary<string, object> result)

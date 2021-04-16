@@ -92,7 +92,12 @@ Output:
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">token.current.barcode == token.history.TaskGetLocation.barcode</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0fgl0vs" name="no" sourceRef="Gateway_00n2q11" targetRef="Event_0dlm7ha" />
-    <bpmn:sequenceFlow id="Flow_1sze9gy" name="yes" sourceRef="Gateway_00n2q11" targetRef="Activity_1bzblg0">
+    <bpmn:sequenceFlow id="Flow_1sze9gy" name="yes" sourceRef="Gateway_00n2q11" targetRef="Intake.UT.Input.Scan">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="sss" value="1" />
+        </camunda:properties>
+      </bpmn:extensionElements>
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">dataObjects.Barcodes.length &gt; 0</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0nv6e22" name="yes" sourceRef="Gateway_1saly70" targetRef="TaskGetLocation">
@@ -106,17 +111,17 @@ Output:
     <bpmn:sequenceFlow id="Flow_0mvqisu" name="" sourceRef="Activity_0ah7hdj" targetRef="Activity_1qrq2et" />
     <bpmn:sequenceFlow id="Flow_1gxeppg" name="" sourceRef="Activity_1hwv4ke" targetRef="Activity_1c5h8vu" />
     <bpmn:sequenceFlow id="Flow_0118jh7" sourceRef="TaskGetLocation" targetRef="Activity_1x2ih5h" />
-    <bpmn:sequenceFlow id="Flow_0pz98iz" sourceRef="Activity_1bzblg0" targetRef="Gateway_0j0867g" />
+    <bpmn:sequenceFlow id="Flow_0pz98iz" sourceRef="Intake.UT.Input.Scan" targetRef="Gateway_0j0867g" />
     <bpmn:sequenceFlow id="Flow_0o9v2wx" name="yes" sourceRef="Gateway_0j0867g" targetRef="Activity_0ekix2r">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">dataObjects.Barcodes.includes(token.current.barcode)</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0qse2lc" name="no" sourceRef="Gateway_0j0867g" targetRef="Activity_1bzblg0" />
+    <bpmn:sequenceFlow id="Flow_0qse2lc" name="no" sourceRef="Gateway_0j0867g" targetRef="Intake.UT.Input.Scan" />
     <bpmn:sequenceFlow id="Flow_0zyxwqu" sourceRef="Activity_1c5h8vu" targetRef="Gateway_00n2q11" />
     <bpmn:sequenceFlow id="Flow_0mlaq89" sourceRef="Activity_1une9zy" targetRef="Activity_1c5h8vu" />
     <bpmn:sequenceFlow id="Flow_1cxsag1" sourceRef="Intake.UT.Input.NoteId" targetRef="Activity_1une9zy" />
     <bpmn:sequenceFlow id="Flow_117r828" sourceRef="StartEvent_1mox3jl" targetRef="Intake.UT.Input.NoteId" />
     <bpmn:sequenceFlow id="Flow_1d6jmuy" name="yes" sourceRef="Gateway_11ttssv" targetRef="Activity_06riz3e" />
-    <bpmn:sequenceFlow id="Flow_0sh45hg" name="no " sourceRef="Gateway_11ttssv" targetRef="Activity_1bzblg0">
+    <bpmn:sequenceFlow id="Flow_0sh45hg" name="no " sourceRef="Gateway_11ttssv" targetRef="Intake.UT.Input.Scan">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">JSON.stringify(token.current ) === '{}'</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:scriptTask id="Activity_1qrq2et" name="validate aggregated quantity">
@@ -216,6 +221,11 @@ Output:
       <bpmn:incoming>Flow_1gxeppg</bpmn:incoming>
       <bpmn:outgoing>Flow_0zyxwqu</bpmn:outgoing>
       <bpmn:dataOutputAssociation id="DataOutputAssociation_0hxhrid">
+        <bpmn:extensionElements>
+          <camunda:properties>
+            <camunda:property name="dataSource" value="token.current.barcodes" />
+          </camunda:properties>
+        </bpmn:extensionElements>
         <bpmn:targetRef>Barcodes</bpmn:targetRef>
       </bpmn:dataOutputAssociation>
     </bpmn:serviceTask>
@@ -224,10 +234,10 @@ Output:
       <bpmn:outgoing>Flow_0fgl0vs</bpmn:outgoing>
       <bpmn:outgoing>Flow_1sze9gy</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:userTask id="Activity_1bzblg0" name="scan article" camunda:formKey="Form Key">
+    <bpmn:userTask id="Intake.UT.Input.Scan" name="scan article" camunda:formKey="Form Key">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="barcode" label="Barcode" type="string" defaultValue="1234567" />
+          <camunda:formField id="barcode" label="Scan result" type="string" defaultValue="" />
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0qse2lc</bpmn:incoming>
@@ -293,6 +303,10 @@ Output:
       <bpmn:outgoing>Flow_0imho6z</bpmn:outgoing>
     </bpmn:userTask>
   </bpmn:process>
+  <bpmn:error id="Error_etwx8acR" name="Error Name" />
+  <bpmn:error id="Error_SbCCWLcn" name="Error Name" />
+  <bpmn:error id="Error_KGVgUQIB" name="Error Name" />
+  <bpmn:error id="Error_mivH06r4" name="Error Name" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1cidyxu">
       <bpmndi:BPMNShape id="Participant_0px403d_di" bpmnElement="Participant_0px403d" isHorizontal="true">
@@ -484,7 +498,7 @@ Output:
           <dc:Bounds x="148" y="159" width="87" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1251851_di" bpmnElement="Activity_1bzblg0">
+      <bpmndi:BPMNShape id="Activity_1251851_di" bpmnElement="Intake.UT.Input.Scan">
         <dc:Bounds x="270" y="87" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0j0867g_di" bpmnElement="Gateway_0j0867g" isMarkerVisible="true">
