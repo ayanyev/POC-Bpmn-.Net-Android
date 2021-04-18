@@ -28,6 +28,7 @@ namespace warehouse.picking.api.Hubs
         public IntakeDeviceHub(IProcessClient processClient)
         {
             _processClient = processClient;
+            
         }
 
         public override Task OnConnectedAsync()
