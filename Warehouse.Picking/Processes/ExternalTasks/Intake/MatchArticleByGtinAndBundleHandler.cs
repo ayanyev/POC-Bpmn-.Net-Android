@@ -19,7 +19,7 @@ namespace Warehouse.Picking.Api.Processes.ExternalTasks.Intake
 
         public Task<Article> HandleAsync(MatchArticlePayload input, ExternalTask task)
         {
-            var article = _service.MatchUnfinishedArticleByGtinAndBundle(input.NoteId, input.Gtin, int.Parse(input.BundleId));
+            var article = _service.MatchUnfinishedArticleByGtinAndBundle(input.NoteId, input.Gtin, input.BundleId);
             return Task.FromResult(article);
         }
     }

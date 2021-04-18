@@ -8,12 +8,14 @@ import com.microsoft.signalr.HubConnectionBuilder
 import com.microsoft.signalr.TypeReference
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType
 
 class IntakeViewModel : ViewModel() {
 
-    val name = arrayOf("Max", /*"Jorg", "Michael"*/).random()
+    val name = arrayOf("Max" /*"Jorg", "Michael"*/).random()
 
-    private val credentials = Base64.encodeToString("$name:ertryrtytr".toByteArray(), Base64.NO_WRAP);
+    private val credentials =
+        Base64.encodeToString("$name:ertryrtytr".toByteArray(), Base64.NO_WRAP);
 
     private val hubConnection =
         HubConnectionBuilder
@@ -70,5 +72,14 @@ class IntakeViewModel : ViewModel() {
     fun sendNoteId(noteId: String) = hubConnection.send("ProvideNoteId", noteId)
 
     fun sendScannedData(barcode: String) = hubConnection.send("SendScanResult", barcode)
+
+    fun sendInputData(map: Map<String, Any>) = hubConnection.send("SendInput", map)
+
+    fun sendQuantity(quantity: Int, isForced: Boolean = false) = sendInputData(
+        mapOf(
+            "quantity" to quantity,
+            "forced_valid" to "$isForced"
+        )
+    )
 
 }

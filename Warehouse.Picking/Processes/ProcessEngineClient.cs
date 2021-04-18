@@ -42,7 +42,7 @@ namespace Warehouse.Picking.Api.Processes
                         options.FilterByState(UserTaskState.Suspended);
                         options.FilterByCorrelationId(correlationId);
                     });
-                var task = tasks.First(t => t.Id.Equals(taskId));
+                var task = tasks.First(t => t.Id.Contains(taskId));
                 await FinishUserTask(task, result);
             }
             catch (Exception e)

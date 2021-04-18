@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using warehouse.picking.api.Domain;
@@ -29,7 +31,7 @@ namespace warehouse.picking.api.Hubs
         }
 
         public override Task OnConnectedAsync()
-        { 
+        {
             Groups.AddToGroupAsync(Context.ConnectionId, Context.GetUserId());
             return base.OnConnectedAsync();
         }
@@ -43,7 +45,8 @@ namespace warehouse.picking.api.Hubs
         public async Task StartIntakeProcess()
         {
             var correlationId = Context.GetUserId();
-            await _processClient.CreateProcessInstanceByModelId<string>(ProcessModelId, ProcessStartEvent, null, correlationId);
+            await _processClient.CreateProcessInstanceByModelId<string>(ProcessModelId, ProcessStartEvent, null,
+                correlationId);
             await Clients.Caller.ProcessStartConfirmed();
         }
 
@@ -61,6 +64,22 @@ namespace warehouse.picking.api.Hubs
             const string taskId = "Intake.UT.Input.Scan";
             var result = new Dictionary<string, object> {{"barcode", barcode}};
             await _processClient.FinishUserTask(taskId, correlationId, result);
+        }
+
+        public async Task SendInput(Dictionary<string, object> input)
+        {
+            var taskId = "Intake.UT.Input.Any";
+            if (input.Keys.Contains("quantity"))
+            {
+                var isForced = bool.Parse(((JsonElement) input["forced_valid"]).GetString() ?? "false");
+                taskId = isForced
+                    ? "Intake.UT.Input.Quantity.Adjust"
+                    : "Intake.UT.Input.Quantity";
+                input["forced_valid"] = isForced;
+            }
+
+            var correlationId = Context.GetUserId();
+            await _processClient.FinishUserTask(taskId, correlationId, input);
         }
     }
 }

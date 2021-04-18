@@ -32,6 +32,7 @@ fun TextScreenUi() {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
+                .align(Alignment.Center)
                 .fillMaxHeight()
                 .width(150.dp),
             verticalArrangement = Arrangement.Center,
@@ -63,6 +64,57 @@ fun TextScreenUi() {
                 )
             }
             Spacer(modifier = Modifier.height(32.dp))
+            OutlinedButton(
+                modifier = Modifier
+                    .wrapContentHeight()
+                    .fillMaxWidth(),
+                onClick = { viewModel.sendInputData(mapOf("bundleId" to 1)) },
+                enabled = isRunning
+            ) {
+                Text(
+                    textAlign = TextAlign.Center,
+                    text = "Send bundle id"
+                )
+            }
+            Spacer(modifier = Modifier.height(32.dp))
+            OutlinedButton(
+                modifier = Modifier
+                    .wrapContentHeight()
+                    .fillMaxWidth(),
+                onClick = { viewModel.sendQuantity(25, isForced = false) },
+                enabled = isRunning
+            ) {
+                Text(
+                    textAlign = TextAlign.Center,
+                    text = "Send quantity"
+                )
+            }
+            Spacer(modifier = Modifier.height(32.dp))
+            OutlinedButton(
+                modifier = Modifier
+                    .wrapContentHeight()
+                    .fillMaxWidth(),
+                onClick = { viewModel.sendQuantity(25, isForced = true) },
+                enabled = isRunning
+            ) {
+                Text(
+                    textAlign = TextAlign.Center,
+                    text = "Adjust quantity"
+                )
+            }
+            Spacer(modifier = Modifier.height(32.dp))
+            OutlinedButton(
+                modifier = Modifier
+                    .wrapContentHeight()
+                    .fillMaxWidth(),
+                onClick = { viewModel.sendScannedData("123.456.7.8") },
+                enabled = isRunning
+            ) {
+                Text(
+                    textAlign = TextAlign.Center,
+                    text = "Scan location"
+                )
+            }
         }
     }
 }

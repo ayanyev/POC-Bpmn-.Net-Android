@@ -46,4 +46,4 @@ namespace Warehouse.Picking.Api.Repositories
             return _noteArticles[noteId];
         }
     }
-}
+}   
