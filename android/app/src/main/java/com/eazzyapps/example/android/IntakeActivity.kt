@@ -42,7 +42,7 @@ fun TextScreenUi() {
                 modifier = Modifier
                     .wrapContentHeight()
                     .fillMaxWidth(),
-                onClick = { viewModel.sendNoteId("1234567890") },
+                onClick = { viewModel.sendNoteId("note1") },
                 enabled = isRunning
             ) {
                 Text(

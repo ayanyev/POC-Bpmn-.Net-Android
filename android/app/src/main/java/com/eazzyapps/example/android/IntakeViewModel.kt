@@ -4,6 +4,7 @@ import android.util.Base64
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.eazzyapps.example.android.domain.SelectionOptions
 import com.microsoft.signalr.HubConnectionBuilder
 import com.microsoft.signalr.TypeReference
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,14 +50,20 @@ class IntakeViewModel : ViewModel() {
                 isProcessRunning.value = false
             }
 
-            val typeRef = (object : TypeReference<Array<Article>>() {}).type
-
             hubConnection.on(
                 "ArticlesListReceived",
                 { articles ->
                     Log.d("SignalR", "$articles")
                 },
                 Articles::class.java
+            )
+
+            hubConnection.on(
+                "DoInputSelection",
+                { options ->
+                    Log.d("SignalR", "$options")
+                },
+                SelectionOptions::class.java
             )
 
         }

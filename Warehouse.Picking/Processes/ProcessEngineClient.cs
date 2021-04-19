@@ -32,6 +32,33 @@ namespace Warehouse.Picking.Api.Processes
                 logger: ConsoleLogger.Default);
         }
 
+        public void SubscribeForPendingUserTasks(string correlationId, Func<IEnumerable<UserTask>, UserTask> action)
+        {
+            var queryOptions = new QueryUserTasksOptions();
+            queryOptions.FilterByState(UserTaskState.Suspended);
+            queryOptions.FilterByCorrelationId(correlationId);
+
+            var subscriptionSettings = new SubscriptionSettings {SubscribeOnce = false};
+            subscriptionSettings.ConfigureQuery(queryOptions);
+            
+            var handledTaskId = "";
+
+            Action<UserTask> updateRecentTaskId = task =>
+            {
+                handledTaskId = task?.Id ?? handledTaskId;
+            };
+
+            Func <string> getRecentTaskId = () => handledTaskId;
+            
+            void Callback(IEnumerable<UserTask> tasks)
+            {
+                var filteredTasks = tasks.ToList().FindAll(t => !t.Id.Equals(getRecentTaskId()));
+                updateRecentTaskId(action(filteredTasks));
+            }
+
+            _userTaskClient.SubscribeForPendingUserTask(Callback, subscriptionSettings);
+        }
+
         public async Task FinishUserTask(string taskId, string correlationId, Dictionary<string, object> result)
         {
             try
