@@ -20,8 +20,8 @@ namespace warehouse.picking.api.Hubs
 
         Task DoInputScan();
         
-        Task DoInputQuantity();
-
+        Task DoInputQuantity(bool adjust);
+        
         Task DoInputSelection(SelectionOptions options);
         
     }
@@ -78,8 +78,12 @@ namespace warehouse.picking.api.Hubs
                                 Clients.Group(correlationId).DoInputSelection(options);
                                 handledTask = t;
                                 break;
-                            case var t when t.Id.Contains("Intake.UT.Input.Quantity"): 
-                                Clients.Group(correlationId).DoInputQuantity();
+                            case var t when t.Id.Equals("Intake.UT.Input.Quantity.Adjusted"): 
+                                Clients.Group(correlationId).DoInputQuantity(true);
+                                handledTask = t;
+                                break;
+                            case var t when t.Id.Equals("Intake.UT.Input.Quantity"): 
+                                Clients.Group(correlationId).DoInputQuantity(false);
                                 handledTask = t;
                                 break;
                         }

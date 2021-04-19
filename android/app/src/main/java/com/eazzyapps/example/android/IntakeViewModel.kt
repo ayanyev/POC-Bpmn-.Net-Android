@@ -4,19 +4,26 @@ import android.util.Base64
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.eazzyapps.example.android.IntakeViewModel.Task.*
 import com.eazzyapps.example.android.domain.SelectionOptions
 import com.microsoft.signalr.HubConnectionBuilder
-import com.microsoft.signalr.TypeReference
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType
 
 class IntakeViewModel : ViewModel() {
+
+    public sealed class Task(val text: String) {
+        object NoTask : Task("")
+        object Scan: Task("Scan")
+        object Quantity : Task("Set quantity")
+        object AdjustQuantity : Task("Adjust quantity")
+        object Selection : Task("Select")
+    }
 
     val name = arrayOf("Max" /*"Jorg", "Michael"*/).random()
 
     private val credentials =
-        Base64.encodeToString("$name:ertryrtytr".toByteArray(), Base64.NO_WRAP);
+        Base64.encodeToString("$name:ertryrtytr".toByteArray(), Base64.NO_WRAP)
 
     private val hubConnection =
         HubConnectionBuilder
@@ -25,6 +32,8 @@ class IntakeViewModel : ViewModel() {
             .build()
 
     val isProcessRunning = MutableStateFlow(false)
+
+    val currentTask = MutableStateFlow<Task>(NoTask)
 
     init {
 
@@ -58,10 +67,25 @@ class IntakeViewModel : ViewModel() {
                 Articles::class.java
             )
 
-            hubConnection.on(
-                "DoInputSelection",
+            hubConnection.on("DoInputQuantity") {
+                currentTask.value = Selection
+            }
+
+            hubConnection.on("DoInputScan") {
+                currentTask.value = Scan
+            }
+
+            hubConnection.on("DoInputQuantity",
+                { isForced ->
+                    currentTask.value = if (isForced) AdjustQuantity else Quantity
+                },
+                Boolean::class.java
+            )
+
+            hubConnection.on("DoInputSelection",
                 { options ->
                     Log.d("SignalR", "$options")
+                    currentTask.value = Selection
                 },
                 SelectionOptions::class.java
             )
