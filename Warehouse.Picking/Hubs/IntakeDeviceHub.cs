@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using AtlasEngine.UserTasks;
 using Microsoft.AspNetCore.SignalR;
+using AtlasEngine.Logging;
 using warehouse.picking.api.Domain;
 using Warehouse.Picking.Api.Processes;
 using Warehouse.Picking.Api.Processes.UserTasks;
@@ -30,6 +31,8 @@ namespace warehouse.picking.api.Hubs
         private const string ProcessModelId = "intake";
 
         private const string ProcessStartEvent = "";
+        
+        private readonly ILogger _logger = ConsoleLogger.Default;
 
         private readonly IProcessClient _processClient;
 
@@ -66,6 +69,7 @@ namespace warehouse.picking.api.Hubs
                     UserTask handledTask = null;
                     foreach (var task in tasks)
                     {
+                        _logger.Log(LogLevel.Debug, $"Exec: Handled task: {task.Id}");
                         switch (task)
                         {
                             case var t when t.Id.Equals("Intake.UT.Input.NoteId"):

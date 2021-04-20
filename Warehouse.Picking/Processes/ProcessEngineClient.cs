@@ -17,6 +17,8 @@ namespace Warehouse.Picking.Api.Processes
     {
         private const string BaseUrl = "http://localhost:56000";
 
+        private readonly ILogger _logger = ConsoleLogger.Default;
+
         private readonly IProcessDefinitionsClient _defClient =
             ClientFactory.CreateProcessDefinitionsClient(new Uri(BaseUrl));
 
@@ -25,6 +27,10 @@ namespace Warehouse.Picking.Api.Processes
 
         private readonly IUserTaskClient _userTaskClient =
             ClientFactory.CreateUserTaskClient(new Uri(BaseUrl));
+
+        public ProcessEngineClient()
+        {
+        }
 
         public static IExternalTaskClient CreateExternalTaskClient()
         {
@@ -52,8 +58,10 @@ namespace Warehouse.Picking.Api.Processes
             
             void Callback(IEnumerable<UserTask> tasks)
             {
+                _logger.Log(LogLevel.Debug, $"Start: Handled task: {getRecentTaskId()}");
                 var filteredTasks = tasks.ToList().FindAll(t => !t.Id.Equals(getRecentTaskId()));
                 updateRecentTaskId(action(filteredTasks));
+                _logger.Log(LogLevel.Debug, $"End: Handled task: {getRecentTaskId()}");
             }
 
             _userTaskClient.SubscribeForPendingUserTask(Callback, subscriptionSettings);

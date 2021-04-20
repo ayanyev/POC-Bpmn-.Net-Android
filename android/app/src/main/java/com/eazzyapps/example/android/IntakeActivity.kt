@@ -14,7 +14,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.eazzyapps.example.android.IntakeViewModel.TaskCategory
 import com.eazzyapps.example.android.IntakeViewModel.TaskCategory.*
 
 class IntakeActivity : AppCompatActivity() {
@@ -32,7 +31,7 @@ fun ScanLayoutPreview() {
             .wrapContentHeight()
             .width(200.dp),
         initial = "345454",
-        category = IntakeViewModel.Task(Selection, "").category,
+        label = Selection.text,
         isEnabled = true,
         onClick = {}
     )
@@ -40,7 +39,7 @@ fun ScanLayoutPreview() {
 
 
 @Composable
-fun TestLayout(modifier: Modifier, initial: String, category: TaskCategory, isEnabled: Boolean, onClick: (String) -> Unit) {
+fun TestLayout(modifier: Modifier, initial: String, label: String, isEnabled: Boolean, onClick: (String) -> Unit) {
     Row(
         verticalAlignment = Alignment.Bottom,
         modifier = modifier.wrapContentHeight()
@@ -53,7 +52,7 @@ fun TestLayout(modifier: Modifier, initial: String, category: TaskCategory, isEn
                 .wrapContentHeight()
                 .fillMaxWidth(fraction = 0.6f),
             value = text,
-            label = { Text(category.text) },
+            label = { Text(label) },
             enabled = isEnabled,
             onValueChange = { text = it }
         )
@@ -97,7 +96,7 @@ fun TextScreenUi() {
                     .wrapContentHeight()
                     .fillMaxWidth(),
                 initial = "note1",
-                category = currentTask.category,
+                label = "note id",
                 isEnabled = currentTask.category is Input,
                 onClick = {
                     viewModel.sendInputData(currentTask.toResult(it))
@@ -111,7 +110,7 @@ fun TextScreenUi() {
                     .wrapContentHeight()
                     .fillMaxWidth(),
                 initial = "567.456.7.9",
-                category = currentTask.category,
+                label = Scan.text,
                 isEnabled = currentTask.category is Scan,
                 onClick = {
                     viewModel.sendInputData(currentTask.toResult(it))
@@ -125,7 +124,7 @@ fun TextScreenUi() {
                     .wrapContentHeight()
                     .fillMaxWidth(),
                 initial = "1",
-                category = Selection,
+                label = Selection.text,
                 isEnabled = currentTask.category is Selection,
                 onClick = {
                     viewModel.sendInputData(currentTask.toResult(it.toInt()))
@@ -139,7 +138,7 @@ fun TextScreenUi() {
                     .wrapContentHeight()
                     .fillMaxWidth(),
                 initial = "25",
-                category = if (currentTask.category is AdjustQuantity) AdjustQuantity else Quantity,
+                label = if (currentTask.category is AdjustQuantity) AdjustQuantity.text else Quantity.text,
                 isEnabled = (currentTask.category is Quantity) || (currentTask.category is AdjustQuantity),
                 onClick = {
                     viewModel.sendInputData(currentTask.toResult(it.toInt()))

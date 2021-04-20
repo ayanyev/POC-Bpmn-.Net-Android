@@ -25,8 +25,8 @@ class IntakeViewModel : ViewModel() {
             fun of(category: String, key: String): TaskCategory = when {
                 category.contains(Selection.name) -> Selection
                 category.contains(Scan.name) -> Scan
-                category.contains(Quantity.name) -> Quantity
                 category.contains(AdjustQuantity.name) -> AdjustQuantity
+                category.contains(Quantity.name) -> Quantity
                 else -> Input(category, key)
             }
 
