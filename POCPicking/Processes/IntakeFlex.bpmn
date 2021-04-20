@@ -238,7 +238,7 @@ Output:
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="barcode" label="Scan result" type="string" defaultValue="" />
-          <camunda:formField id="noteId" label="note Id" type="string" defaultValue="dataObjects.NoteInfo.NoteId" />
+          <camunda:formField id="noteId" label="note Id" type="string" defaultValue="${dataObjects.NoteInfo.noteId}" />
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0qse2lc</bpmn:incoming>
@@ -270,7 +270,7 @@ codes: String[]
     <bpmn:dataObject id="DataObject_1bc0uwg" />
     <bpmn:dataObjectReference id="NoteInfo" name="Note info" dataObjectRef="DataObject_0erf8oa">
       <bpmn:documentation>- get current note id
-dataObjects.NoteInfo.NoteId</bpmn:documentation>
+dataObjects.NoteInfo.noteId</bpmn:documentation>
     </bpmn:dataObjectReference>
     <bpmn:dataObject id="DataObject_0erf8oa" />
     <bpmn:dataObjectReference id="IterationInfo" name="Iteration info" dataObjectRef="DataObject_0vh8sj2" />

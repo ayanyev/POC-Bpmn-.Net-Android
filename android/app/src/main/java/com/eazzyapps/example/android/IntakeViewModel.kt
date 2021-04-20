@@ -67,16 +67,14 @@ class IntakeViewModel : ViewModel() {
                 Articles::class.java
             )
 
-            hubConnection.on("DoInputQuantity") {
-                currentTask.value = Selection
-            }
-
             hubConnection.on("DoInputScan") {
+                Log.d("SignalR", "DoInputScan")
                 currentTask.value = Scan
             }
 
             hubConnection.on("DoInputQuantity",
                 { isForced ->
+                    Log.d("SignalR", "DoInputQuantity")
                     currentTask.value = if (isForced) AdjustQuantity else Quantity
                 },
                 Boolean::class.java
@@ -84,6 +82,7 @@ class IntakeViewModel : ViewModel() {
 
             hubConnection.on("DoInputSelection",
                 { options ->
+                    Log.d("SignalR", "DoInputSelection")
                     Log.d("SignalR", "$options")
                     currentTask.value = Selection
                 },

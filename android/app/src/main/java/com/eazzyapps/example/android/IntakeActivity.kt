@@ -80,7 +80,7 @@ fun TextScreenUi() {
 
     val isRunning by viewModel.isProcessRunning.collectAsState()
 
-    val currentTask by viewModel.currentTask.collectAsState<Task>()
+    val currentTask by viewModel.currentTask.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -126,7 +126,7 @@ fun TextScreenUi() {
                     .wrapContentHeight()
                     .fillMaxWidth(),
                 initial = "1",
-                category = currentTask,
+                category = Selection,
                 isEnabled = currentTask is Selection,
                 onClick = {
                     viewModel.sendInputData(mapOf("bundleId" to it.toInt()))
@@ -140,7 +140,7 @@ fun TextScreenUi() {
                     .wrapContentHeight()
                     .fillMaxWidth(),
                 initial = "25",
-                category = currentTask,
+                category = if (currentTask is AdjustQuantity) AdjustQuantity else Quantity,
                 isEnabled = (currentTask is Quantity) || (currentTask is AdjustQuantity),
                 onClick = {
                     viewModel.sendQuantity(it.toInt(), isForced = currentTask is AdjustQuantity)
