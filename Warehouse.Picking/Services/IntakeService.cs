@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
 using warehouse.picking.api.Domain;
+using warehouse.picking.api.Hubs;
 using Warehouse.Picking.Api.Repositories;
 
 namespace Warehouse.Picking.Api.Services
@@ -12,24 +14,29 @@ namespace Warehouse.Picking.Api.Services
 
         private readonly ILocationRepository _locationRepository;
 
-        private readonly Dictionary<string, List<Article>> _noteArticles = new();
+        private readonly IHubContext<IntakeDeviceHub> _intakeDeviceHubContext;
+        
+        private readonly IHubContext<IntakeDashboardHub> _intakeDashboardHubContext;
 
-        public IntakeService(IArticleRepository articleRepository, ILocationRepository locationRepository)
+        public IntakeService(IArticleRepository articleRepository, ILocationRepository locationRepository, IHubContext<IntakeDeviceHub> intakeDeviceHubContext, IHubContext<IntakeDashboardHub> intakeDashboardHubContext)
         {
             _articleRepository = articleRepository;
             _locationRepository = locationRepository;
+            _intakeDeviceHubContext = intakeDeviceHubContext;
+            _intakeDashboardHubContext = intakeDashboardHubContext;
         }
 
-        public async Task<bool> FetchArticlesForDeliveryNote(string noteId)
+        public async Task<bool> FetchArticlesForDeliveryNote(string correlationId, string noteId)
         {
-            var articles = await _articleRepository.GetByNoteId(noteId);
-            _noteArticles.Add(noteId, articles);
+            var articles = await _articleRepository.FetchByNoteId(noteId);
+            await _intakeDeviceHubContext.Clients.Group(correlationId).SendAsync("ArticlesListReceived", new Articles(articles));
+            await _intakeDashboardHubContext.Clients.Group("Dashboard").SendAsync("DeliveryArticles", articles);
             return true;
         }
 
         public HashSet<string> GetBarcodesForUnfinishedArticles(string noteId)
         {
-            return _noteArticles[noteId]
+            return _articleRepository.FindByNoteId(noteId)
                 .Where(a => a.IsUnfinished())
                 .Select(a => a.Gtin)
                 .ToHashSet();
@@ -37,14 +44,14 @@ namespace Warehouse.Picking.Api.Services
 
         public Article UpdateArticleQuantity(string noteId, int articleId, int quantity)
         {
-            var article = _noteArticles[noteId].Find(a => a.Id.Equals(articleId));
+            var article = _articleRepository.FindByNoteId(noteId).Find(a => a.Id.Equals(articleId));
             article?.UpdateProcessedQuantity(quantity);
             return article;
         }
 
         private List<Article> GetUnfinishedArticlesByGtin(string noteId, string gtin)
         {
-            return _noteArticles[noteId]
+            return _articleRepository.FindByNoteId(noteId)
                 .Where(a => a.Gtin == gtin && a.IsUnfinished())
                 .ToList();
         }

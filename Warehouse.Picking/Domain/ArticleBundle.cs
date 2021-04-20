@@ -1,5 +1,8 @@
+using System;
+
 namespace warehouse.picking.api.Domain
 {
+    [Serializable]
     public class ArticleBundle
     {
         public int Id { get; set; }

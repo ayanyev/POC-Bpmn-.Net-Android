@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using warehouse.picking.api.Domain;
 using Warehouse.Picking.Api.Processes;
@@ -20,6 +21,7 @@ namespace warehouse.picking.api.Hubs
 
     }
 
+    // [Authorize]
     public class PickersHub : Hub<IPickerClient>
     {
         private const string ProcessModelId = "PickerShiftProcess";
@@ -38,7 +40,7 @@ namespace warehouse.picking.api.Hubs
             _processClient = processClient;
             _taskRepository = taskRepository;
         }
-
+        
         public async Task CheckActiveShift(string name)
         {
             var picker = _pickerRepository.FindByName(name);
@@ -59,11 +61,11 @@ namespace warehouse.picking.api.Hubs
         public async Task StartShift(string name)
         {
             var picker = _pickerRepository.FindByName(name) ?? new Picker(Context.ConnectionId, name);
-            if (picker.InstanceId == null || !await _processClient.IsProcessInstanceRunning(picker.InstanceId))
+            if (picker.ProcessInstanceId == null || !await _processClient.IsProcessInstanceRunning(picker.ProcessInstanceId))
             {
                 var startResponse =
                     await _processClient.CreateProcessInstanceByModelId(ProcessModelId, ProcessStartEvent, picker);
-                picker.InstanceId = startResponse.ProcessInstanceId;
+                picker.ProcessInstanceId = startResponse.ProcessInstanceId;
                 if (_pickerRepository.StartShift(picker))
                 {
                     await Clients.Caller.ShiftStartConfirmed();
@@ -91,7 +93,7 @@ namespace warehouse.picking.api.Hubs
             var picker = _pickerRepository.FindByName(name);
             if (picker == null) return;
 
-            if (await _processClient.TerminateProcessInstanceById(picker.InstanceId) &&
+            if (await _processClient.TerminateProcessInstanceById(picker.ProcessInstanceId) &&
                 _pickerRepository.StopShift(picker))
             {
                 await Clients.Caller.ShiftStopConfirmed();
@@ -106,7 +108,7 @@ namespace warehouse.picking.api.Hubs
             _taskRepository.Update(task);
             await Clients.Caller.TaskRemoved(task.Guid.ToString());
 
-            var tasks = await _processClient.GetAllUserTasks(picker.InstanceId);
+            var tasks = await _processClient.GetAllUserTasks(picker.ProcessInstanceId);
             
             var userTask = tasks.First( t => t.Id.Equals("Task_wait_for_execution"));
             

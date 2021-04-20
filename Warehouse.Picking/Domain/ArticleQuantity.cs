@@ -1,5 +1,8 @@
+using System;
+
 namespace warehouse.picking.api.Domain
 {
+    [Serializable]
     public class ArticleQuantity
     {
         public int Expected { get; set; }

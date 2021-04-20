@@ -8,6 +8,7 @@ val composeVersion = "1.0.0-beta04"
 val ktor_version = "1.5.1"
 val lifecycle_version = "2.3.0"
 val koin_version = "2.2.2"
+val kotlin_version = "1.4.32"
 
 android {
     compileSdkVersion(30)
@@ -23,6 +24,9 @@ android {
     }
 
     buildTypes {
+        debug {
+            debuggable(true)
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
@@ -60,6 +64,8 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.2.0")
     implementation("com.google.android.material:material:1.3.0")
 
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
+
     implementation ("androidx.compose.compiler:compiler:$composeVersion")
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.runtime:runtime:$composeVersion")
@@ -75,8 +81,8 @@ dependencies {
     implementation("io.ktor:ktor-client-okhttp:$ktor_version")
     implementation("io.ktor:ktor-client-websockets:$ktor_version")
 
-    implementation("com.microsoft.signalr:signalr:1.0.0")
-    implementation("org.slf4j:slf4j-jdk14:1.7.25")
+    implementation("com.microsoft.signalr:signalr:6.0.0-preview.3.21201.13")
+//    implementation("org.slf4j:slf4j-android:1.7.30")
 
     implementation("org.koin:koin-android:$koin_version")
     implementation("org.koin:koin-androidx-ext:$koin_version")

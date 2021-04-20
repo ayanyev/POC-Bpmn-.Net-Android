@@ -5,6 +5,7 @@ using Warehouse.Picking.Api.Processes;
 using Warehouse.Picking.Api.Processes.ExternalTasks;
 using Warehouse.Picking.Api.Processes.ExternalTasks.Intake;
 using Warehouse.Picking.Api.Processes.ExternalTasks.Picking;
+using Warehouse.Picking.Api.Processes.UserTasks;
 
 namespace warehouse.picking.api.Processes.Extensions
 {
@@ -27,6 +28,7 @@ namespace warehouse.picking.api.Processes.Extensions
                     services.AddSingleton<MatchArticleByGtinAndBundleHandler>();
                     services.AddSingleton<BookStockyardLocationHandler>();
                     services.AddSingleton<UpdateArticleHandler>();
+                    services.AddSingleton<IUserTaskPayloadFactory, IntakeUserTaskPayloadFactory>();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(appName), appName, null);

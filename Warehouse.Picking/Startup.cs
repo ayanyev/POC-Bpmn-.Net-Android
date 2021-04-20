@@ -9,6 +9,8 @@ using warehouse.picking.api.Hubs;
 using warehouse.picking.api.Processes.Extensions;
 using Warehouse.Picking.Api.Repositories.Extensions;
 using Warehouse.Picking.Api.Services.Extensions;
+using Warehouse.Picking.Api.Utilities;
+using ZNetCS.AspNetCore.Authentication.Basic;
 
 namespace Warehouse.Picking.Api
 {
@@ -34,6 +36,18 @@ namespace Warehouse.Picking.Api
             
             services.AddControllers();  
             services.AddSignalR();
+            
+            services.AddScoped<AuthenticationEvents>();
+
+            services
+                .AddAuthentication(BasicAuthenticationDefaults.AuthenticationScheme)
+                .AddBasicAuthentication(
+                    options =>
+                    {
+                        options.Realm = "My Application";
+                        options.EventsType = typeof(AuthenticationEvents);
+                    });
+            
             services.AddRepositories(_appName);
             services.AddServices(_appName);
             services.AddProcessServices(_appName);
@@ -63,6 +77,8 @@ namespace Warehouse.Picking.Api
             app.UseAuthorization();
 
             app.UseDefaultFiles();
+            
+            app.UseAuthentication();
   
             app.UseEndpoints(endpoints =>  
             {  
@@ -75,6 +91,7 @@ namespace Warehouse.Picking.Api
                         break;
                     case AppName.IntakeApp:
                         endpoints.MapHub<IntakeDashboardHub>("/intakedashboardhub");
+                        endpoints.MapHub<IntakeDeviceHub>("/intakedevicehub");
                         break;
                 }
             });  

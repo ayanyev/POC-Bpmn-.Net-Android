@@ -53,7 +53,7 @@ namespace warehouse.picking.api.Hubs
             await Clients.Client(Context.ConnectionId).AvailableTasks(res);
         }
 
-        public async void CreateNewTask()
+        public void CreateNewTask()
         {
             _taskRepository.Create();
         }

@@ -1,20 +1,26 @@
 package com.eazzyapps.example.android
 
+import android.util.Base64
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.microsoft.signalr.HubConnection
 import com.microsoft.signalr.HubConnectionBuilder
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import java.util.Base64.getEncoder
 
 class SignalRViewModel : ViewModel() {
+
+    val name = arrayOf("Max", /*"Jorg", "Michael"*/).random()
+
+    private val credentials = Base64.encodeToString("$name:ertryrtytr".toByteArray(), Base64.NO_WRAP);
 
     private val hubConnection =
         HubConnectionBuilder
             .create("http://10.0.2.2:5000/pickershub")
+            .withHeader("Authorization", "Basic $credentials")
             .build()
-
-    val name = arrayOf("Max", "Jorg", "Michael").random()
 
     val isOnShift = MutableStateFlow(false)
 
@@ -25,6 +31,8 @@ class SignalRViewModel : ViewModel() {
     init {
 
         viewModelScope.launch {
+
+            Log.d("ws", credentials)
 
             hubConnection.start()
                 .subscribe(

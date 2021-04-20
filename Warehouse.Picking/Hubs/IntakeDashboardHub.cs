@@ -56,7 +56,7 @@ namespace warehouse.picking.api.Hubs
 
         public async void GetDeliveryArticles(string noteId)
         {
-            var res = (await _articleRepository.GetByNoteId(noteId)).Select(a => new SimplifiedArticle(a)).ToList();
+            var res = _articleRepository.FindByNoteId(noteId).Select(a => new SimplifiedArticle(a)).ToList();
             await Clients.Client(Context.ConnectionId).DeliveryArticles(res);
         }
 

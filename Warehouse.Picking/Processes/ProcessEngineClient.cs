@@ -16,20 +16,68 @@ namespace Warehouse.Picking.Api.Processes
     public class ProcessEngineClient : IProcessClient
     {
         private const string BaseUrl = "http://localhost:56000";
-        
-        private readonly IProcessDefinitionsClient _defClient = 
+
+        private readonly IProcessDefinitionsClient _defClient =
             ClientFactory.CreateProcessDefinitionsClient(new Uri(BaseUrl));
-        
-        private readonly IProcessInstancesClient _instanceClient = 
+
+        private readonly IProcessInstancesClient _instanceClient =
             ClientFactory.CreateProcessInstancesClient(new Uri(BaseUrl));
-        
-        private readonly IUserTaskClient _userTaskClient = 
+
+        private readonly IUserTaskClient _userTaskClient =
             ClientFactory.CreateUserTaskClient(new Uri(BaseUrl));
 
         public static IExternalTaskClient CreateExternalTaskClient()
         {
             return ClientFactory.CreateExternalTaskClient(new Uri(BaseUrl),
                 logger: ConsoleLogger.Default);
+        }
+
+        public void SubscribeForPendingUserTasks(string correlationId, Func<IEnumerable<UserTask>, UserTask> action)
+        {
+            var queryOptions = new QueryUserTasksOptions();
+            queryOptions.FilterByState(UserTaskState.Suspended);
+            queryOptions.FilterByCorrelationId(correlationId);
+
+            var subscriptionSettings = new SubscriptionSettings {SubscribeOnce = false};
+            subscriptionSettings.ConfigureQuery(queryOptions);
+            
+            var handledTaskId = "";
+
+            Action<UserTask> updateRecentTaskId = task =>
+            {
+                handledTaskId = task?.Id ?? handledTaskId;
+            };
+
+            Func <string> getRecentTaskId = () => handledTaskId;
+            
+            void Callback(IEnumerable<UserTask> tasks)
+            {
+                var filteredTasks = tasks.ToList().FindAll(t => !t.Id.Equals(getRecentTaskId()));
+                updateRecentTaskId(action(filteredTasks));
+            }
+
+            _userTaskClient.SubscribeForPendingUserTask(Callback, subscriptionSettings);
+        }
+
+        public async Task FinishUserTask(string taskId, string correlationId, Dictionary<string, object> result)
+        {
+            try
+            {
+                var tasks = await _userTaskClient.QueryAsync(
+                    options =>
+                    {
+                        options.FilterByState(UserTaskState.Suspended);
+                        options.FilterByCorrelationId(correlationId);
+                    });
+                var task = tasks.First(t => t.Id.Contains(taskId));
+                await FinishUserTask(task, result);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
 
         public async Task FinishUserTask(UserTask task, Dictionary<string, object> result)
@@ -53,11 +101,25 @@ namespace Warehouse.Picking.Api.Processes
             return res.Count > 0 && res.First().State == ProcessState.Running;
         }
 
-        public async Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string modelId, string startEvent, T token)
+        public async Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string modelId,
+            string startEvent, T token)
+        {
+            return await CreateProcessInstanceByModelId(modelId, startEvent, token, "");
+        }
+
+        public async Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string modelId,
+            string startEvent, T token, string correlationId)
         {
             try
             {
-                return await _defClient.StartProcessInstanceAsync(modelId, startEvent, token);
+                // terminate process with same correlationId before start new
+                // temporary solution
+                (await _instanceClient.QueryAsync(
+                    options => options.FilterByCorrelationId(correlationId)
+                )).ToList().ForEach(
+                    p => _instanceClient.TerminateProcessInstanceAsync(p.Id)
+                );
+                return await _defClient.StartProcessInstanceAsync(modelId, startEvent, token, correlationId);
             }
             catch (Exception e)
             {
@@ -79,6 +141,5 @@ namespace Warehouse.Picking.Api.Processes
                 return false;
             }
         }
-        
     }
 }
