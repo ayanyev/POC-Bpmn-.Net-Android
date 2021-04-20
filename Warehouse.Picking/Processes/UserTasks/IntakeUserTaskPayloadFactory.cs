@@ -32,12 +32,12 @@ namespace Warehouse.Picking.Api.Processes.UserTasks
     internal class NoteGtinPayload
     {
         public string Barcode { get; }
-        public string? NoteId { get; }
+        public string NoteId { get; }
 
         public NoteGtinPayload(string barcode, string noteId)
         {
             Barcode = barcode;
-            NoteId = noteId;
+            NoteId = "note1";
         }
     }
 }

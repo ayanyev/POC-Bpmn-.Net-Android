@@ -4,7 +4,7 @@ import android.util.Base64
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.eazzyapps.example.android.IntakeViewModel.Task.*
+import com.eazzyapps.example.android.IntakeViewModel.TaskCategory.*
 import com.eazzyapps.example.android.domain.SelectionOptions
 import com.microsoft.signalr.HubConnectionBuilder
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,12 +12,57 @@ import kotlinx.coroutines.launch
 
 class IntakeViewModel : ViewModel() {
 
-    public sealed class Task(val text: String) {
-        object NoTask : Task("")
-        object Scan: Task("Scan")
-        object Quantity : Task("Set quantity")
-        object AdjustQuantity : Task("Adjust quantity")
-        object Selection : Task("Select")
+    sealed class TaskCategory(val text: String, val name: String) {
+        object NoTask : TaskCategory("", "")
+        class Input(taskId: String, text: String) : TaskCategory(text, taskId)
+        object Scan : TaskCategory("Scan", "Intake.UT.Input.Scan")
+        object Quantity : TaskCategory("Set quantity", "Intake.UT.Input.Quantity")
+        object AdjustQuantity : TaskCategory("Adjust quantity", "Intake.UT.Input.Quantity.Adjust")
+        object Selection : TaskCategory("Select", "Intake.UT.Input.Selection")
+
+        companion object {
+
+            fun of(category: String, key: String): TaskCategory = when {
+                category.contains(Selection.name) -> Selection
+                category.contains(Scan.name) -> Scan
+                category.contains(Quantity.name) -> Quantity
+                category.contains(AdjustQuantity.name) -> AdjustQuantity
+                else -> Input(category, key)
+            }
+
+        }
+
+    }
+
+    class Task(
+        val category: TaskCategory,
+        private val valueKey: String
+    ) {
+
+        private val resultMap = mutableMapOf<String, Any>()
+
+        init {
+
+            if (category is Quantity || category is AdjustQuantity) {
+                resultMap["forced_valid"] = category is AdjustQuantity
+            }
+
+        }
+
+        fun toResult(result: Any): Map<String, Any> {
+            resultMap.putAll(
+                arrayOf(
+                    "taskId" to category.name,
+                    valueKey to result
+                )
+            )
+            return resultMap
+        }
+
+        companion object {
+            fun default() = Task(NoTask, "")
+        }
+
     }
 
     val name = arrayOf("Max" /*"Jorg", "Michael"*/).random()
@@ -33,7 +78,7 @@ class IntakeViewModel : ViewModel() {
 
     val isProcessRunning = MutableStateFlow(false)
 
-    val currentTask = MutableStateFlow<Task>(NoTask)
+    val currentTask = MutableStateFlow(Task.default())
 
     init {
 
@@ -67,26 +112,32 @@ class IntakeViewModel : ViewModel() {
                 Articles::class.java
             )
 
-            hubConnection.on("DoInputScan") {
-                Log.d("SignalR", "DoInputScan")
-                currentTask.value = Scan
-            }
-
-            hubConnection.on("DoInputQuantity",
-                { isForced ->
-                    Log.d("SignalR", "DoInputQuantity")
-                    currentTask.value = if (isForced) AdjustQuantity else Quantity
+            hubConnection.on(
+                "DoInput",
+                { taskId, key ->
+                    Log.d("SignalR", "DoInputScan: $taskId, key = $key")
+                    currentTask.value = Task(Companion.of(taskId, key), key)
                 },
-                Boolean::class.java
+                String::class.java, String::class.java
             )
 
-            hubConnection.on("DoInputSelection",
-                { options ->
-                    Log.d("SignalR", "DoInputSelection")
-                    Log.d("SignalR", "$options")
-                    currentTask.value = Selection
+            hubConnection.on(
+                "DoInputQuantity",
+                { taskId, key ->
+                    Log.d("SignalR", "DoInputQuantity: $taskId, key = $key")
+                    currentTask.value = Task(Companion.of(taskId, key), key)
                 },
-                SelectionOptions::class.java
+                String::class.java, String::class.java
+            )
+
+            hubConnection.on(
+                "DoInputSelection",
+                { taskId, key, options ->
+                    Log.d("SignalR", "DoInputSelection: $taskId, key = $key")
+                    Log.d("SignalR", "options = $options")
+                    currentTask.value = Task(Selection, key)
+                },
+                String::class.java, String::class.java, SelectionOptions::class.java
             )
 
         }
@@ -99,17 +150,9 @@ class IntakeViewModel : ViewModel() {
 
     fun stopProcess() = hubConnection.send("StopIntakeProcess")
 
-    fun sendNoteId(noteId: String) = hubConnection.send("ProvideNoteId", noteId)
-
-    fun sendScannedData(barcode: String) = hubConnection.send("SendScanResult", barcode)
-
-    fun sendInputData(map: Map<String, Any>) = hubConnection.send("SendInput", map)
-
-    fun sendQuantity(quantity: Int, isForced: Boolean = false) = sendInputData(
-        mapOf(
-            "quantity" to quantity,
-            "forced_valid" to "$isForced"
-        )
-    )
+    fun sendInputData(map: Map<String, Any>) {
+        Log.d("SignalR", map.toString())
+        hubConnection.send("SendInput", map)
+    }
 
 }

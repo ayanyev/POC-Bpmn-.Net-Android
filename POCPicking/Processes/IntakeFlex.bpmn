@@ -103,7 +103,7 @@ Output:
     <bpmn:sequenceFlow id="Flow_0nv6e22" name="yes" sourceRef="Gateway_1saly70" targetRef="TaskGetLocation">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">token.current.valid</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0imho6z" sourceRef="Intake.UT.Input.Any" targetRef="Activity_0f7n2at" />
+    <bpmn:sequenceFlow id="Flow_0imho6z" sourceRef="Intake.UT.Input.Selection.Bundle" targetRef="Activity_0f7n2at" />
     <bpmn:sequenceFlow id="Flow_0d58h5u" sourceRef="Intake.UT.Input.Quantity" targetRef="Activity_1qrq2et" />
     <bpmn:sequenceFlow id="Flow_0lnum3g" sourceRef="Activity_1qrq2et" targetRef="Gateway_1saly70" />
     <bpmn:sequenceFlow id="Flow_1v2rmxc" sourceRef="Intake.UT.Input.Scan.Location" targetRef="Gateway_0asxaek" />
@@ -112,7 +112,7 @@ Output:
     <bpmn:sequenceFlow id="Flow_1gxeppg" name="" sourceRef="Activity_1hwv4ke" targetRef="Activity_1c5h8vu" />
     <bpmn:sequenceFlow id="Flow_0118jh7" sourceRef="TaskGetLocation" targetRef="Intake.UT.Input.Scan.Location" />
     <bpmn:sequenceFlow id="Flow_0pz98iz" sourceRef="Intake.UT.Input.Scan.Article" targetRef="Gateway_0j0867g" />
-    <bpmn:sequenceFlow id="Flow_0o9v2wx" name="yes" sourceRef="Gateway_0j0867g" targetRef="Intake.UT.Input.Any">
+    <bpmn:sequenceFlow id="Flow_0o9v2wx" name="yes" sourceRef="Gateway_0j0867g" targetRef="Intake.UT.Input.Selection.Bundle">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">dataObjects.Barcodes.includes(token.current.barcode)</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0qse2lc" name="no" sourceRef="Gateway_0j0867g" targetRef="Intake.UT.Input.Scan.Article" />
@@ -292,7 +292,7 @@ dataObjects.NoteInfo.noteId</bpmn:documentation>
 2. Article for given barcode and bundle</bpmn:documentation>
     </bpmn:dataObjectReference>
     <bpmn:dataObject id="DataObject_0d452k8" />
-    <bpmn:userTask id="Intake.UT.Input.Any" name="determine bundle" camunda:formKey="Form Key">
+    <bpmn:userTask id="Intake.UT.Input.Selection.Bundle" name="determine bundle" camunda:formKey="Form Key">
       <bpmn:documentation>Manually selects correct article from the list of bundles for the given barcode
 Input:
 - barcode
@@ -554,7 +554,7 @@ Output:
           <dc:Bounds x="682" y="-109" width="52" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1rt2tzb_di" bpmnElement="Intake.UT.Input.Any">
+      <bpmndi:BPMNShape id="Activity_1rt2tzb_di" bpmnElement="Intake.UT.Input.Selection.Bundle">
         <dc:Bounds x="504" y="87" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="DataOutputAssociation_0ac0cb5_di" bpmnElement="DataOutputAssociation_0ac0cb5">

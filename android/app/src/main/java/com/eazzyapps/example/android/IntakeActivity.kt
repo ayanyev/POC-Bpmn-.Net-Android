@@ -14,8 +14,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.eazzyapps.example.android.IntakeViewModel.Task
-import com.eazzyapps.example.android.IntakeViewModel.Task.*
+import com.eazzyapps.example.android.IntakeViewModel.TaskCategory
+import com.eazzyapps.example.android.IntakeViewModel.TaskCategory.*
 
 class IntakeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,7 +32,7 @@ fun ScanLayoutPreview() {
             .wrapContentHeight()
             .width(200.dp),
         initial = "345454",
-        category = Scan,
+        category = IntakeViewModel.Task(Selection, "").category,
         isEnabled = true,
         onClick = {}
     )
@@ -40,7 +40,7 @@ fun ScanLayoutPreview() {
 
 
 @Composable
-fun TestLayout(modifier: Modifier, initial: String, category: Task, isEnabled: Boolean, onClick: (String) -> Unit) {
+fun TestLayout(modifier: Modifier, initial: String, category: TaskCategory, isEnabled: Boolean, onClick: (String) -> Unit) {
     Row(
         verticalAlignment = Alignment.Bottom,
         modifier = modifier.wrapContentHeight()
@@ -92,18 +92,17 @@ fun TextScreenUi() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            OutlinedButton(
+            TestLayout(
                 modifier = Modifier
                     .wrapContentHeight()
                     .fillMaxWidth(),
-                onClick = { viewModel.sendNoteId("note1") },
-                enabled = isRunning
-            ) {
-                Text(
-                    textAlign = TextAlign.Center,
-                    text = "Grab articles"
-                )
-            }
+                initial = "note1",
+                category = currentTask.category,
+                isEnabled = currentTask.category is Input,
+                onClick = {
+                    viewModel.sendInputData(currentTask.toResult(it))
+                }
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -112,10 +111,10 @@ fun TextScreenUi() {
                     .wrapContentHeight()
                     .fillMaxWidth(),
                 initial = "567.456.7.9",
-                category = currentTask,
-                isEnabled = currentTask is Scan,
+                category = currentTask.category,
+                isEnabled = currentTask.category is Scan,
                 onClick = {
-                    viewModel.sendScannedData(it)
+                    viewModel.sendInputData(currentTask.toResult(it))
                 }
             )
 
@@ -127,9 +126,9 @@ fun TextScreenUi() {
                     .fillMaxWidth(),
                 initial = "1",
                 category = Selection,
-                isEnabled = currentTask is Selection,
+                isEnabled = currentTask.category is Selection,
                 onClick = {
-                    viewModel.sendInputData(mapOf("bundleId" to it.toInt()))
+                    viewModel.sendInputData(currentTask.toResult(it.toInt()))
                 }
             )
 
@@ -140,10 +139,10 @@ fun TextScreenUi() {
                     .wrapContentHeight()
                     .fillMaxWidth(),
                 initial = "25",
-                category = if (currentTask is AdjustQuantity) AdjustQuantity else Quantity,
-                isEnabled = (currentTask is Quantity) || (currentTask is AdjustQuantity),
+                category = if (currentTask.category is AdjustQuantity) AdjustQuantity else Quantity,
+                isEnabled = (currentTask.category is Quantity) || (currentTask.category is AdjustQuantity),
                 onClick = {
-                    viewModel.sendQuantity(it.toInt(), isForced = currentTask is AdjustQuantity)
+                    viewModel.sendInputData(currentTask.toResult(it.toInt()))
                 }
             )
 

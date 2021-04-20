@@ -18,11 +18,11 @@ namespace warehouse.picking.api.Hubs
 
         Task ArticlesListReceived(List<Article> articles);
 
-        Task DoInputScan();
+        Task DoInput(string taskId, string key);
         
-        Task DoInputQuantity(bool adjust);
+        Task DoInputQuantity(string taskId, string key);
         
-        Task DoInputSelection(SelectionOptions options);
+        Task DoInputSelection(string taskId, string key, SelectionOptions options);
         
     }
 
@@ -69,21 +69,21 @@ namespace warehouse.picking.api.Hubs
                     {
                         switch (task)
                         {
+                            case var t when t.Id.Equals("Intake.UT.Input.NoteId"):
+                                Clients.Group(correlationId).DoInput(t.Id, "noteId");
+                                handledTask = t;
+                                break;
                             case var t when t.Id.Contains("Intake.UT.Input.Scan"):
-                                Clients.Group(correlationId).DoInputScan();
+                                Clients.Group(correlationId).DoInput(t.Id, "barcode");
                                 handledTask = t;
                                 break;
-                            case var t when t.Id.Contains("Intake.UT.Input.Any"):
+                            case var t when t.Id.Contains("Intake.UT.Input.Selection"):
                                 var options = _userTaskPayloadFactory.CreateSelectionOptionsPayload(t);
-                                Clients.Group(correlationId).DoInputSelection(options);
+                                Clients.Group(correlationId).DoInputSelection(t.Id, "bundleId", options);
                                 handledTask = t;
                                 break;
-                            case var t when t.Id.Equals("Intake.UT.Input.Quantity.Adjusted"): 
-                                Clients.Group(correlationId).DoInputQuantity(true);
-                                handledTask = t;
-                                break;
-                            case var t when t.Id.Equals("Intake.UT.Input.Quantity"): 
-                                Clients.Group(correlationId).DoInputQuantity(false);
+                            case var t when t.Id.Contains("Intake.UT.Input.Quantity"): 
+                                Clients.Group(correlationId).DoInputQuantity(t.Id, "quantity");
                                 handledTask = t;
                                 break;
                         }
@@ -94,33 +94,31 @@ namespace warehouse.picking.api.Hubs
             await Clients.Caller.ProcessStartConfirmed();
         }
 
-        public async Task ProvideNoteId(string noteId)
-        {
-            var correlationId = Context.GetUserId();
-            const string taskId = "Intake.UT.Input.NoteId";
-            var result = new Dictionary<string, object> {{"noteId", noteId}};
-            await _processClient.FinishUserTask(taskId, correlationId, result);
-        }
-
-        public async Task SendScanResult(string barcode)
-        {
-            var correlationId = Context.GetUserId();
-            const string taskId = "Intake.UT.Input.Scan";
-            var result = new Dictionary<string, object> {{"barcode", barcode}};
-            await _processClient.FinishUserTask(taskId, correlationId, result);
-        }
+        // public async Task ProvideNoteId(string noteId)
+        // {
+        //     var correlationId = Context.GetUserId();
+        //     const string taskId = "Intake.UT.Input.NoteId";
+        //     var result = new Dictionary<string, object> {{"noteId", noteId}};
+        //     await _processClient.FinishUserTask(taskId, correlationId, result);
+        // }
+        //
+        // public async Task SendScanResult(string barcode)
+        // {
+        //     var correlationId = Context.GetUserId();
+        //     const string taskId = "Intake.UT.Input.Scan";
+        //     var result = new Dictionary<string, object> {{"barcode", barcode}};
+        //     await _processClient.FinishUserTask(taskId, correlationId, result);
+        // }
 
         public async Task SendInput(Dictionary<string, object> input)
         {
-            var taskId = "Intake.UT.Input.Any";
-            if (input.Keys.Contains("quantity"))
-            {
-                var isForced = bool.Parse(((JsonElement) input["forced_valid"]).GetString() ?? "false");
-                taskId = isForced
-                    ? "Intake.UT.Input.Quantity.Adjust"
-                    : "Intake.UT.Input.Quantity";
-                input["forced_valid"] = isForced;
-            }
+            string taskId = ((JsonElement) input["taskId"]).GetString() 
+                            ?? throw new ArgumentNullException(nameof(taskId));
+
+            // if (taskId.Contains("Intake.UT.Input.Quantity"))
+            // {
+            //     input.Add("forced_valid", taskId.Contains("Adjust"));
+            // }
 
             var correlationId = Context.GetUserId();
             await _processClient.FinishUserTask(taskId, correlationId, input);
