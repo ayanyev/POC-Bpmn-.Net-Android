@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AtlasEngine.UserTasks;
@@ -94,31 +93,10 @@ namespace warehouse.picking.api.Hubs
             await Clients.Caller.ProcessStartConfirmed();
         }
 
-        // public async Task ProvideNoteId(string noteId)
-        // {
-        //     var correlationId = Context.GetUserId();
-        //     const string taskId = "Intake.UT.Input.NoteId";
-        //     var result = new Dictionary<string, object> {{"noteId", noteId}};
-        //     await _processClient.FinishUserTask(taskId, correlationId, result);
-        // }
-        //
-        // public async Task SendScanResult(string barcode)
-        // {
-        //     var correlationId = Context.GetUserId();
-        //     const string taskId = "Intake.UT.Input.Scan";
-        //     var result = new Dictionary<string, object> {{"barcode", barcode}};
-        //     await _processClient.FinishUserTask(taskId, correlationId, result);
-        // }
-
         public async Task SendInput(Dictionary<string, object> input)
         {
             string taskId = ((JsonElement) input["taskId"]).GetString() 
                             ?? throw new ArgumentNullException(nameof(taskId));
-
-            // if (taskId.Contains("Intake.UT.Input.Quantity"))
-            // {
-            //     input.Add("forced_valid", taskId.Contains("Adjust"));
-            // }
 
             var correlationId = Context.GetUserId();
             await _processClient.FinishUserTask(taskId, correlationId, input);
