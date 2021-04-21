@@ -149,5 +149,26 @@ namespace Warehouse.Picking.Api.Processes
                 return false;
             }
         }
+        
+        public async Task<bool> TerminateProcessCorrelationId(string correlationId)
+        {
+            try
+            {
+                var processes = await _instanceClient.QueryAsync(
+                    all => all.FilterByCorrelationId(correlationId)
+                );
+                foreach (var p in processes)
+                {
+                    await _instanceClient.TerminateProcessInstanceAsync(p.Id);
+                }
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+        }
+        
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using VueCliMiddleware;
 using warehouse.picking.api.Hubs;
+using Warehouse.Picking.Api.Hubs.Extensions;
 using warehouse.picking.api.Processes.Extensions;
 using Warehouse.Picking.Api.Repositories.Extensions;
 using Warehouse.Picking.Api.Services.Extensions;
@@ -51,6 +52,7 @@ namespace Warehouse.Picking.Api
             services.AddRepositories(_appName);
             services.AddServices(_appName);
             services.AddProcessServices(_appName);
+            services.AddHubServices(_appName);
             // connect vue app - middleware  
             services.AddSpaStaticFiles(options => 
                 options.RootPath = "dashboard-app"

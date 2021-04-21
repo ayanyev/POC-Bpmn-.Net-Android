@@ -16,14 +16,16 @@ namespace Warehouse.Picking.Api.Processes
 
         Task<bool> TerminateProcessInstanceById(string processId);
 
+        Task<bool> TerminateProcessCorrelationId(string correlationId);
+
         Task<bool> IsProcessInstanceRunning(string processId);
 
-        public Task<List<UserTask>> GetAllUserTasks(string processId);
+        Task<List<UserTask>> GetAllUserTasks(string processId);
 
-        public Task FinishUserTask(UserTask task, Dictionary<string, object> result);
+        Task FinishUserTask(UserTask task, Dictionary<string, object> result);
 
-        public Task FinishUserTask(string taskId, string correlationId, Dictionary<string, object> result);
+        Task FinishUserTask(string taskId, string correlationId, Dictionary<string, object> result);
 
-        public void SubscribeForPendingUserTasks(string correlationId, Func<IEnumerable<UserTask>, UserTask> action);
+        void SubscribeForPendingUserTasks(string correlationId, Func<IEnumerable<UserTask>, UserTask> action);
     }
 }

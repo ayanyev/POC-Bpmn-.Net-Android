@@ -29,7 +29,7 @@
     "Intake": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
-      "launchBrowser": true,
+      "launchBrowser": false,
       "applicationUrl": "http://localhost:5000",
       "launchUrl": "intake",
       "environmentVariables": {
