@@ -10,27 +10,35 @@ namespace Warehouse.Picking.Api.Services
 {
     public class IntakeService
     {
+        private readonly ConnectionMapping _connectionMapping;
+        
         private readonly IArticleRepository _articleRepository;
 
         private readonly ILocationRepository _locationRepository;
 
         private readonly IHubContext<IntakeDeviceHub> _intakeDeviceHubContext;
-        
+
         private readonly IHubContext<IntakeDashboardHub> _intakeDashboardHubContext;
 
-        public IntakeService(IArticleRepository articleRepository, ILocationRepository locationRepository, IHubContext<IntakeDeviceHub> intakeDeviceHubContext, IHubContext<IntakeDashboardHub> intakeDashboardHubContext)
+
+        public IntakeService(IArticleRepository articleRepository, ILocationRepository locationRepository, IHubContext<IntakeDeviceHub> intakeDeviceHubContext, IHubContext<IntakeDashboardHub> intakeDashboardHubContext, ConnectionMapping connectionMapping)
         {
             _articleRepository = articleRepository;
             _locationRepository = locationRepository;
             _intakeDeviceHubContext = intakeDeviceHubContext;
             _intakeDashboardHubContext = intakeDashboardHubContext;
+            _connectionMapping = connectionMapping;
         }
 
         public async Task<bool> FetchArticlesForDeliveryNote(string correlationId, string noteId)
         {
             var articles = await _articleRepository.FetchByNoteId(noteId);
-            await _intakeDeviceHubContext.Clients.Group(correlationId).SendAsync("ArticlesListReceived", new Articles(articles));
-            await _intakeDashboardHubContext.Clients.Group("Dashboard").SendAsync("DeliveryArticles", articles);
+            await _intakeDeviceHubContext.Clients
+                .Client(_connectionMapping.GetConnection(correlationId))
+                .SendAsync("ArticlesListReceived", new Articles(articles));
+            await _intakeDashboardHubContext.Clients
+                .Group("Dashboard")
+                .SendAsync("DeliveryArticles", articles);
             return true;
         }
 

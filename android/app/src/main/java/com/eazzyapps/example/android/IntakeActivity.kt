@@ -14,8 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.eazzyapps.example.android.IntakeViewModel.TaskCategory
-import com.eazzyapps.example.android.IntakeViewModel.TaskCategory.*
+import com.eazzyapps.example.android.domain.TaskCategory.*
 
 class IntakeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,15 +31,14 @@ fun ScanLayoutPreview() {
             .wrapContentHeight()
             .width(200.dp),
         initial = "345454",
-        category = IntakeViewModel.Task(Selection, "").category,
+        label = Selection.text,
         isEnabled = true,
         onClick = {}
     )
 }
 
-
 @Composable
-fun TestLayout(modifier: Modifier, initial: String, category: TaskCategory, isEnabled: Boolean, onClick: (String) -> Unit) {
+fun TestLayout(modifier: Modifier, initial: String, label: String, isEnabled: Boolean, onClick: (String) -> Unit) {
     Row(
         verticalAlignment = Alignment.Bottom,
         modifier = modifier.wrapContentHeight()
@@ -53,7 +51,7 @@ fun TestLayout(modifier: Modifier, initial: String, category: TaskCategory, isEn
                 .wrapContentHeight()
                 .fillMaxWidth(fraction = 0.6f),
             value = text,
-            label = { Text(category.text) },
+            label = { Text(label) },
             enabled = isEnabled,
             onValueChange = { text = it }
         )
@@ -76,9 +74,13 @@ fun TestLayout(modifier: Modifier, initial: String, category: TaskCategory, isEn
 @Composable
 fun TextScreenUi() {
 
+    val space = 16.dp
+
     val viewModel: IntakeViewModel = viewModel()
 
     val isRunning by viewModel.isProcessRunning.collectAsState()
+
+    val isConnected by viewModel.isConnected.collectAsState()
 
     val currentTask by viewModel.currentTask.collectAsState()
 
@@ -92,59 +94,119 @@ fun TextScreenUi() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
+            OutlinedButton(
+                modifier = Modifier
+                    .wrapContentHeight()
+                    .fillMaxWidth(),
+                onClick = { viewModel.connect() },
+                enabled = !isConnected
+            ) {
+                Text(
+                    textAlign = TextAlign.Center,
+                    text = "Connect"
+                )
+            }
+
+            Spacer(modifier = Modifier.height(space))
+
+            OutlinedButton(
+                modifier = Modifier
+                    .wrapContentHeight()
+                    .fillMaxWidth(),
+                onClick = { viewModel.startProcess() },
+                enabled = isConnected && !isRunning
+            ) {
+                Text(
+                    textAlign = TextAlign.Center,
+                    text = "Start process"
+                )
+            }
+
+            Spacer(modifier = Modifier.height(space))
+
             TestLayout(
                 modifier = Modifier
                     .wrapContentHeight()
                     .fillMaxWidth(),
                 initial = "note1",
-                category = currentTask.category,
-                isEnabled = currentTask.category is Input,
+                label = "note id",
+                isEnabled = isRunning && currentTask.category is Input,
                 onClick = {
                     viewModel.sendInputData(currentTask.toResult(it))
                 }
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(space))
 
             TestLayout(
                 modifier = Modifier
                     .wrapContentHeight()
                     .fillMaxWidth(),
                 initial = "567.456.7.9",
-                category = currentTask.category,
-                isEnabled = currentTask.category is Scan,
+                label = Scan.text,
+                isEnabled = isRunning && currentTask.category is Scan,
                 onClick = {
                     viewModel.sendInputData(currentTask.toResult(it))
                 }
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(space))
 
             TestLayout(
                 modifier = Modifier
                     .wrapContentHeight()
                     .fillMaxWidth(),
                 initial = "1",
-                category = Selection,
-                isEnabled = currentTask.category is Selection,
+                label = Selection.text,
+                isEnabled = isRunning && currentTask.category is Selection,
                 onClick = {
                     viewModel.sendInputData(currentTask.toResult(it.toInt()))
                 }
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(space))
 
             TestLayout(
                 modifier = Modifier
                     .wrapContentHeight()
                     .fillMaxWidth(),
                 initial = "25",
-                category = if (currentTask.category is AdjustQuantity) AdjustQuantity else Quantity,
-                isEnabled = (currentTask.category is Quantity) || (currentTask.category is AdjustQuantity),
+                label = if (currentTask.category is AdjustQuantity) AdjustQuantity.text else Quantity.text,
+                isEnabled = isRunning && ((currentTask.category is Quantity) || (currentTask.category is AdjustQuantity)),
                 onClick = {
                     viewModel.sendInputData(currentTask.toResult(it.toInt()))
                 }
             )
+
+            Spacer(modifier = Modifier.height(space))
+
+            OutlinedButton(
+                modifier = Modifier
+                    .wrapContentHeight()
+                    .fillMaxWidth(),
+                onClick = { viewModel.stopProcess() },
+                enabled = isConnected && isRunning
+            ) {
+                Text(
+                    textAlign = TextAlign.Center,
+                    text = "Stop process"
+                )
+            }
+
+            Spacer(modifier = Modifier.height(space))
+
+            OutlinedButton(
+                modifier = Modifier
+                    .wrapContentHeight()
+                    .fillMaxWidth(),
+                onClick = { viewModel.disconnect() },
+                enabled = isConnected
+            ) {
+                Text(
+                    textAlign = TextAlign.Center,
+                    text = "Disconnect"
+                )
+            }
 
         }
     }

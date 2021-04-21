@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AtlasEngine.UserTasks;
 using Microsoft.AspNetCore.SignalR;
+using AtlasEngine.Logging;
 using warehouse.picking.api.Domain;
 using Warehouse.Picking.Api.Processes;
 using Warehouse.Picking.Api.Processes.UserTasks;
@@ -15,6 +15,8 @@ namespace warehouse.picking.api.Hubs
     public interface IIntakeClient
     {
         Task ProcessStartConfirmed();
+
+        Task ProcessStopConfirmed();
 
         Task ArticlesListReceived(List<Article> articles);
 
@@ -31,35 +33,43 @@ namespace warehouse.picking.api.Hubs
         private const string ProcessModelId = "intake";
 
         private const string ProcessStartEvent = "";
+        
+        private readonly ILogger _logger = ConsoleLogger.Default;
 
         private readonly IProcessClient _processClient;
 
         private readonly IUserTaskPayloadFactory _userTaskPayloadFactory;
 
-        public IntakeDeviceHub(IProcessClient processClient, IUserTaskPayloadFactory userTaskPayloadFactory)
+        private readonly ConnectionMapping _connectionMapping;
+
+        public IntakeDeviceHub(IProcessClient processClient, IUserTaskPayloadFactory userTaskPayloadFactory, ConnectionMapping connectionMapping)
         {
             _processClient = processClient;
             _userTaskPayloadFactory = userTaskPayloadFactory;
+            _connectionMapping = connectionMapping;
         }
 
         public override Task OnConnectedAsync()
         {
-            Groups.AddToGroupAsync(Context.ConnectionId, Context.GetUserId());
+            _connectionMapping.Add(Context.GetUserId(), Context.ConnectionId);
             return base.OnConnectedAsync();
         }
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            Groups.RemoveFromGroupAsync(Context.ConnectionId, Context.GetUserId());
+            _connectionMapping.Remove(Context.GetUserId());
             return base.OnDisconnectedAsync(exception);
         }
 
-        public async Task StartIntakeProcess()
+        public async Task StartProcess()
         {
             var correlationId = Context.GetUserId();
             
-            await _processClient.CreateProcessInstanceByModelId<string>(ProcessModelId, ProcessStartEvent, null,
-                correlationId);
+            await _processClient.CreateProcessInstanceByModelId<string>(
+                ProcessModelId, ProcessStartEvent, null, correlationId
+            );
+            
+            var connectionId = _connectionMapping.GetConnection(Context.GetUserId());
             
             _processClient.SubscribeForPendingUserTasks(correlationId,
                 tasks =>
@@ -67,23 +77,24 @@ namespace warehouse.picking.api.Hubs
                     UserTask handledTask = null;
                     foreach (var task in tasks)
                     {
+                        _logger.Log(LogLevel.Debug, $"Exec: Handled task: {task.Id}");
                         switch (task)
                         {
                             case var t when t.Id.Equals("Intake.UT.Input.NoteId"):
-                                Clients.Group(correlationId).DoInput(t.Id, "noteId");
+                                Clients.Client(connectionId).DoInput(t.Id, "noteId");
                                 handledTask = t;
                                 break;
                             case var t when t.Id.Contains("Intake.UT.Input.Scan"):
-                                Clients.Group(correlationId).DoInput(t.Id, "barcode");
+                                Clients.Client(connectionId).DoInput(t.Id, "barcode");
                                 handledTask = t;
                                 break;
                             case var t when t.Id.Contains("Intake.UT.Input.Selection"):
                                 var options = _userTaskPayloadFactory.CreateSelectionOptionsPayload(t);
-                                Clients.Group(correlationId).DoInputSelection(t.Id, "bundleId", options);
+                                Clients.Client(connectionId).DoInputSelection(t.Id, "bundleId", options);
                                 handledTask = t;
                                 break;
                             case var t when t.Id.Contains("Intake.UT.Input.Quantity"): 
-                                Clients.Group(correlationId).DoInputQuantity(t.Id, "quantity");
+                                Clients.Client(connectionId).DoInputQuantity(t.Id, "quantity");
                                 handledTask = t;
                                 break;
                         }
@@ -93,32 +104,17 @@ namespace warehouse.picking.api.Hubs
             
             await Clients.Caller.ProcessStartConfirmed();
         }
-
-        // public async Task ProvideNoteId(string noteId)
-        // {
-        //     var correlationId = Context.GetUserId();
-        //     const string taskId = "Intake.UT.Input.NoteId";
-        //     var result = new Dictionary<string, object> {{"noteId", noteId}};
-        //     await _processClient.FinishUserTask(taskId, correlationId, result);
-        // }
-        //
-        // public async Task SendScanResult(string barcode)
-        // {
-        //     var correlationId = Context.GetUserId();
-        //     const string taskId = "Intake.UT.Input.Scan";
-        //     var result = new Dictionary<string, object> {{"barcode", barcode}};
-        //     await _processClient.FinishUserTask(taskId, correlationId, result);
-        // }
+        
+        public async Task StopProcess()
+        {
+            await _processClient.TerminateProcessCorrelationId(Context.GetUserId());
+            await Clients.Caller.ProcessStopConfirmed();
+        }
 
         public async Task SendInput(Dictionary<string, object> input)
         {
             string taskId = ((JsonElement) input["taskId"]).GetString() 
                             ?? throw new ArgumentNullException(nameof(taskId));
-
-            // if (taskId.Contains("Intake.UT.Input.Quantity"))
-            // {
-            //     input.Add("forced_valid", taskId.Contains("Adjust"));
-            // }
 
             var correlationId = Context.GetUserId();
             await _processClient.FinishUserTask(taskId, correlationId, input);
