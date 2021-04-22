@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace Warehouse.Picking.Api.Services
     public class IntakeService
     {
         private readonly ConnectionMapping _connectionMapping;
-        
+
         private readonly IArticleRepository _articleRepository;
 
         private readonly ILocationRepository _locationRepository;
@@ -21,7 +22,9 @@ namespace Warehouse.Picking.Api.Services
         private readonly IHubContext<IntakeDashboardHub> _intakeDashboardHubContext;
 
 
-        public IntakeService(IArticleRepository articleRepository, ILocationRepository locationRepository, IHubContext<IntakeDeviceHub> intakeDeviceHubContext, IHubContext<IntakeDashboardHub> intakeDashboardHubContext, ConnectionMapping connectionMapping)
+        public IntakeService(IArticleRepository articleRepository, ILocationRepository locationRepository,
+            IHubContext<IntakeDeviceHub> intakeDeviceHubContext,
+            IHubContext<IntakeDashboardHub> intakeDashboardHubContext, ConnectionMapping connectionMapping)
         {
             _articleRepository = articleRepository;
             _locationRepository = locationRepository;

@@ -18,13 +18,9 @@ namespace warehouse.picking.api.Hubs
 
         Task ProcessStopConfirmed();
 
-        Task ArticlesListReceived(List<Article> articles);
-
-        Task DoInput(string taskId, string key);
+        Task DoInput(ClientTask task);
         
-        Task DoInputQuantity(string taskId, string key);
-        
-        Task DoInputSelection(string taskId, string key, SelectionOptions options);
+        Task DoInputSelection(ClientTask task);
         
     }
 
@@ -38,15 +34,15 @@ namespace warehouse.picking.api.Hubs
 
         private readonly IProcessClient _processClient;
 
-        private readonly IUserTaskPayloadFactory _userTaskPayloadFactory;
-
         private readonly ConnectionMapping _connectionMapping;
 
-        public IntakeDeviceHub(IProcessClient processClient, IUserTaskPayloadFactory userTaskPayloadFactory, ConnectionMapping connectionMapping)
+        private readonly ClientTaskFactory _clientTaskFactory;
+
+        public IntakeDeviceHub(IProcessClient processClient, ConnectionMapping connectionMapping, ClientTaskFactory clientTaskFactory)
         {
             _processClient = processClient;
-            _userTaskPayloadFactory = userTaskPayloadFactory;
             _connectionMapping = connectionMapping;
+            _clientTaskFactory = clientTaskFactory;
         }
 
         public override Task OnConnectedAsync()
@@ -74,32 +70,31 @@ namespace warehouse.picking.api.Hubs
             _processClient.SubscribeForPendingUserTasks(correlationId,
                 tasks =>
                 {
-                    UserTask handledTask = null;
+                    UserTask handledTaskId = null;
                     foreach (var task in tasks)
                     {
-                        _logger.Log(LogLevel.Debug, $"Exec: Handled task: {task.Id}");
-                        switch (task)
+                        try
                         {
-                            case var t when t.Id.Equals("Intake.UT.Input.NoteId"):
-                                Clients.Client(connectionId).DoInput(t.Id, "noteId");
-                                handledTask = t;
-                                break;
-                            case var t when t.Id.Contains("Intake.UT.Input.Scan"):
-                                Clients.Client(connectionId).DoInput(t.Id, "barcode");
-                                handledTask = t;
-                                break;
-                            case var t when t.Id.Contains("Intake.UT.Input.Selection"):
-                                var options = _userTaskPayloadFactory.CreateSelectionOptionsPayload(t);
-                                Clients.Client(connectionId).DoInputSelection(t.Id, "bundleId", options);
-                                handledTask = t;
-                                break;
-                            case var t when t.Id.Contains("Intake.UT.Input.Quantity"): 
-                                Clients.Client(connectionId).DoInputQuantity(t.Id, "quantity");
-                                handledTask = t;
-                                break;
+                            _logger.Log(LogLevel.Debug, $"Exec: Handled task: {task.Id}");
+                            switch (_clientTaskFactory.Create(task))
+                            {
+                                case {Type: "Selection"} t:
+                                    Clients.Client(connectionId).DoInputSelection(t);
+                                    handledTaskId = task;
+                                    break;
+                                case {} t:
+                                    Clients.Client(connectionId).DoInput(t);
+                                    handledTaskId = task;
+                                    break;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e);
+                            throw;
                         }
                     }
-                    return handledTask;
+                    return handledTaskId;
                 });
             
             await Clients.Caller.ProcessStartConfirmed();

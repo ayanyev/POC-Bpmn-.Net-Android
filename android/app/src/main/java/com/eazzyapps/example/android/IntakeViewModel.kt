@@ -10,6 +10,7 @@ import com.eazzyapps.example.android.domain.Task
 import com.eazzyapps.example.android.domain.TaskCategory
 import com.eazzyapps.example.android.domain.TaskCategory.Selection
 import com.microsoft.signalr.HubConnectionBuilder
+import com.microsoft.signalr.TypeReference
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
@@ -32,7 +33,7 @@ class IntakeViewModel : ViewModel() {
 
     val isProcessRunning = MutableStateFlow(false)
 
-    val currentTask = MutableStateFlow(Task.default())
+    val currentTask = MutableStateFlow<Task<*>>(Task.default())
 
     init {
 
@@ -58,30 +59,20 @@ class IntakeViewModel : ViewModel() {
 
             hubConnection.on(
                 "DoInput",
-                { taskId, key ->
-                    Log.d("SignalR", "UserTask input: taskId = $taskId, key = $key")
-                    currentTask.value = Task(TaskCategory.of(taskId, key), key)
+                { task: Task<Any> ->
+                    Log.d("SignalR", "Client input task received: $task")
+                    currentTask.value = task
                 },
-                String::class.java, String::class.java
-            )
-
-            hubConnection.on(
-                "DoInputQuantity",
-                { taskId, key ->
-                    Log.d("SignalR", "UserTask input: taskId = $taskId, key = $key")
-                    currentTask.value = Task(TaskCategory.of(taskId, key), key)
-                },
-                String::class.java, String::class.java
+                (object : TypeReference<Task<Any>>() {}).type
             )
 
             hubConnection.on(
                 "DoInputSelection",
-                { taskId, key, options ->
-                    Log.d("SignalR", "UserTask input: taskId = $taskId, key = $key")
-                    Log.d("SignalR", "options = $options")
-                    currentTask.value = Task(Selection, key)
+                { task: Task<SelectionOptions> ->
+                    Log.d("SignalR", "Client selection task received: $task")
+                    currentTask.value = task
                 },
-                String::class.java, String::class.java, SelectionOptions::class.java
+                (object : TypeReference<Task<SelectionOptions>>() {}).type
             )
 
         }
@@ -97,7 +88,8 @@ class IntakeViewModel : ViewModel() {
                 {
                     isConnected.value = true
                     Log.d("SignalR", "Connected to the intake device hub")
-                    Log.d("SignalR", "Used  credentials: $credentials")
+                    Log.d("SignalR", "Used credentials: $credentials")
+                    Log.d("SignalR", "ConnectionId: ${hubConnection.connectionId}")
                 },
                 { Log.e("SignalR", it?.message ?: "Error connecting to hub") }
             )

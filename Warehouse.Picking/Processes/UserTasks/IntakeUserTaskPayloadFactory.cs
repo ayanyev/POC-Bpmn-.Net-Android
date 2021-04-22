@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using AtlasEngine.UserTasks;
-using Microsoft.Extensions.Logging;
 using Warehouse.Picking.Api.Services;
 
 namespace Warehouse.Picking.Api.Processes.UserTasks
@@ -10,7 +9,7 @@ namespace Warehouse.Picking.Api.Processes.UserTasks
     {
         private readonly IntakeService _intakeService;
 
-        public IntakeUserTaskPayloadFactory(IntakeService intakeService, ILogger<IntakeUserTaskPayloadFactory> logger)
+        public IntakeUserTaskPayloadFactory(IntakeService intakeService)
         {
             _intakeService = intakeService;
         }

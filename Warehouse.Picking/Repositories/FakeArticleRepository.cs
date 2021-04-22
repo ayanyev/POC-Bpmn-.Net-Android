@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using warehouse.picking.api.Domain;
@@ -37,8 +38,8 @@ namespace Warehouse.Picking.Api.Repositories
                     new ArticleQuantity(40),
                     new ArticleBundle(5, "24x0.2L"))
             };
-            _noteArticles.Add(noteId, result);
-            return Task.FromResult(result);
+            _noteArticles.Add("note1", result);
+            return Task.FromResult(FindByNoteId(noteId));
         }
 
         public List<Article> FindByNoteId(string noteId)
