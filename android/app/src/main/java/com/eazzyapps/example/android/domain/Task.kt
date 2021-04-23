@@ -31,7 +31,7 @@ data class Task<T>(
     val type: String,
     val label: String,
     private val resultKey: String,
-    private val resultTemplate: MutableMap<String, String>,
+    private val resultTemplate: MutableMap<String, Any>,
     val error: TaskError?,
     val payload: T?
 ) {
@@ -40,7 +40,7 @@ data class Task<T>(
 
     val category get() = TaskCategory.of(type)
 
-    fun toResult(result: String): Map<String, Any> {
+    fun toResult(result: Any): Map<String, Any> {
         resultTemplate[resultKey] = result
         return resultTemplate
     }

@@ -26,12 +26,12 @@ namespace Warehouse.Picking.Api.Processes.UserTasks
             var resultKey = a[3];
 
             var label = userTask.Configuration.FormFields.ToList().Find(f => f.Id.Equals(resultKey))?.Label
-                ?? throw new ArgumentException($"No form field for result key ({resultKey}) found");
+                        ?? throw new ArgumentException($"No form field for result key ({resultKey}) found");
 
             var error = userTask.Tokens[0].Payload.GetPayload<TaskError>();
 
             var resultTemplate = userTask.Configuration.FormFields
-                .ToDictionary(f => f.Id, f => f.DefaultValue);
+                .ToDictionary(f => f.Id, f => Parse(f.DefaultValue, f.Type));
 
             var payload = type switch
             {
@@ -42,6 +42,17 @@ namespace Warehouse.Picking.Api.Processes.UserTasks
             resultTemplate.Add("taskId", userTask.Id);
 
             return new ClientTask(userTask.Id, type, resultKey, label, error, payload, resultTemplate);
+        }
+
+        private static object Parse(string value, FormFieldType type)
+        {
+            return type switch
+            {
+                FormFieldType.Boolean => bool.TryParse(value, out var result) && result,
+                FormFieldType.Number => int.TryParse(value, out var result) ? result : 0,
+                FormFieldType.Long => long.TryParse(value, out var result) ? result : 0,
+                _ => value
+            };
         }
     }
 }
