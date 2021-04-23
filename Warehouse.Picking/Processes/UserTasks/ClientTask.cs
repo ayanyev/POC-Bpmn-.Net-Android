@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using AtlasEngine.UserTasks;
 
 #nullable enable
 namespace Warehouse.Picking.Api.Processes.UserTasks
@@ -16,13 +15,13 @@ namespace Warehouse.Picking.Api.Processes.UserTasks
         
         public string Label { get; }
 
-        public Dictionary<string, string> ResultTemplate { get; }
+        public Dictionary<string, object> ResultTemplate { get; }
 
         public TaskError? Error { get; }
 
         public object? Payload { get; }
 
-        public ClientTask(string id, string type, string key, string label, TaskError? error, object? payload, Dictionary<string, string> resultTemplate)
+        public ClientTask(string id, string type, string key, string label, TaskError? error, object? payload, Dictionary<string, object> resultTemplate)
         {
             Id = id;
             Type = type;

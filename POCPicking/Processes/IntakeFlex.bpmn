@@ -48,7 +48,7 @@ Output:
       <bpmn:dataOutputAssociation id="DataOutputAssociation_0ac0cb5">
         <bpmn:extensionElements>
           <camunda:properties>
-            <camunda:property name="dataSource" value="{&#10;quantity: token.current.quantity&#10;}" />
+            <camunda:property name="dataSource" value="{&#10;quantity: token.current.Quantity&#10;}" />
           </camunda:properties>
         </bpmn:extensionElements>
         <bpmn:targetRef>IterationInfo</bpmn:targetRef>
@@ -110,8 +110,8 @@ Output:
     <bpmn:sequenceFlow id="Flow_0hxsukl" name="no" sourceRef="Gateway_1saly70" targetRef="UT.Input.AdjustQuantity.Quantity.Adjust" />
     <bpmn:sequenceFlow id="Flow_0mvqisu" name="" sourceRef="UT.Input.AdjustQuantity.Quantity.Adjust" targetRef="Activity_1qrq2et" />
     <bpmn:sequenceFlow id="Flow_1gxeppg" name="" sourceRef="Activity_1hwv4ke" targetRef="Activity_1c5h8vu" />
-    <bpmn:sequenceFlow id="Flow_0118jh7" sourceRef="TaskGetLocation" targetRef="UT.Input.Scan.Barcode.Location" />
-    <bpmn:sequenceFlow id="Flow_0pz98iz" sourceRef="UT.Input.Scan.Barcode.Article" targetRef="Gateway_0j0867g" />
+    <bpmn:sequenceFlow id="Flow_0118jh7" name="" sourceRef="TaskGetLocation" targetRef="UT.Input.Scan.Barcode.Location" />
+    <bpmn:sequenceFlow id="Flow_0pz98iz" name="" sourceRef="UT.Input.Scan.Barcode.Article" targetRef="Gateway_0j0867g" />
     <bpmn:sequenceFlow id="Flow_0o9v2wx" name="yes" sourceRef="Gateway_0j0867g" targetRef="UT.Input.Selection.BundleId">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">dataObjects.Barcodes.includes(token.current.Barcode)</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -138,7 +138,7 @@ Output:
       <bpmn:incoming>Flow_0mvqisu</bpmn:incoming>
       <bpmn:outgoing>Flow_0lnum3g</bpmn:outgoing>
       <bpmn:script>var ex =  dataObjects.ArticleInfo.quantity.expected
-var it =  parseInt(token.current.Quantity)
+var it =  token.current.Quantity
 var ag =  it + dataObjects.ArticleInfo.quantity.processed
 return { "valid": token.current.forced_valid | (it &gt; 0 &amp;&amp; ag &lt;= ex) };</bpmn:script>
     </bpmn:scriptTask>
@@ -161,7 +161,7 @@ Output:
       <bpmn:dataOutputAssociation id="DataOutputAssociation_1hzdauj">
         <bpmn:extensionElements>
           <camunda:properties>
-            <camunda:property name="dataSource" value="{&#10;quantity: parseInt(token.current.Quantity)&#10;}" />
+            <camunda:property name="dataSource" value="{&#10;quantity: token.current.Quantity&#10;}" />
           </camunda:properties>
         </bpmn:extensionElements>
         <bpmn:targetRef>IterationInfo</bpmn:targetRef>
@@ -245,7 +245,7 @@ Output:
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="Barcode" label="Article barcode" type="string" defaultValue="" />
-          <camunda:formField id="noteId" label="note Id" type="string" defaultValue="${dataObjects.NoteInfo.noteId}" />
+          <camunda:formField id="NoteId" label="note Id" type="string" defaultValue="${dataObjects.NoteInfo.NoteId}" />
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0qse2lc</bpmn:incoming>
@@ -285,7 +285,7 @@ dataObjects.NoteInfo.NoteId</bpmn:documentation>
     <bpmn:serviceTask id="Activity_0f7n2at" name="Match article by gtin and bundle" camunda:type="external" camunda:topic="Intake.Article.Match">
       <bpmn:extensionElements>
         <camunda:properties>
-          <camunda:property name="payload" value="{&#10;noteId: dataObjects.NoteInfo.NoteId,gtin: dataObjects.Barcode.Barcode,bundleId: parseInt(token.current.BundleId)&#10;}" />
+          <camunda:property name="payload" value="{&#10;noteId: dataObjects.NoteInfo.NoteId,&#10;gtin: dataObjects.Barcode.Barcode,&#10;bundleId: token.current.BundleId&#10;}" />
         </camunda:properties>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0imho6z</bpmn:incoming>
@@ -307,12 +307,8 @@ Output:
 - article info</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="BundleId" label="Select bundle" type="string" defaultValue="1" />
+          <camunda:formField id="BundleId" label="Select bundle" type="long" defaultValue="1" />
         </camunda:formData>
-        <camunda:properties>
-          <camunda:property name="gtin" value="token.current" />
-          <camunda:property name="noteId" value="dataObjects.NoteInfo.NoteId" />
-        </camunda:properties>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0o9v2wx</bpmn:incoming>
       <bpmn:outgoing>Flow_0imho6z</bpmn:outgoing>

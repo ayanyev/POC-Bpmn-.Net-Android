@@ -175,7 +175,7 @@ fun TextScreenUi() {
                 isEnabled = isRunning && currentTask.category is Selection,
                 isError = currentTask.hasError,
                 onClick = {
-                    viewModel.sendInputData(currentTask.toResult(it))
+                    viewModel.sendInputData(currentTask.toResult(it.toInt()))
                 }
             )
 
@@ -190,7 +190,7 @@ fun TextScreenUi() {
                 isEnabled = isRunning && ((currentTask.category is Quantity) || (currentTask.category is AdjustQuantity)),
                 isError = currentTask.hasError,
                 onClick = {
-                    viewModel.sendInputData(currentTask.toResult(it))
+                    viewModel.sendInputData(currentTask.toResult(it.toInt()))
                 }
             )
 
