@@ -10,6 +10,7 @@ using AtlasEngine.ProcessDefinitions.Requests;
 using AtlasEngine.ProcessInstances;
 using AtlasEngine.UserTasks;
 using AtlasEngine.UserTasks.Requests;
+using Warehouse.Picking.Api.Utilities;
 
 namespace Warehouse.Picking.Api.Processes
 {
@@ -48,20 +49,44 @@ namespace Warehouse.Picking.Api.Processes
             subscriptionSettings.ConfigureQuery(queryOptions);
             
             var handledTaskId = "";
+            
+            var handledErrorTaskNodeId = "";
 
             Action<UserTask> updateRecentTaskId = task =>
             {
-                handledTaskId = task?.Id ?? handledTaskId;
+                lock (handledTaskId)
+                {
+                    handledTaskId = task?.Id ?? handledTaskId;
+
+                    if (task != null && task.HasErrorPayload())
+                    {
+                        handledErrorTaskNodeId = task.FlowNodeInstanceId;
+                    } 
+                }
             };
 
             Func <string> getRecentTaskId = () => handledTaskId;
             
+            Func <string> getRecentErrorTaskId = () => handledErrorTaskNodeId;
+            
             void Callback(IEnumerable<UserTask> tasks)
             {
-                _logger.Log(LogLevel.Debug, $"Start: Handled task: {getRecentTaskId()}");
-                var filteredTasks = tasks.ToList().FindAll(t => !t.Id.Equals(getRecentTaskId()));
-                updateRecentTaskId(action(filteredTasks));
-                _logger.Log(LogLevel.Debug, $"End: Handled task: {getRecentTaskId()}");
+                try
+                {
+                    _logger.Log(LogLevel.Debug, $"Start: Handled task: {getRecentTaskId()}");
+                    var filteredTasks = tasks.ToList()
+                        .FindAll(t =>
+                            (t.HasErrorPayload() && !t.FlowNodeInstanceId.Equals(getRecentErrorTaskId())) |
+                            !t.Id.Equals(getRecentTaskId())
+                        );
+                    updateRecentTaskId(action(filteredTasks));
+                    _logger.Log(LogLevel.Debug, $"End: Handled task: {getRecentTaskId()}");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
             }
 
             _userTaskClient.SubscribeForPendingUserTask(Callback, subscriptionSettings);

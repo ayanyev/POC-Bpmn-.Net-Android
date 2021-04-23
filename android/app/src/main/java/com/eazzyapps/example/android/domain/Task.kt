@@ -1,54 +1,52 @@
 package com.eazzyapps.example.android.domain
 
-sealed class TaskCategory(val text: String, val name: String) {
-    object NoTask : TaskCategory("", "")
-    class Input(taskId: String, text: String) : TaskCategory(text, taskId)
-    object Scan : TaskCategory("Scan", "Intake.UT.Input.Scan")
-    object Quantity : TaskCategory("Set quantity", "Intake.UT.Input.Quantity")
-    object AdjustQuantity : TaskCategory("Adjust quantity", "Intake.UT.Input.Quantity.Adjust")
-    object Selection : TaskCategory("Select", "Intake.UT.Input.Selection")
+sealed class TaskCategory {
+    object NoTask : TaskCategory()
+    object Simple : TaskCategory()
+    object Scan : TaskCategory()
+    object Quantity : TaskCategory()
+    object AdjustQuantity : TaskCategory()
+    object Selection : TaskCategory()
 
     companion object {
-
-        fun of(category: String, key: String): TaskCategory = when {
-            category.contains(Selection.name) -> Selection
-            category.contains(Scan.name) -> Scan
-            category.contains(AdjustQuantity.name) -> AdjustQuantity
-            category.contains(Quantity.name) -> Quantity
-            else -> Input(category, key)
+        fun of(category: String): TaskCategory = when (category) {
+            "Selection" -> Selection
+            "Scan" -> Scan
+            "Quantity" -> Quantity
+            "AdjustQuantity" -> AdjustQuantity
+            "Simple" -> Simple
+            else -> NoTask
         }
-
     }
-
 }
 
-class Task(
-    val category: TaskCategory,
-    private val valueKey: String
+data class TaskError(
+    val code: String,
+    val name: String,
+    val message: String
+)
+
+data class Task<T>(
+    val id: String,
+    val type: String,
+    val label: String,
+    private val resultKey: String,
+    private val resultTemplate: MutableMap<String, String>,
+    val error: TaskError?,
+    val payload: T?
 ) {
 
-    private val resultMap = mutableMapOf<String, Any>()
+    val hasError get() = error?.code != null
 
-    init {
+    val category get() = TaskCategory.of(type)
 
-        if (category is TaskCategory.Quantity || category is TaskCategory.AdjustQuantity) {
-            resultMap["forced_valid"] = category is TaskCategory.AdjustQuantity
-        }
-
-    }
-
-    fun toResult(result: Any): Map<String, Any> {
-        resultMap.putAll(
-            arrayOf(
-                "taskId" to category.name,
-                valueKey to result
-            )
-        )
-        return resultMap
+    fun toResult(result: String): Map<String, Any> {
+        resultTemplate[resultKey] = result
+        return resultTemplate
     }
 
     companion object {
-        fun default() = Task(TaskCategory.NoTask, "")
+        fun default() = Task("", "", "", "", mutableMapOf(), null, null)
     }
 
 }

@@ -15,6 +15,7 @@ namespace warehouse.picking.api.Processes.Extensions
         {
             services.AddSingleton(ProcessEngineClient.CreateExternalTaskClient());
             services.AddSingleton<IProcessClient, ProcessEngineClient>();
+            services.AddSingleton<ClientTaskFactory>();
             switch (appName)
             {
                 case AppName.PickingApp:

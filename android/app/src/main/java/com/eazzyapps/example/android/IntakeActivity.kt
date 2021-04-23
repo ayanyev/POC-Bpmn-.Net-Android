@@ -1,6 +1,7 @@
 package com.eazzyapps.example.android
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.*
@@ -31,14 +32,22 @@ fun ScanLayoutPreview() {
             .wrapContentHeight()
             .width(200.dp),
         initial = "345454",
-        label = Selection.text,
+        label = "Input",
         isEnabled = true,
+        isError = true,
         onClick = {}
     )
 }
 
 @Composable
-fun TestLayout(modifier: Modifier, initial: String, label: String, isEnabled: Boolean, onClick: (String) -> Unit) {
+fun TestLayout(
+    modifier: Modifier,
+    initial: String,
+    label: String,
+    isEnabled: Boolean,
+    isError: Boolean,
+    onClick: (String) -> Unit
+) {
     Row(
         verticalAlignment = Alignment.Bottom,
         modifier = modifier.wrapContentHeight()
@@ -53,6 +62,7 @@ fun TestLayout(modifier: Modifier, initial: String, label: String, isEnabled: Bo
             value = text,
             label = { Text(label) },
             enabled = isEnabled,
+            isError = isError,
             onValueChange = { text = it }
         )
 
@@ -83,6 +93,8 @@ fun TextScreenUi() {
     val isConnected by viewModel.isConnected.collectAsState()
 
     val currentTask by viewModel.currentTask.collectAsState()
+
+    Log.d("SignalR: Activity", "${currentTask.category}")
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -129,8 +141,9 @@ fun TextScreenUi() {
                     .wrapContentHeight()
                     .fillMaxWidth(),
                 initial = "note1",
-                label = "note id",
-                isEnabled = isRunning && currentTask.category is Input,
+                label = if (currentTask.category is Simple) currentTask.label else "",
+                isEnabled = isRunning && currentTask.category is Simple,
+                isError = currentTask.hasError,
                 onClick = {
                     viewModel.sendInputData(currentTask.toResult(it))
                 }
@@ -143,8 +156,9 @@ fun TextScreenUi() {
                     .wrapContentHeight()
                     .fillMaxWidth(),
                 initial = "567.456.7.9",
-                label = Scan.text,
+                label = if (currentTask.category is Scan) currentTask.label else "",
                 isEnabled = isRunning && currentTask.category is Scan,
+                isError = currentTask.hasError,
                 onClick = {
                     viewModel.sendInputData(currentTask.toResult(it))
                 }
@@ -157,10 +171,11 @@ fun TextScreenUi() {
                     .wrapContentHeight()
                     .fillMaxWidth(),
                 initial = "1",
-                label = Selection.text,
+                label = if (currentTask.category is Selection) currentTask.label else "",
                 isEnabled = isRunning && currentTask.category is Selection,
+                isError = currentTask.hasError,
                 onClick = {
-                    viewModel.sendInputData(currentTask.toResult(it.toInt()))
+                    viewModel.sendInputData(currentTask.toResult(it))
                 }
             )
 
@@ -171,10 +186,11 @@ fun TextScreenUi() {
                     .wrapContentHeight()
                     .fillMaxWidth(),
                 initial = "25",
-                label = if (currentTask.category is AdjustQuantity) AdjustQuantity.text else Quantity.text,
+                label = if (currentTask.category is AdjustQuantity || currentTask.category is Quantity) currentTask.label else "",
                 isEnabled = isRunning && ((currentTask.category is Quantity) || (currentTask.category is AdjustQuantity)),
+                isError = currentTask.hasError,
                 onClick = {
-                    viewModel.sendInputData(currentTask.toResult(it.toInt()))
+                    viewModel.sendInputData(currentTask.toResult(it))
                 }
             )
 

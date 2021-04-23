@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AtlasEngine;
@@ -19,18 +20,26 @@ namespace Warehouse.Picking.Api.Processes.ExternalTasks.Intake
 
         public Task<UnfinishedBarcodes> HandleAsync(NoteIdPayload input, ExternalTask task)
         {
-            var barcodes = _service.GetBarcodesForUnfinishedArticles(input.NoteId);
-            return Task.FromResult(new UnfinishedBarcodes(barcodes));
+            try
+            {
+                var barcodes = _service.GetBarcodesForUnfinishedArticles(input.NoteId);
+                return Task.FromResult(new UnfinishedBarcodes(barcodes));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
-    
+
     public class UnfinishedBarcodes
     {
         public HashSet<string> Barcodes { get; }
+
         public UnfinishedBarcodes(HashSet<string> barcodes)
         {
             Barcodes = barcodes;
         }
     }
-
 }

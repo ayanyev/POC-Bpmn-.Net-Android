@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AtlasEngine;
 using AtlasEngine.ExternalTasks;
@@ -16,10 +18,23 @@ namespace Warehouse.Picking.Api.Processes.ExternalTasks.Intake
             _service = service;
         }
 
-        public Task<SuccessResult> HandleAsync(NoteIdPayload input, ExternalTask task)
+        public async Task<SuccessResult> HandleAsync(NoteIdPayload input, ExternalTask task)
         {
-            var r = _service.FetchArticlesForDeliveryNote(task.CorrelationId, input.NoteId);
-            return Task.FromResult(new SuccessResult());
+            try
+            {
+                await _service.FetchArticlesForDeliveryNote(task.CorrelationId, input.NoteId);
+                return new SuccessResult();
+            }
+            catch (KeyNotFoundException e)
+            {
+                Console.WriteLine(e);
+                throw new Exceptions.UnknownNoteIdException(input.NoteId);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw new Exceptions.UnhandledException(e);
+            }
         }
     }
 
@@ -29,5 +44,4 @@ namespace Warehouse.Picking.Api.Processes.ExternalTasks.Intake
         {
         }
     }
-    
 }

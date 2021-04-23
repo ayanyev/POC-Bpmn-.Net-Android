@@ -8,8 +8,8 @@ namespace Warehouse.Picking.Api.Processes.UserTasks
     {
         public SelectionOptions CreateSelectionOptionsPayload(UserTask task);
     }
-
-    public class SelectionOptions
+    
+    public class SelectionOptions : UserTaskPayload
     {
         public List<SelectionOption> Items { get; }
 
