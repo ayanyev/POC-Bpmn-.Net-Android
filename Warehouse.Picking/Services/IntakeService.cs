@@ -53,11 +53,18 @@ namespace Warehouse.Picking.Api.Services
                 .ToHashSet();
         }
 
-        public Article UpdateArticleQuantity(string noteId, int articleId, int quantity)
+        public async Task<Article> UpdateArticleQuantity(string correlationId, string noteId, int articleId, int quantity)
         {
-            var article = _articleRepository.FindByNoteId(noteId).Find(a => a.Id.Equals(articleId));
-            article?.UpdateProcessedQuantity(quantity);
-            return article;
+            var articles = _articleRepository.FindByNoteId(noteId);
+            var updatedArticle = articles.Find(a => a.Id.Equals(articleId));
+            
+            updatedArticle?.UpdateProcessedQuantity(quantity);
+            
+            await _intakeDeviceHubContext.Clients
+                .Client(_connectionMapping.GetConnection(correlationId))
+                .SendAsync("ArticlesListReceived", new Articles(articles));
+            
+            return updatedArticle;
         }
 
         private List<Article> GetUnfinishedArticlesByGtin(string noteId, string gtin)

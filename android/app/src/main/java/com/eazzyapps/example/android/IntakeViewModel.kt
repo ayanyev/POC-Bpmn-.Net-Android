@@ -9,6 +9,7 @@ import com.eazzyapps.example.android.domain.SelectionOptions
 import com.eazzyapps.example.android.domain.Task
 import com.eazzyapps.example.android.domain.TaskCategory
 import com.eazzyapps.example.android.domain.TaskCategory.Selection
+import com.eazzyapps.example.android.domain.ValidBarcodes
 import com.microsoft.signalr.HubConnectionBuilder
 import com.microsoft.signalr.TypeReference
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -64,6 +65,15 @@ class IntakeViewModel : ViewModel() {
                     currentTask.value = task
                 },
                 (object : TypeReference<Task<Any>>() {}).type
+            )
+
+            hubConnection.on(
+                "DoInputScan",
+                { task: Task<ValidBarcodes> ->
+                    Log.d("SignalR", "Client scanning task received: $task")
+                    currentTask.value = task
+                },
+                (object : TypeReference<Task<ValidBarcodes>>() {}).type
             )
 
             hubConnection.on(
