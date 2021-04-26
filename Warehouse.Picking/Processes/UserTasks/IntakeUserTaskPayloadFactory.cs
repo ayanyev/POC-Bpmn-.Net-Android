@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using AtlasEngine.UserTasks;
+using Warehouse.Picking.Api.Processes.ExternalTasks.Intake;
 using Warehouse.Picking.Api.Services;
 
 namespace Warehouse.Picking.Api.Processes.UserTasks
@@ -15,11 +17,26 @@ namespace Warehouse.Picking.Api.Processes.UserTasks
             _intakeService = intakeService;
         }
 
+        public ScanPayload CreateScanPayload(UserTask task)
+        {
+            return task.Id switch
+            {
+                "UT.Input.Scan.Barcode.Article" => task.Tokens[0].Payload.GetPayload<ScanPayload>(),
+                "UT.Input.Scan.Barcode.Location" => new ScanPayload(
+                    new List<string>
+                    {
+                        task.Tokens[0].Payload.GetPayload<BookLocationResult>().Barcode
+                    }
+                ),
+                _ => new ScanPayload(new List<string>())
+            };
+        }
+
         public SelectionOptions CreateSelectionOptionsPayload(UserTask task)
         {
             var rawPayload = task.Tokens.Find(t => t.Type == TokenType.OnEnter)?.Payload?.RawPayload
                              ?? throw new NullReferenceException("Payload of OnEnter type not found");
-            
+
             var payload = JsonSerializer.Deserialize<NoteGtinPayload>(rawPayload)
                           ?? throw new NullReferenceException("Payload is not of NoteGtinPayload type");
 

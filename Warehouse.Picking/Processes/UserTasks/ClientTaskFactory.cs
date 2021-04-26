@@ -33,9 +33,10 @@ namespace Warehouse.Picking.Api.Processes.UserTasks
             var resultTemplate = userTask.Configuration.FormFields
                 .ToDictionary(f => f.Id, f => Parse(f.DefaultValue, f.Type));
 
-            var payload = type switch
+            IClientTaskPayload payload = type switch
             {
                 "Selection" => _payloadFactory.CreateSelectionOptionsPayload(userTask),
+                "Scan" => _payloadFactory.CreateScanPayload(userTask),
                 _ => null
             };
 

@@ -7,33 +7,8 @@ namespace Warehouse.Picking.Api.Processes.UserTasks
     public interface IUserTaskPayloadFactory
     {
         public SelectionOptions CreateSelectionOptionsPayload(UserTask task);
-    }
-    
-    public class SelectionOptions : UserTaskPayload
-    {
-        public List<SelectionOption> Items { get; }
-
-        public SelectionOptions(IEnumerable<SelectionOption> items)
-        {
-            Items = items.ToList();
-        }
-
-        public override string ToString()
-        {
-            return Items.ToString();
-        }
-    }
-
-    public class SelectionOption
-    {
-        public int Id { get; }
-
-        public string Text { get; }
-
-        public SelectionOption(int id, string text)
-        {
-            Id = id;
-            Text = text;
-        }
+        
+        public ScanPayload CreateScanPayload(UserTask task);
+        
     }
 }

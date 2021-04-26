@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using AtlasEngine.UserTasks;
 using Microsoft.AspNetCore.SignalR;
 using AtlasEngine.Logging;
-using warehouse.picking.api.Domain;
 using Warehouse.Picking.Api.Processes;
 using Warehouse.Picking.Api.Processes.UserTasks;
 using Warehouse.Picking.Api.Utilities;
@@ -19,9 +18,10 @@ namespace warehouse.picking.api.Hubs
         Task ProcessStopConfirmed();
 
         Task DoInput(ClientTask task);
-        
+
+        Task DoInputScan(ClientTask task);
+
         Task DoInputSelection(ClientTask task);
-        
     }
 
     public class IntakeDeviceHub : Hub<IIntakeClient>
@@ -29,7 +29,7 @@ namespace warehouse.picking.api.Hubs
         private const string ProcessModelId = "intake";
 
         private const string ProcessStartEvent = "";
-        
+
         private readonly ILogger _logger = ConsoleLogger.Default;
 
         private readonly IProcessClient _processClient;
@@ -38,7 +38,8 @@ namespace warehouse.picking.api.Hubs
 
         private readonly ClientTaskFactory _clientTaskFactory;
 
-        public IntakeDeviceHub(IProcessClient processClient, ConnectionMapping connectionMapping, ClientTaskFactory clientTaskFactory)
+        public IntakeDeviceHub(IProcessClient processClient, ConnectionMapping connectionMapping,
+            ClientTaskFactory clientTaskFactory)
         {
             _processClient = processClient;
             _connectionMapping = connectionMapping;
@@ -60,13 +61,13 @@ namespace warehouse.picking.api.Hubs
         public async Task StartProcess()
         {
             var correlationId = Context.GetUserId();
-            
+
             await _processClient.CreateProcessInstanceByModelId<string>(
                 ProcessModelId, ProcessStartEvent, null, correlationId
             );
-            
+
             var connectionId = _connectionMapping.GetConnection(Context.GetUserId());
-            
+
             _processClient.SubscribeForPendingUserTasks(correlationId,
                 tasks =>
                 {
@@ -82,7 +83,11 @@ namespace warehouse.picking.api.Hubs
                                     Clients.Client(connectionId).DoInputSelection(t);
                                     handledTaskId = task;
                                     break;
-                                case {} t:
+                                case {Type: "Scan"} t:
+                                    Clients.Client(connectionId).DoInputScan(t);
+                                    handledTaskId = task;
+                                    break;
+                                case { } t:
                                     Clients.Client(connectionId).DoInput(t);
                                     handledTaskId = task;
                                     break;
@@ -94,12 +99,13 @@ namespace warehouse.picking.api.Hubs
                             throw;
                         }
                     }
+
                     return handledTaskId;
                 });
-            
+
             await Clients.Caller.ProcessStartConfirmed();
         }
-        
+
         public async Task StopProcess()
         {
             await _processClient.TerminateProcessCorrelationId(Context.GetUserId());
@@ -108,7 +114,7 @@ namespace warehouse.picking.api.Hubs
 
         public async Task SendInput(Dictionary<string, object> input)
         {
-            string taskId = ((JsonElement) input["taskId"]).GetString() 
+            string taskId = ((JsonElement) input["taskId"]).GetString()
                             ?? throw new ArgumentNullException(nameof(taskId));
 
             var correlationId = Context.GetUserId();
