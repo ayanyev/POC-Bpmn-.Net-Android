@@ -48,13 +48,13 @@ namespace warehouse.picking.api.Hubs
 
         public override Task OnConnectedAsync()
         {
-            _connectionMapping.Add(Context.GetUserId(), Context.ConnectionId);
+            _connectionMapping.AddConnection(Context.GetUserId(), Context.ConnectionId);
             return base.OnConnectedAsync();
         }
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            _connectionMapping.Remove(Context.GetUserId());
+            _connectionMapping.RemoveConnection(Context.GetUserId());
             return base.OnDisconnectedAsync(exception);
         }
 
@@ -62,46 +62,51 @@ namespace warehouse.picking.api.Hubs
         {
             var correlationId = Context.GetUserId();
 
-            await _processClient.CreateProcessInstanceByModelId<string>(
-                ProcessModelId, ProcessStartEvent, null, correlationId
-            );
+            var processId = _connectionMapping.GetProcess(correlationId);
 
-            var connectionId = _connectionMapping.GetConnection(Context.GetUserId());
+            if (processId == null || !await _processClient.IsProcessInstanceRunning(processId))
+            {
+                var result = await _processClient.CreateProcessInstanceByModelId<string>(
+                    ProcessModelId, ProcessStartEvent, null, correlationId
+                );
+                _connectionMapping.AddProcess(result.CorrelationId, result.ProcessInstanceId);
+            }
 
-            _processClient.SubscribeForPendingUserTasks(correlationId,
-                tasks =>
+            var connectionId = _connectionMapping.GetConnection(correlationId);
+
+            _processClient.SubscribeForPendingUserTasks(correlationId, tasks =>
+            {
+                UserTask handledTaskId = null;
+                foreach (var task in tasks)
                 {
-                    UserTask handledTaskId = null;
-                    foreach (var task in tasks)
+                    try
                     {
-                        try
+                        _logger.Log(LogLevel.Debug, $"Exec: Handled task: {task.Id}");
+                        switch (_clientTaskFactory.Create(task))
                         {
-                            _logger.Log(LogLevel.Debug, $"Exec: Handled task: {task.Id}");
-                            switch (_clientTaskFactory.Create(task))
-                            {
-                                case {Type: "Selection"} t:
-                                    Clients.Client(connectionId).DoInputSelection(t);
-                                    handledTaskId = task;
-                                    break;
-                                case {Type: "Scan"} t:
-                                    Clients.Client(connectionId).DoInputScan(t);
-                                    handledTaskId = task;
-                                    break;
-                                case { } t:
-                                    Clients.Client(connectionId).DoInput(t);
-                                    handledTaskId = task;
-                                    break;
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e);
-                            throw;
+                            case {Type: "Selection"} t:
+                                Clients.Client(connectionId).DoInputSelection(t);
+                                handledTaskId = task;
+                                break;
+                            case {Type: "Scan"} t:
+                                Clients.Client(connectionId).DoInputScan(t);
+                                handledTaskId = task;
+                                break;
+                            case { } t:
+                                Clients.Client(connectionId).DoInput(t);
+                                handledTaskId = task;
+                                break;
                         }
                     }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        throw;
+                    }
+                }
 
-                    return handledTaskId;
-                });
+                return handledTaskId;
+            });
 
             await Clients.Caller.ProcessStartConfirmed();
         }
