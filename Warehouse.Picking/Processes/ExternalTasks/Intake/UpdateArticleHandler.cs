@@ -19,8 +19,7 @@ namespace Warehouse.Picking.Api.Processes.ExternalTasks.Intake
 
         public Task<Article> HandleAsync(StockyardLocationPayload input, ExternalTask task)
         {
-            var article = _service.UpdateArticleQuantity(input.NoteId, input.ArticleId, input.Quantity);
-            return Task.FromResult(article);
+            return _service.UpdateArticleQuantity(task.CorrelationId, input.NoteId, input.ArticleId, input.Quantity);;
         }
     }
 

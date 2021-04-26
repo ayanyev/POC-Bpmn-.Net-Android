@@ -81,7 +81,7 @@ Output:
 - updated article object</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:properties>
-          <camunda:property name="payload" value="{&#10;noteId: dataObjects.NoteInfo.NoteId,&#10;articleId: dataObjects.ArticleInfo.id,&#10;quantity: dataObjects.IterationInfo.Quantity&#10;}" />
+          <camunda:property name="payload" value="{&#10;noteId: dataObjects.NoteInfo.NoteId,&#10;articleId: dataObjects.ArticleInfo.id,&#10;quantity: dataObjects.IterationInfo.quantity&#10;}" />
         </camunda:properties>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_19toed4</bpmn:incoming>
