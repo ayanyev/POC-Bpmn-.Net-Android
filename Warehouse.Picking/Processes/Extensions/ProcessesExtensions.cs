@@ -30,6 +30,7 @@ namespace warehouse.picking.api.Processes.Extensions
                     services.AddSingleton<BookStockyardLocationHandler>();
                     services.AddSingleton<UpdateArticleHandler>();
                     services.AddSingleton<IUserTaskPayloadFactory, IntakeUserTaskPayloadFactory>();
+                    services.AddSingleton<IProcessInfoProvider,ProcessInfoProvider>();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(appName), appName, null);

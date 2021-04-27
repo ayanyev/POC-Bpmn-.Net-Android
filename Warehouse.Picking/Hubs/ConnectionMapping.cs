@@ -30,7 +30,7 @@ namespace warehouse.picking.api.Hubs
         {
             lock (_mappingLock)
             {
-                return _connections.TryGetValue(key, out var result) ? result : null;
+                return _connections.TryGetValue(key, out var result) ? result : "";
             }
         }
 

@@ -7,9 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eazzyapps.example.android.domain.SelectionOptions
 import com.eazzyapps.example.android.domain.Task
-import com.eazzyapps.example.android.domain.TaskCategory
-import com.eazzyapps.example.android.domain.TaskCategory.Selection
 import com.eazzyapps.example.android.domain.ValidBarcodes
+import com.microsoft.signalr.HubConnection
 import com.microsoft.signalr.HubConnectionBuilder
 import com.microsoft.signalr.TypeReference
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,16 +18,13 @@ import kotlinx.coroutines.launch
 
 class IntakeViewModel : ViewModel() {
 
-    val name = arrayOf("Max" /*"Jorg", "Michael"*/).random()
+    private lateinit var hubConnection: HubConnection
 
-    private val credentials =
-        Base64.encodeToString("$name:ertryrtytr".toByteArray(), Base64.NO_WRAP)
+    private lateinit var selectedName: String
 
-    private val hubConnection =
-        HubConnectionBuilder
-            .create("http://10.0.2.2:5000/intakedevicehub")
-            .withHeader("Authorization", "Basic $credentials")
-            .build()
+    val names = listOf("Max", "Jorg", "Michael")
+
+    val isLoggedIn = MutableStateFlow(false)
 
     val isConnected = MutableStateFlow(false)
 
@@ -36,7 +32,71 @@ class IntakeViewModel : ViewModel() {
 
     val currentTask = MutableStateFlow<Task<*>>(Task.default())
 
-    init {
+    fun setLogIn(index: Int) {
+        selectedName = names[index]
+        isLoggedIn.value = true
+    }
+
+    @SuppressLint("CheckResult")
+    fun connect() {
+
+        if (!::selectedName.isInitialized) throw Exception("Attempt to connect before logged in")
+
+        val credentials =
+            Base64.encodeToString("$selectedName:ertryrtytr".toByteArray(), Base64.NO_WRAP)
+
+        hubConnection = HubConnectionBuilder
+            .create("http://10.0.2.2:5000/intakedevicehub")
+            .withHeader("Authorization", "Basic $credentials")
+            .build()
+
+        listenToHub()
+
+        hubConnection.start()
+            .subscribe(
+                {
+                    isConnected.value = true
+                    Log.d("SignalR", "Connected to the intake device hub")
+                    Log.d("SignalR", "Used credentials: $credentials")
+                    Log.d("SignalR", "ConnectionId: ${hubConnection.connectionId}")
+                },
+                { Log.e("SignalR", it?.message ?: "Error connecting to hub") }
+            )
+    }
+
+    @SuppressLint("CheckResult")
+    fun disconnect() {
+
+        if (!::hubConnection.isInitialized) throw Exception("Hub connection not initialized")
+
+        viewModelScope.launch {
+            if (isProcessRunning.value) {
+                stopProcess()
+            }
+            isProcessRunning.asStateFlow().collect {
+                if (it) return@collect
+                hubConnection.stop()
+                    .subscribe(
+                        {
+                            isConnected.value = false
+                            Log.d("SignalR", "Disconnected from the intake device hub")
+                        },
+                        { e -> Log.e("SignalR", e?.message ?: "Error disconnecting from hub") }
+                    )
+            }
+        }
+    }
+
+    fun startProcess() = hubConnection.send("StartProcess")
+
+    fun stopProcess() = hubConnection.send("StopProcess")
+
+    fun sendInputData(map: Map<String, Any>) {
+        Log.d("SignalR", "UserTask output: $map")
+        hubConnection.send("SendInput", map)
+    }
+
+    private fun listenToHub() {
 
         viewModelScope.launch {
 
@@ -87,51 +147,6 @@ class IntakeViewModel : ViewModel() {
 
         }
 
-    }
-
-    private fun tryResumeShift() = hubConnection.send("CheckActiveShift", name)
-
-    @SuppressLint("CheckResult")
-    fun connect() {
-        hubConnection.start()
-            .subscribe(
-                {
-                    isConnected.value = true
-                    Log.d("SignalR", "Connected to the intake device hub")
-                    Log.d("SignalR", "Used credentials: $credentials")
-                    Log.d("SignalR", "ConnectionId: ${hubConnection.connectionId}")
-                },
-                { Log.e("SignalR", it?.message ?: "Error connecting to hub") }
-            )
-    }
-
-    @SuppressLint("CheckResult")
-    fun disconnect() {
-        viewModelScope.launch {
-            if (isProcessRunning.value) {
-                stopProcess()
-            }
-            isProcessRunning.asStateFlow().collect {
-                if (it) return@collect
-                hubConnection.stop()
-                    .subscribe(
-                        {
-                            isConnected.value = false
-                            Log.d("SignalR", "Disconnected from the intake device hub")
-                        },
-                        { e -> Log.e("SignalR", e?.message ?: "Error disconnecting from hub") }
-                    )
-            }
-        }
-    }
-
-    fun startProcess() = hubConnection.send("StartProcess")
-
-    fun stopProcess() = hubConnection.send("StopProcess")
-
-    fun sendInputData(map: Map<String, Any>) {
-        Log.d("SignalR", "UserTask output: $map")
-        hubConnection.send("SendInput", map)
     }
 
 }

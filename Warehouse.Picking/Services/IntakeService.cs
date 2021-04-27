@@ -17,13 +17,13 @@ namespace Warehouse.Picking.Api.Services
 
         private readonly ILocationRepository _locationRepository;
 
-        private readonly IHubContext<IntakeDeviceHub> _intakeDeviceHubContext;
+        private readonly IHubContext<DeviceHub> _intakeDeviceHubContext;
 
         private readonly IHubContext<IntakeDashboardHub> _intakeDashboardHubContext;
 
 
         public IntakeService(IArticleRepository articleRepository, ILocationRepository locationRepository,
-            IHubContext<IntakeDeviceHub> intakeDeviceHubContext,
+            IHubContext<DeviceHub> intakeDeviceHubContext,
             IHubContext<IntakeDashboardHub> intakeDashboardHubContext, ConnectionMapping connectionMapping)
         {
             _articleRepository = articleRepository;

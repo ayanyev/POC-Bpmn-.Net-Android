@@ -93,7 +93,7 @@ namespace Warehouse.Picking.Api
                         break;
                     case AppName.IntakeApp:
                         endpoints.MapHub<IntakeDashboardHub>("/intakedashboardhub");
-                        endpoints.MapHub<IntakeDeviceHub>("/intakedevicehub");
+                        endpoints.MapHub<DeviceHub>("/intakedevicehub");
                         break;
                 }
             });  

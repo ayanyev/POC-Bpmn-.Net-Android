@@ -91,7 +91,6 @@ Output:
     <bpmn:sequenceFlow id="Flow_19toed4" name="yes" sourceRef="Gateway_0asxaek" targetRef="Activity_1hwv4ke">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">token.current.Barcode == token.history.TaskGetLocation.barcode</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0fgl0vs" name="no" sourceRef="Gateway_00n2q11" targetRef="Event_0dlm7ha" />
     <bpmn:sequenceFlow id="Flow_1sze9gy" name="yes" sourceRef="Gateway_00n2q11" targetRef="UT.Input.Scan.Barcode.Article">
       <bpmn:extensionElements>
         <camunda:properties>
@@ -188,6 +187,7 @@ Output:
       <bpmn:incoming>Flow_117r828</bpmn:incoming>
       <bpmn:incoming>Flow_0d2iml2</bpmn:incoming>
       <bpmn:incoming>Flow_1smtjz4</bpmn:incoming>
+      <bpmn:incoming>Flow_12qf1gh</bpmn:incoming>
       <bpmn:outgoing>Flow_1cxsag1</bpmn:outgoing>
       <bpmn:dataOutputAssociation id="DataOutputAssociation_003hykd">
         <bpmn:targetRef>NoteInfo</bpmn:targetRef>
@@ -236,10 +236,10 @@ Output:
         <bpmn:targetRef>Barcodes</bpmn:targetRef>
       </bpmn:dataOutputAssociation>
     </bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="Gateway_00n2q11" name="more articles left?" default="Flow_0fgl0vs">
+    <bpmn:exclusiveGateway id="Gateway_00n2q11" name="more articles left?" default="Flow_12qf1gh">
       <bpmn:incoming>Flow_0zyxwqu</bpmn:incoming>
-      <bpmn:outgoing>Flow_0fgl0vs</bpmn:outgoing>
       <bpmn:outgoing>Flow_1sze9gy</bpmn:outgoing>
+      <bpmn:outgoing>Flow_12qf1gh</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="UT.Input.Scan.Barcode.Article" name="scan article" camunda:formKey="Form Key">
       <bpmn:extensionElements>
@@ -248,9 +248,9 @@ Output:
           <camunda:formField id="NoteId" label="note Id" type="string" defaultValue="${dataObjects.NoteInfo.NoteId}" />
         </camunda:formData>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0qse2lc</bpmn:incoming>
       <bpmn:incoming>Flow_1sze9gy</bpmn:incoming>
       <bpmn:incoming>Flow_0sh45hg</bpmn:incoming>
+      <bpmn:incoming>Flow_0qse2lc</bpmn:incoming>
       <bpmn:outgoing>Flow_0pz98iz</bpmn:outgoing>
       <bpmn:dataOutputAssociation id="DataOutputAssociation_0anxe1m">
         <bpmn:targetRef>Barcode</bpmn:targetRef>
@@ -263,23 +263,8 @@ Output:
       <bpmn:outgoing>Flow_0o9v2wx</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_1kdcp3l" sourceRef="Activity_0f7n2at" targetRef="Gateway_11ttssv" />
-    <bpmn:dataObjectReference id="Barcodes" name="Article barcodes" dataObjectRef="DataObject_0msduab">
-      <bpmn:documentation>contains list of article ids for the given delivery note
-{
-codes: String[]
-}</bpmn:documentation>
-    </bpmn:dataObjectReference>
-    <bpmn:dataObject id="DataObject_0msduab" />
-    <bpmn:endEvent id="Event_0dlm7ha" name="End event">
-      <bpmn:incoming>Flow_0fgl0vs</bpmn:incoming>
-    </bpmn:endEvent>
     <bpmn:dataObjectReference id="Barcode" name="Current barcode" dataObjectRef="DataObject_1bc0uwg" />
     <bpmn:dataObject id="DataObject_1bc0uwg" />
-    <bpmn:dataObjectReference id="NoteInfo" name="Note info" dataObjectRef="DataObject_0erf8oa">
-      <bpmn:documentation>- get current note id
-dataObjects.NoteInfo.NoteId</bpmn:documentation>
-    </bpmn:dataObjectReference>
-    <bpmn:dataObject id="DataObject_0erf8oa" />
     <bpmn:dataObjectReference id="IterationInfo" name="Iteration info" dataObjectRef="DataObject_0vh8sj2" />
     <bpmn:dataObject id="DataObject_0vh8sj2" />
     <bpmn:serviceTask id="Activity_0f7n2at" name="Match article by gtin and bundle" camunda:type="external" camunda:topic="Intake.Article.Match">
@@ -323,6 +308,19 @@ Output:
       <bpmn:errorEventDefinition id="ErrorEventDefinition_1ek2d88" errorRef="Error_etwx8acR" />
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_1smtjz4" name="" sourceRef="Event_0bz3j0m" targetRef="UT.Input.Simple.NoteId" />
+    <bpmn:dataObjectReference id="NoteInfo" name="Note info" dataObjectRef="DataObject_0erf8oa">
+      <bpmn:documentation>- get current note id
+dataObjects.NoteInfo.NoteId</bpmn:documentation>
+    </bpmn:dataObjectReference>
+    <bpmn:dataObject id="DataObject_0erf8oa" />
+    <bpmn:sequenceFlow id="Flow_12qf1gh" name="no" sourceRef="Gateway_00n2q11" targetRef="UT.Input.Simple.NoteId" />
+    <bpmn:dataObjectReference id="Barcodes" name="Article barcodes" dataObjectRef="DataObject_0msduab">
+      <bpmn:documentation>contains list of article ids for the given delivery note
+{
+codes: String[]
+}</bpmn:documentation>
+    </bpmn:dataObjectReference>
+    <bpmn:dataObject id="DataObject_0msduab" />
   </bpmn:process>
   <bpmn:error id="Error_etwx8acR" name="Note Id not found" errorCode="UnknownNoteIdException" />
   <bpmn:error id="Error_HoqCmKWZ" name="Unhandled" errorCode="UnhandledException" />
@@ -452,13 +450,6 @@ Output:
           <dc:Bounds x="234" y="109" width="18" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0fgl0vs_di" bpmnElement="Flow_0fgl0vs">
-        <di:waypoint x="190" y="102" />
-        <di:waypoint x="190" y="-42" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="199" y="53" width="13" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_19toed4_di" bpmnElement="Flow_19toed4">
         <di:waypoint x="1635" y="127" />
         <di:waypoint x="1690" y="127" />
@@ -473,6 +464,15 @@ Output:
         <di:waypoint x="1489" y="87" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1623" y="53" width="13" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12qf1gh_di" bpmnElement="Flow_12qf1gh">
+        <di:waypoint x="190" y="102" />
+        <di:waypoint x="190" y="20" />
+        <di:waypoint x="-240" y="20" />
+        <di:waypoint x="-240" y="87" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="203" y="43" width="13" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Gateway_1saly70_di" bpmnElement="Gateway_1saly70" isMarkerVisible="true">
@@ -538,28 +538,10 @@ Output:
           <dc:Bounds x="400" y="159" width="61" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="DataObjectReference_1nopgst_di" bpmnElement="Barcodes">
-        <dc:Bounds x="52" y="-85" width="36" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="31" y="-107" width="79" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0dlm7ha_di" bpmnElement="Event_0dlm7ha">
-        <dc:Bounds x="172" y="-78" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="165" y="-102" width="50" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="DataObjectReference_0dwtkzw_di" bpmnElement="Barcode">
         <dc:Bounds x="282" y="-85" width="36" height="50" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="260" y="-106" width="80" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="DataObjectReference_1oq054n_di" bpmnElement="NoteInfo">
-        <dc:Bounds x="-278" y="-85" width="36" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="-333" y="-67" width="45" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="DataObjectReference_04wxunv_di" bpmnElement="IterationInfo">
@@ -580,6 +562,18 @@ Output:
       <bpmndi:BPMNShape id="Activity_1rt2tzb_di" bpmnElement="UT.Input.Selection.BundleId">
         <dc:Bounds x="504" y="87" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_1oq054n_di" bpmnElement="NoteInfo">
+        <dc:Bounds x="-298" y="-85" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-353" y="-67" width="45" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_1nopgst_di" bpmnElement="Barcodes">
+        <dc:Bounds x="52" y="-85" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="31" y="-107" width="79" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0dyx9ax_di" bpmnElement="Event_0bz3j0m">
         <dc:Bounds x="-138" y="149" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -595,8 +589,8 @@ Output:
         <di:waypoint x="960" y="-35" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="DataOutputAssociation_003hykd_di" bpmnElement="DataOutputAssociation_003hykd">
-        <di:waypoint x="-260" y="87" />
-        <di:waypoint x="-258" y="-35" />
+        <di:waypoint x="-278" y="80" />
+        <di:waypoint x="-278" y="-35" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="DataOutputAssociation_0hxhrid_di" bpmnElement="DataOutputAssociation_0hxhrid">
         <di:waypoint x="70" y="87" />
