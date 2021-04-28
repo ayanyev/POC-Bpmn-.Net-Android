@@ -8,6 +8,7 @@ using AtlasEngine.Logging;
 using AtlasEngine.ProcessDefinitions;
 using AtlasEngine.ProcessDefinitions.Requests;
 using AtlasEngine.ProcessInstances;
+using AtlasEngine.ProcessInstances.Requests;
 using AtlasEngine.UserTasks;
 using AtlasEngine.UserTasks.Requests;
 using Warehouse.Picking.Api.Utilities;
@@ -47,6 +48,56 @@ namespace Warehouse.Picking.Api.Processes
                 t => t.Id.Equals(task.Id)
             );
             return prevTask;
+        }
+
+        public void SubscribeForProcessInstanceStateChange(string processId, Func<ProcessInstance, ProcessState> action)
+        {
+            var subscriptionSettings = new InstanceSubscriptionSettings
+            {
+                SubscribeOnce = false,
+                ConfigureQuery = o =>
+                {
+                    o.FilterByProcessInstanceId(processId);
+                    o.FilterByStates(ProcessState.Error, ProcessState.Finished, ProcessState.Terminated);
+                }
+            };
+            
+            var handledInstance = ProcessState.Running;
+            
+            Func<ProcessState> getRecentInstanceState = () => handledInstance;
+
+            Action<ProcessState> updateRecentInstanceState = instance =>
+            {
+                handledInstance = instance;
+            };
+
+            void Callback(IEnumerable<ProcessInstance> instances)
+            {
+                try
+                {
+                    var processInstances = instances.ToList();
+                    
+                    switch (processInstances.ToList().Count)
+                    {
+                        case 0: return;
+                    }
+                    
+                    var instance = processInstances.First();
+                    
+                    if (!instance.State.Equals(getRecentInstanceState()))
+                    {
+                        updateRecentInstanceState(action(instance));
+                    }
+                    _logger.Log(LogLevel.Debug, $"Handled instance state change: {processId}:{getRecentInstanceState()}");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+            
+            _instanceClient.SubscribeForProcessesInstances(Callback, subscriptionSettings);
         }
 
         public void SubscribeForPendingUserTasks(string correlationId, Func<IEnumerable<UserTask>, UserTask> action)

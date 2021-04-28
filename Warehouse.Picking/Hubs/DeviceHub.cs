@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using AtlasEngine.UserTasks;
 using Microsoft.AspNetCore.SignalR;
 using AtlasEngine.Logging;
-using Microsoft.Extensions.DependencyInjection;
 using Warehouse.Picking.Api.Processes;
 using Warehouse.Picking.Api.Processes.UserTasks;
 using Warehouse.Picking.Api.Utilities;
@@ -36,7 +35,7 @@ namespace warehouse.picking.api.Hubs
         private readonly ConnectionMapping _connectionMapping;
 
         private readonly IProcessInfoProvider _processInfoProvider;
-        
+
         private readonly IServiceProvider _serviceProvider;
 
         private readonly ClientTaskFactory _clientTaskFactory;
@@ -79,53 +78,56 @@ namespace warehouse.picking.api.Hubs
             }
 
             var connectionId = _connectionMapping.GetConnection(correlationId);
-            
+
             await Clients.Caller.ProcessStartConfirmed(processInfo.ModelId);
 
-            // ReSharper disable once ConvertToUsingDeclaration
-            using (var scope = _serviceProvider.CreateScope())
+            _processClient.SubscribeForPendingUserTasks(correlationId, tasks =>
             {
-                var clientTaskFactory = scope.ServiceProvider.GetRequiredService<ClientTaskFactory>();
-                
-                _processClient.SubscribeForPendingUserTasks(correlationId, tasks =>
+                UserTask handledTaskId = null;
+                foreach (var task in tasks)
                 {
-                    UserTask handledTaskId = null;
-                    foreach (var task in tasks)
+                    try
                     {
-                        try
+                        _logger.Log(LogLevel.Debug, $"Exec: Handled task: {task.Id}");
+                        switch (_clientTaskFactory.Create(task))
                         {
-                            _logger.Log(LogLevel.Debug, $"Exec: Handled task: {task.Id}");
-                            switch (clientTaskFactory.Create(task))
-                            {
-                                case {Type: ClientTaskType.Selection} t:
-                                    Clients.Client(connectionId).DoInputSelection(t);
-                                    handledTaskId = task;
-                                    break;
-                                case {Type: ClientTaskType.Scan} t:
-                                    Clients.Client(connectionId).DoInputScan(t);
-                                    handledTaskId = task;
-                                    break;
-                                case {Type: ClientTaskType.Info} t:
-                                    Clients.Client(connectionId).ShowInfo(t);
-                                    handledTaskId = task;
-                                    break;
-                                case { } t:
-                                    Clients.Client(connectionId).DoInput(t);
-                                    handledTaskId = task;
-                                    break;
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e);
-                            throw;
+                            case {Type: ClientTaskType.Selection} t:
+                                Clients.Client(connectionId).DoInputSelection(t);
+                                handledTaskId = task;
+                                break;
+                            case {Type: ClientTaskType.Scan} t:
+                                Clients.Client(connectionId).DoInputScan(t);
+                                handledTaskId = task;
+                                break;
+                            case {Type: ClientTaskType.Info} t:
+                                Clients.Client(connectionId).ShowInfo(t);
+                                handledTaskId = task;
+                                break;
+                            case { } t:
+                                Clients.Client(connectionId).DoInput(t);
+                                handledTaskId = task;
+                                break;
                         }
                     }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        throw;
+                    }
+                }
 
-                    return handledTaskId;
+                return handledTaskId;
+            });
+
+
+            _processClient.SubscribeForProcessInstanceStateChange(_connectionMapping.GetProcess(correlationId),
+                instance =>
+                {
+                    Clients.Client(_connectionMapping.GetConnection(correlationId)).ProcessStopConfirmed();
+                    return instance.State;
                 });
-            }
         }
+
 
         public async Task StopProcess()
         {

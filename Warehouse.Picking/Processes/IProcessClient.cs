@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AtlasEngine.ProcessDefinitions.Requests;
+using AtlasEngine.ProcessInstances;
 using AtlasEngine.UserTasks;
 
 namespace Warehouse.Picking.Api.Processes
@@ -31,5 +32,7 @@ namespace Warehouse.Picking.Api.Processes
         void SubscribeForPendingUserTasks(string correlationId, Func<IEnumerable<UserTask>, UserTask> action);
 
         Task<UserTask> GetPrevFinishedTaskOfSameKind(UserTask task);
+
+        void SubscribeForProcessInstanceStateChange(string processId, Func<ProcessInstance, ProcessState> action);
     }
 }
