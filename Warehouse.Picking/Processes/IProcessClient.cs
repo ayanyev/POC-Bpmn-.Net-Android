@@ -13,7 +13,7 @@ namespace Warehouse.Picking.Api.Processes
         Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string modelId, string startEvent, T token,
             string correlationId);
         
-        Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string correlationId, T token);
+        Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string correlationId, ProcessInfo processInfo, T token);
 
         Task<bool> TerminateProcessInstanceById(string processId);
 

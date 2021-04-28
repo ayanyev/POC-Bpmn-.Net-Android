@@ -28,14 +28,6 @@ namespace Warehouse.Picking.Api.Processes
 
         private readonly IUserTaskClient _userTaskClient =
             ClientFactory.CreateUserTaskClient(new Uri(BaseUrl));
-        
-                
-        private readonly IProcessInfoProvider _processInfoProvider;
-
-        public ProcessEngineClient(IProcessInfoProvider processInfoProvider)
-        {
-            _processInfoProvider = processInfoProvider;
-        }
 
         public static IExternalTaskClient CreateExternalTaskClient()
         {
@@ -138,10 +130,9 @@ namespace Warehouse.Picking.Api.Processes
             return res.Count > 0 && res.First().State == ProcessState.Running;
         }
 
-        public async Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string correlationId, T token)
+        public async Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string correlationId, ProcessInfo processInfo, T token)
         {
-            var processInfo = _processInfoProvider.Get(correlationId);
-            return await CreateProcessInstanceByModelId(processInfo.ModelId, processInfo.StartEvent, token, "");
+            return await CreateProcessInstanceByModelId(processInfo.ModelId, processInfo.StartEvent, token, correlationId);
         }
 
         public async Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string modelId,

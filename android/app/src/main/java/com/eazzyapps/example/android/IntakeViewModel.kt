@@ -30,6 +30,8 @@ class IntakeViewModel : ViewModel() {
 
     val isProcessRunning = MutableStateFlow(false)
 
+    val screenTitle = MutableStateFlow("<<<  Log in")
+
     val currentTask = MutableStateFlow<Task<*>>(Task.default())
 
     fun setLogIn(index: Int) {
@@ -56,6 +58,7 @@ class IntakeViewModel : ViewModel() {
             .subscribe(
                 {
                     isConnected.value = true
+                    screenTitle.value = "<<<  Start process"
                     Log.d("SignalR", "Connected to the intake device hub")
                     Log.d("SignalR", "Used credentials: $credentials")
                     Log.d("SignalR", "ConnectionId: ${hubConnection.connectionId}")
@@ -79,6 +82,7 @@ class IntakeViewModel : ViewModel() {
                     .subscribe(
                         {
                             isConnected.value = false
+                            screenTitle.value = "<<<  Log in"
                             Log.d("SignalR", "Disconnected from the intake device hub")
                         },
                         { e -> Log.e("SignalR", e?.message ?: "Error disconnecting from hub") }
@@ -100,14 +104,20 @@ class IntakeViewModel : ViewModel() {
 
         viewModelScope.launch {
 
-            hubConnection.on("ProcessStartConfirmed") {
-                Log.d("SignalR", "Intake process started")
-                isProcessRunning.value = true
-            }
+            hubConnection.on(
+                "ProcessStartConfirmed",
+                { name ->
+                    Log.d("SignalR", "Intake process started")
+                    screenTitle.value = name
+                    isProcessRunning.value = true
+                },
+                String::class.java
+            )
 
             hubConnection.on("ProcessStopConfirmed") {
                 Log.d("SignalR", "Intake process stopped")
                 isProcessRunning.value = false
+                screenTitle.value = "<<<  Start process"
             }
 
             hubConnection.on(

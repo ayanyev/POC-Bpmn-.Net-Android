@@ -28,7 +28,7 @@ class IntakeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            AndroidTheme() {
+            AndroidTheme(darkTheme = true) {
 
                 val viewModel: IntakeViewModel = viewModel()
 
@@ -37,6 +37,8 @@ class IntakeActivity : AppCompatActivity() {
                 val isConnected by viewModel.isConnected.collectAsState()
 
                 val isRunning by viewModel.isProcessRunning.collectAsState()
+
+                val processName by viewModel.screenTitle.collectAsState()
 
                 val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
 
@@ -51,6 +53,7 @@ class IntakeActivity : AppCompatActivity() {
                     scaffoldState = scaffoldState,
                     topBar = {
                         TabBarLayout(
+                            title = processName,
                             scope = scope,
                             scaffoldState = scaffoldState
                         )
@@ -75,13 +78,15 @@ class IntakeActivity : AppCompatActivity() {
     }
 }
 
+@OptIn(ExperimentalStdlibApi::class)
 @Composable
 fun TabBarLayout(
+    title: String,
     scope: CoroutineScope,
     scaffoldState: ScaffoldState
 ) {
     TopAppBar(
-        title = {},
+        title = { Text(text = title.uppercase(Locale.getDefault())) },
         backgroundColor = MaterialTheme.colors.surface,
         navigationIcon = {
             Icon(

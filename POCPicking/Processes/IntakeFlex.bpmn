@@ -5,9 +5,9 @@
 - article id
 Output:
 - article info</bpmn:documentation>
-    <bpmn:participant id="Participant_0px403d" name="IntakeProcess" processRef="intake" />
+    <bpmn:participant id="Participant_0px403d" name="WH.Intake" processRef="WH.Intake" />
   </bpmn:collaboration>
-  <bpmn:process id="intake" name="intake" isExecutable="true">
+  <bpmn:process id="WH.Intake" name="WH.Intake" isExecutable="true">
     <bpmn:laneSet />
     <bpmn:exclusiveGateway id="Gateway_1saly70" name="valid?" default="Flow_0hxsukl">
       <bpmn:incoming>Flow_0lnum3g</bpmn:incoming>
@@ -185,7 +185,6 @@ Output:
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_117r828</bpmn:incoming>
-      <bpmn:incoming>Flow_0d2iml2</bpmn:incoming>
       <bpmn:incoming>Flow_1smtjz4</bpmn:incoming>
       <bpmn:incoming>Flow_12qf1gh</bpmn:incoming>
       <bpmn:outgoing>Flow_1cxsag1</bpmn:outgoing>
@@ -298,7 +297,7 @@ Output:
       <bpmn:incoming>Flow_0o9v2wx</bpmn:incoming>
       <bpmn:outgoing>Flow_0imho6z</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_0d2iml2" sourceRef="Event_09pvgwz" targetRef="UT.Input.Simple.NoteId" />
+    <bpmn:sequenceFlow id="Flow_0d2iml2" name="" sourceRef="Event_09pvgwz" targetRef="Event_0iwkenu" />
     <bpmn:boundaryEvent id="Event_09pvgwz" name="" attachedToRef="Activity_1une9zy">
       <bpmn:outgoing>Flow_0d2iml2</bpmn:outgoing>
       <bpmn:errorEventDefinition id="ErrorEventDefinition_11f2swd" errorRef="Error_HoqCmKWZ" />
@@ -321,6 +320,9 @@ codes: String[]
 }</bpmn:documentation>
     </bpmn:dataObjectReference>
     <bpmn:dataObject id="DataObject_0msduab" />
+    <bpmn:endEvent id="Event_0iwkenu" name="">
+      <bpmn:incoming>Flow_0d2iml2</bpmn:incoming>
+    </bpmn:endEvent>
   </bpmn:process>
   <bpmn:error id="Error_etwx8acR" name="Note Id not found" errorCode="UnknownNoteIdException" />
   <bpmn:error id="Error_HoqCmKWZ" name="Unhandled" errorCode="UnhandledException" />
@@ -329,6 +331,15 @@ codes: String[]
       <bpmndi:BPMNShape id="Participant_0px403d_di" bpmnElement="Participant_0px403d" isHorizontal="true">
         <dc:Bounds x="-480" y="-210" width="2390" height="580" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_12qf1gh_di" bpmnElement="Flow_12qf1gh">
+        <di:waypoint x="190" y="102" />
+        <di:waypoint x="190" y="20" />
+        <di:waypoint x="-240" y="20" />
+        <di:waypoint x="-240" y="87" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="203" y="43" width="13" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1smtjz4_di" bpmnElement="Flow_1smtjz4">
         <di:waypoint x="-120" y="185" />
         <di:waypoint x="-120" y="260" />
@@ -337,9 +348,7 @@ codes: String[]
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0d2iml2_di" bpmnElement="Flow_0d2iml2">
         <di:waypoint x="-70" y="185" />
-        <di:waypoint x="-70" y="300" />
-        <di:waypoint x="-280" y="300" />
-        <di:waypoint x="-280" y="167" />
+        <di:waypoint x="-70" y="232" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1kdcp3l_di" bpmnElement="Flow_1kdcp3l">
         <di:waypoint x="760" y="127" />
@@ -466,15 +475,6 @@ codes: String[]
           <dc:Bounds x="1623" y="53" width="13" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_12qf1gh_di" bpmnElement="Flow_12qf1gh">
-        <di:waypoint x="190" y="102" />
-        <di:waypoint x="190" y="20" />
-        <di:waypoint x="-240" y="20" />
-        <di:waypoint x="-240" y="87" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="203" y="43" width="13" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Gateway_1saly70_di" bpmnElement="Gateway_1saly70" isMarkerVisible="true">
         <dc:Bounds x="1175" y="102" width="50" height="50" />
         <bpmndi:BPMNLabel>
@@ -573,6 +573,9 @@ codes: String[]
         <bpmndi:BPMNLabel>
           <dc:Bounds x="31" y="-107" width="79" height="14" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0iwkenu_di" bpmnElement="Event_0iwkenu">
+        <dc:Bounds x="-88" y="232" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0dyx9ax_di" bpmnElement="Event_0bz3j0m">
         <dc:Bounds x="-138" y="149" width="36" height="36" />
