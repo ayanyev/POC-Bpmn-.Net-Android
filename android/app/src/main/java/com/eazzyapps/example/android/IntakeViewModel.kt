@@ -5,9 +5,7 @@ import android.util.Base64
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.eazzyapps.example.android.domain.SelectionOptions
-import com.eazzyapps.example.android.domain.Task
-import com.eazzyapps.example.android.domain.ValidBarcodes
+import com.eazzyapps.example.android.domain.*
 import com.microsoft.signalr.HubConnection
 import com.microsoft.signalr.HubConnectionBuilder
 import com.microsoft.signalr.TypeReference
@@ -33,6 +31,10 @@ class IntakeViewModel : ViewModel() {
     val screenTitle = MutableStateFlow("<<<  Log in")
 
     val currentTask = MutableStateFlow<Task<*>>(Task.default())
+
+    val articleList = MutableStateFlow<List<Article>>(listOf())
+
+    val isError = MutableStateFlow(false)
 
     fun setLogIn(index: Int) {
         selectedName = names[index]
@@ -124,6 +126,9 @@ class IntakeViewModel : ViewModel() {
                 "ArticlesListReceived",
                 { articles ->
                     Log.d("SignalR", "$articles")
+                    // TODO maybe move this logic to BE
+                    val isProcessComplete = articles.items.all { it.isCompleted() }
+                    articleList.value = if(!isProcessComplete) articles.items else listOf()
                 },
                 Articles::class.java
             )
@@ -157,6 +162,31 @@ class IntakeViewModel : ViewModel() {
 
         }
 
+    }
+
+    fun setInputError(value : Boolean){
+        isError.value = value
+    }
+
+    fun selectScannedItem(gtin: String) {
+        val items = articleList.value.map { it.copy() }.toMutableList()
+        items.setInitialState()
+        val scannedArticle = items.findArticleByBarcode(gtin)
+        if (scannedArticle != null) {
+            items.remove(scannedArticle)
+            scannedArticle.setState(Article.State.SELECTED)
+            items.add(0, scannedArticle)
+        }
+        articleList.value = items
+    }
+
+    private fun List<Article>.findArticleByBarcode(barcode: String) =
+        find { it.gtin == barcode && !it.isCompleted() }
+
+    private fun List<Article>.setInitialState() = forEach {
+        if (!it.isCompleted()) {
+            it.setState(Article.State.INITIAL)
+        }
     }
 
 }
