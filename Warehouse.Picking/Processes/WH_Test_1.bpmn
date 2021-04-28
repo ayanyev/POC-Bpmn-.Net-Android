@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definition_cd470264-649e-43f7-aa4c-953080d2924b" targetNamespace="http://bpmn.io/schema/bpmn" exporter="BPMN Studio" exporterVersion="1">
+  <bpmn:collaboration id="Collaboration_1cidyxu" name="">
+    <bpmn:participant id="Participant_0px403d" name="WH.Test.1" processRef="WH.Test.1" />
+  </bpmn:collaboration>
+  <bpmn:process id="WH.Test.1" name="WH.Test.1" isExecutable="true">
+    <bpmn:laneSet>
+      <bpmn:lane id="Lane_1xzf0d3" name="Lane">
+        <bpmn:flowNodeRef>StartEvent_1mox3jl</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_0eie6q6</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UT.Input.Quantity.Quantity</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UT.Input.Scan.Barcode.Article</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UT.Input.Simple.NoteId</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:sequenceFlow id="SequenceFlow_1jdocur" sourceRef="StartEvent_1mox3jl" targetRef="UT.Input.Simple.NoteId" />
+    <bpmn:startEvent id="StartEvent_1mox3jl" name="Start Event">
+      <bpmn:outgoing>SequenceFlow_1jdocur</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="EndEvent_0eie6q6" name="End Event">
+      <bpmn:incoming>Flow_01ysy77</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0z3q30h" sourceRef="UT.Input.Simple.NoteId" targetRef="UT.Input.Scan.Barcode.Article" />
+    <bpmn:sequenceFlow id="Flow_0oou2tt" sourceRef="UT.Input.Scan.Barcode.Article" targetRef="UT.Input.Quantity.Quantity" />
+    <bpmn:sequenceFlow id="Flow_01ysy77" sourceRef="UT.Input.Quantity.Quantity" targetRef="EndEvent_0eie6q6" />
+    <bpmn:userTask id="UT.Input.Quantity.Quantity" name="get article quantity" camunda:formKey="Form Key">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Quantity" label="quantity" type="long" defaultValue="" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0oou2tt</bpmn:incoming>
+      <bpmn:outgoing>Flow_01ysy77</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="UT.Input.Scan.Barcode.Article" name="scan article" camunda:formKey="Form Key">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Barcode" label="barcode" type="string" defaultValue="" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0z3q30h</bpmn:incoming>
+      <bpmn:outgoing>Flow_0oou2tt</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="UT.Input.Simple.NoteId" name="get note id" camunda:formKey="Form Key">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="NoteId" label="Note Id" type="string" defaultValue="" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1jdocur</bpmn:incoming>
+      <bpmn:outgoing>Flow_0z3q30h</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1cidyxu">
+      <bpmndi:BPMNShape id="Participant_0px403d_di" bpmnElement="Participant_0px403d" isHorizontal="true">
+        <dc:Bounds x="-80" y="-70" width="950" height="330" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1xzf0d3_di" bpmnElement="Lane_1xzf0d3" isHorizontal="true">
+        <dc:Bounds x="-50" y="-70" width="920" height="330" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_01ysy77_di" bpmnElement="Flow_01ysy77">
+        <di:waypoint x="640" y="87" />
+        <di:waypoint x="772" y="87" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0oou2tt_di" bpmnElement="Flow_0oou2tt">
+        <di:waypoint x="420" y="87" />
+        <di:waypoint x="540" y="87" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0z3q30h_di" bpmnElement="Flow_0z3q30h">
+        <di:waypoint x="210" y="87" />
+        <di:waypoint x="320" y="87" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1jdocur_di" bpmnElement="SequenceFlow_1jdocur">
+        <di:waypoint x="48" y="87" />
+        <di:waypoint x="110" y="87" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="StartEvent_1mox3jl_di" bpmnElement="StartEvent_1mox3jl">
+        <dc:Bounds x="12" y="69" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3" y="105" width="55" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0eie6q6_di" bpmnElement="EndEvent_0eie6q6">
+        <dc:Bounds x="772" y="69" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="765" y="105" width="51" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0z17frn_di" bpmnElement="UT.Input.Quantity.Quantity">
+        <dc:Bounds x="540" y="47" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0qho95j_di" bpmnElement="UT.Input.Scan.Barcode.Article">
+        <dc:Bounds x="320" y="47" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_03fthgq_di" bpmnElement="UT.Input.Simple.NoteId">
+        <dc:Bounds x="110" y="47" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

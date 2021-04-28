@@ -6,8 +6,8 @@ namespace Warehouse.Picking.Api.Processes
         {
             return name switch
             {
-                "Max" => new ProcessInfo("intake", ""),
-                "Jorg" => new ProcessInfo("intake", ""),
+                "Max" => new ProcessInfo("WH.Intake", ""),
+                "Jorg" => new ProcessInfo("WH.Test.1", ""),
                 "Michael" => new ProcessInfo("intake", ""),
                 _ => null
             };
