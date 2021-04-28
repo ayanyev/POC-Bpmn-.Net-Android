@@ -1,121 +1,141 @@
 package com.eazzyapps.example.android
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.eazzyapps.example.android.domain.TaskCategory.*
+import com.eazzyapps.example.android.ui.composables.StartAsLayout
+import com.eazzyapps.example.android.ui.composables.TestLayout
+import com.eazzyapps.example.android.ui.theme.AndroidTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import java.util.*
+
+val space = 16.dp
 
 class IntakeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent { TextScreenUi() }
-    }
-}
+        setContent {
+            AndroidTheme() {
 
-@Preview
-@Composable
-fun ScanLayoutPreview() {
-    TestLayout(
-        modifier = Modifier
-            .wrapContentHeight()
-            .width(200.dp),
-        initial = "345454",
-        label = "Input",
-        isEnabled = true,
-        isError = true,
-        onClick = {}
-    )
-}
+                val viewModel: IntakeViewModel = viewModel()
 
-@Composable
-fun TestLayout(
-    modifier: Modifier,
-    initial: String,
-    label: String,
-    isEnabled: Boolean,
-    isError: Boolean,
-    onClick: (String) -> Unit
-) {
-    Row(
-        verticalAlignment = Alignment.Bottom,
-        modifier = modifier.wrapContentHeight()
-    ) {
+                val isReadyToConnect by viewModel.isLoggedIn.collectAsState()
 
-        var text by remember { mutableStateOf(initial) }
+                val isConnected by viewModel.isConnected.collectAsState()
 
-        OutlinedTextField(
-            modifier = Modifier
-                .wrapContentHeight()
-                .fillMaxWidth(fraction = 0.6f),
-            value = text,
-            label = { Text(label) },
-            enabled = isEnabled,
-            isError = isError,
-            onValueChange = { text = it }
-        )
+                val isRunning by viewModel.isProcessRunning.collectAsState()
 
-        Spacer(modifier = Modifier.width(8.dp))
+                val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
 
-        OutlinedButton(
-            modifier = Modifier.fillMaxWidth().height(56.dp),
-            onClick = { onClick(text) },
-            enabled = isEnabled
-        ) {
-            Text(
-                textAlign = TextAlign.Center,
-                text = "Send"
-            )
+                val scope = rememberCoroutineScope()
+
+                LaunchedEffect(key1 = isRunning) {
+                    if (isRunning) scaffoldState.drawerState.close()
+                    else scaffoldState.drawerState.open()
+                }
+
+                Scaffold(
+                    scaffoldState = scaffoldState,
+                    topBar = {
+                        TabBarLayout(
+                            scope = scope,
+                            scaffoldState = scaffoldState
+                        )
+                    },
+                    drawerContent = {
+                        DrawerLayout(
+                            isConnected = isConnected,
+                            isReadyToConnect = isReadyToConnect,
+                            isRunning = isRunning,
+                            viewModel = viewModel
+                        )
+                    },
+                    content = {
+                        MainContent(
+                            isRunning = isRunning,
+                            viewModel = viewModel
+                        )
+                    }
+                )
+            }
         }
     }
 }
 
 @Composable
-fun TextScreenUi() {
+fun TabBarLayout(
+    scope: CoroutineScope,
+    scaffoldState: ScaffoldState
+) {
+    TopAppBar(
+        title = {},
+        backgroundColor = MaterialTheme.colors.surface,
+        navigationIcon = {
+            Icon(
+                imageVector = Icons.Default.Menu,
+                contentDescription = "",
+                modifier = Modifier
+                    .padding(start = 16.dp)
+                    .clickable(onClick = {
+                        scope.launch {
+                            scaffoldState.drawerState.open()
+                        }
+                    })
+            )
+        }
+    )
+}
 
-    val space = 16.dp
+@OptIn(ExperimentalStdlibApi::class)
+@Composable
+fun DrawerLayout(
+    isConnected: Boolean,
+    isReadyToConnect: Boolean,
+    isRunning: Boolean,
+    viewModel: IntakeViewModel
+) {
 
-    val viewModel: IntakeViewModel = viewModel()
+    Column(
+        modifier = Modifier
+            .fillMaxHeight()
+            .padding(48.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
-    val isRunning by viewModel.isProcessRunning.collectAsState()
+        StartAsLayout(
+            items = viewModel.names,
+            selectionEnabled = !isConnected,
+            onSelected = { index -> viewModel.setLogIn(index) }
+        )
 
-    val isConnected by viewModel.isConnected.collectAsState()
+        if (isReadyToConnect) {
 
-    val currentTask by viewModel.currentTask.collectAsState()
-
-    Log.d("SignalR: Activity", "${currentTask.category}")
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .fillMaxHeight()
-                .width(200.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+            Spacer(modifier = Modifier.height(space))
 
             OutlinedButton(
                 modifier = Modifier
                     .wrapContentHeight()
                     .fillMaxWidth(),
                 onClick = { viewModel.connect() },
-                enabled = !isConnected
+                enabled = !isConnected,
             ) {
                 Text(
                     textAlign = TextAlign.Center,
-                    text = "Connect"
+                    text = "Log in".uppercase(Locale.getDefault())
                 )
             }
 
@@ -130,69 +150,9 @@ fun TextScreenUi() {
             ) {
                 Text(
                     textAlign = TextAlign.Center,
-                    text = "Start process"
+                    text = "Start process".uppercase(Locale.getDefault())
                 )
             }
-
-            Spacer(modifier = Modifier.height(space))
-
-            TestLayout(
-                modifier = Modifier
-                    .wrapContentHeight()
-                    .fillMaxWidth(),
-                initial = "note1",
-                label = if (currentTask.category is Simple) currentTask.label else "",
-                isEnabled = isRunning && currentTask.category is Simple,
-                isError = currentTask.hasError,
-                onClick = {
-                    viewModel.sendInputData(currentTask.toResult(it))
-                }
-            )
-
-            Spacer(modifier = Modifier.height(space))
-
-            TestLayout(
-                modifier = Modifier
-                    .wrapContentHeight()
-                    .fillMaxWidth(),
-                initial = "567.456.7.9",
-                label = if (currentTask.category is Scan) currentTask.label else "",
-                isEnabled = isRunning && currentTask.category is Scan,
-                isError = currentTask.hasError,
-                onClick = {
-                    viewModel.sendInputData(currentTask.toResult(it))
-                }
-            )
-
-            Spacer(modifier = Modifier.height(space))
-
-            TestLayout(
-                modifier = Modifier
-                    .wrapContentHeight()
-                    .fillMaxWidth(),
-                initial = "1",
-                label = if (currentTask.category is Selection) currentTask.label else "",
-                isEnabled = isRunning && currentTask.category is Selection,
-                isError = currentTask.hasError,
-                onClick = {
-                    viewModel.sendInputData(currentTask.toResult(it.toInt()))
-                }
-            )
-
-            Spacer(modifier = Modifier.height(space))
-
-            TestLayout(
-                modifier = Modifier
-                    .wrapContentHeight()
-                    .fillMaxWidth(),
-                initial = "25",
-                label = if (currentTask.category is AdjustQuantity || currentTask.category is Quantity) currentTask.label else "",
-                isEnabled = isRunning && ((currentTask.category is Quantity) || (currentTask.category is AdjustQuantity)),
-                isError = currentTask.hasError,
-                onClick = {
-                    viewModel.sendInputData(currentTask.toResult(it.toInt()))
-                }
-            )
 
             Spacer(modifier = Modifier.height(space))
 
@@ -205,7 +165,7 @@ fun TextScreenUi() {
             ) {
                 Text(
                     textAlign = TextAlign.Center,
-                    text = "Stop process"
+                    text = "Stop process".uppercase(Locale.getDefault())
                 )
             }
 
@@ -220,10 +180,96 @@ fun TextScreenUi() {
             ) {
                 Text(
                     textAlign = TextAlign.Center,
-                    text = "Disconnect"
+                    text = "Log out".uppercase(Locale.getDefault())
                 )
             }
+        }
+    }
 
+}
+
+@Composable
+fun MainContent(
+    isRunning: Boolean,
+    viewModel: IntakeViewModel
+) {
+    if (isRunning) {
+
+        val currentTask by viewModel.currentTask.collectAsState()
+
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(250.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Spacer(modifier = Modifier.height(space))
+
+                TestLayout(
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .fillMaxWidth(),
+                    initial = "note1",
+                    label = if (currentTask.category is Simple) currentTask.label else "",
+                    isEnabled = isRunning && currentTask.category is Simple,
+                    isError = currentTask.hasError,
+                    onClick = {
+                        viewModel.sendInputData(currentTask.toResult(it))
+                    }
+                )
+
+                Spacer(modifier = Modifier.height(space))
+
+                TestLayout(
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .fillMaxWidth(),
+                    initial = "567.456.7.9",
+                    label = if (currentTask.category is Scan) currentTask.label else "",
+                    isEnabled = isRunning && currentTask.category is Scan,
+                    isError = currentTask.hasError,
+                    onClick = {
+                        viewModel.sendInputData(currentTask.toResult(it))
+                    }
+                )
+
+                Spacer(modifier = Modifier.height(space))
+
+                TestLayout(
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .fillMaxWidth(),
+                    initial = "1",
+                    label = if (currentTask.category is Selection) currentTask.label else "",
+                    isEnabled = isRunning && currentTask.category is Selection,
+                    isError = currentTask.hasError,
+                    onClick = {
+                        viewModel.sendInputData(currentTask.toResult(it.toInt()))
+                    }
+                )
+
+                Spacer(modifier = Modifier.height(space))
+
+                TestLayout(
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .fillMaxWidth(),
+                    initial = "25",
+                    label = if (currentTask.category is AdjustQuantity || currentTask.category is Quantity) currentTask.label else "",
+                    isEnabled = isRunning && ((currentTask.category is Quantity) || (currentTask.category is AdjustQuantity)),
+                    isError = currentTask.hasError,
+                    onClick = {
+                        viewModel.sendInputData(currentTask.toResult(it.toInt()))
+                    }
+                )
+            }
         }
     }
 }

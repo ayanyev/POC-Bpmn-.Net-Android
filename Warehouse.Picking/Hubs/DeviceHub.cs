@@ -11,7 +11,7 @@ using Warehouse.Picking.Api.Utilities;
 
 namespace warehouse.picking.api.Hubs
 {
-    public interface IIntakeClient
+    public interface IDeviceClient
     {
         Task ProcessStartConfirmed();
 
@@ -24,12 +24,8 @@ namespace warehouse.picking.api.Hubs
         Task DoInputSelection(ClientTask task);
     }
 
-    public class IntakeDeviceHub : Hub<IIntakeClient>
+    public class DeviceHub : Hub<IDeviceClient>
     {
-        private const string ProcessModelId = "intake";
-
-        private const string ProcessStartEvent = "";
-
         private readonly ILogger _logger = ConsoleLogger.Default;
 
         private readonly IProcessClient _processClient;
@@ -38,7 +34,7 @@ namespace warehouse.picking.api.Hubs
 
         private readonly ClientTaskFactory _clientTaskFactory;
 
-        public IntakeDeviceHub(IProcessClient processClient, ConnectionMapping connectionMapping,
+        public DeviceHub(IProcessClient processClient, ConnectionMapping connectionMapping,
             ClientTaskFactory clientTaskFactory)
         {
             _processClient = processClient;
@@ -67,7 +63,7 @@ namespace warehouse.picking.api.Hubs
             if (processId == null || !await _processClient.IsProcessInstanceRunning(processId))
             {
                 var result = await _processClient.CreateProcessInstanceByModelId<string>(
-                    ProcessModelId, ProcessStartEvent, null, correlationId
+                    correlationId, null
                 );
                 _connectionMapping.AddProcess(result.CorrelationId, result.ProcessInstanceId);
             }
