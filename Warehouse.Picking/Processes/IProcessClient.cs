@@ -8,11 +8,12 @@ namespace Warehouse.Picking.Api.Processes
 {
     public interface IProcessClient
     {
-        Task<StartProcessInstanceResponse>
-            CreateProcessInstanceByModelId<T>(string modelId, string startEvent, T token);
+        Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string modelId, string startEvent, T token);
 
         Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string modelId, string startEvent, T token,
             string correlationId);
+        
+        Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string correlationId, ProcessInfo processInfo, T token);
 
         Task<bool> TerminateProcessInstanceById(string processId);
 
