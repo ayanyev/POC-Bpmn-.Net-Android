@@ -35,8 +35,15 @@ abstract class ScannerViewModel(
     }
 
     fun toggleInput() {
+        clearInput()
         showInput.value = !(showInput.value)
     }
+
+    fun clearInput(){
+        scanner.emitResult("")
+    }
+
+    fun isInputEnabled() = showInput.value
 
     @CallSuper
     open fun onWrongCodeScanned(errorMessage: String?) {

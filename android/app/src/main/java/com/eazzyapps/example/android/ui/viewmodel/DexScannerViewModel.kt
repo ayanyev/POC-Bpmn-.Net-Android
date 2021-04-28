@@ -8,7 +8,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class DexScannerViewModel(
-    private val scanner: Scanner
+    private val scanner: Scanner,
+    val doOnItemScanned: (String) -> Unit
 ) : ScannerViewModel(scanner) {
 
     val input = MutableStateFlow("")
@@ -17,6 +18,10 @@ class DexScannerViewModel(
 
     override val scanResultsObserver: Observer<String> = Observer {
         input.value = it
+        if (!isInputEnabled()) {
+            submitInput(it)
+            doOnItemScanned.invoke(it)
+        }
     }
 
     init {
@@ -27,9 +32,14 @@ class DexScannerViewModel(
         }
     }
 
-    fun onInputSubmit(value: String) {
-        // TODO validate barcode and proceed to next screen
+    fun onInputSubmit(barcode: String) {
+        submitInput(barcode)
         showInput.value = false
+    }
+
+    private fun submitInput(barcode: String) {
+        clearInput()
+        doOnItemScanned.invoke(barcode)
     }
 
     fun onInputChange(value: String) = scanner.emitResult(value)
