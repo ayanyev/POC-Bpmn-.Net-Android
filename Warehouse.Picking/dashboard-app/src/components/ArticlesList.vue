@@ -35,7 +35,7 @@ export default {
     this.addBarcodeScript()
   },
   mounted() {
-    // this.$socket.invoke('GetDeliveryArticles', "note1")
+    this.$socket.invoke('GetDeliveryArticles', "note1")
   },
   updated() {
     if (!this.articles.empty) {
