@@ -129,6 +129,7 @@ class IntakeViewModel : ViewModel(), KoinComponent {
 
             hubConnection.on("ProcessStopConfirmed") {
                 Log.d("SignalR", "Intake process stopped")
+                articleList.value = listOf()
                 delegate.showLoading(false)
                 isProcessRunning.value = false
                 screenTitle.value = "<<<  Start process"
