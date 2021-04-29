@@ -50,3 +50,26 @@ data class Task<T>(
     }
 
 }
+
+sealed class ScanEvent(val id: String, val label: String, val errorMsg: String) {
+    object LocationScan : ScanEvent(
+        id = "UT.Input.Scan.Barcode.Location",
+        label = "Article Location Barcodes",
+        errorMsg = "Please enter valid location Barcode"
+    )
+
+    object ArticleScan : ScanEvent(
+        id = "UT.Input.Scan.Barcode.Article",
+        label = "Available Article Barcodes",
+        errorMsg = "Please enter valid Article Barcode"
+    )
+
+    companion object {
+
+        fun of(taskId: String) = when (taskId) {
+            "UT.Input.Scan.Barcode.Article" -> ArticleScan
+            "UT.Input.Scan.Barcode.Location" -> LocationScan
+            else -> throw Exception("Unknown scan event !")
+        }
+    }
+}

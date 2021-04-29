@@ -72,7 +72,7 @@ class ZebraScanner(
     }
 
     override suspend fun observe(observer: Observer<String>) {
-        scanFlow.filter { it.isNotEmpty() }.collect { observer.onChanged(it) }
+        scanFlow.collect { observer.onChanged(it) }
     }
 
     override fun emitResult(result: String) {
