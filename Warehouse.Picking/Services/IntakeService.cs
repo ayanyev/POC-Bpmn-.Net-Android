@@ -41,7 +41,7 @@ namespace Warehouse.Picking.Api.Services
                 .SendAsync("ArticlesListReceived", new Articles(articles));
             await _intakeDashboardHubContext.Clients
                 .Group("Dashboard")
-                .SendAsync("DeliveryArticles", articles);
+                .SendAsync("DeliveryArticles", articles.Select(a => new SimplifiedArticle(a)));
             return true;
         }
 
@@ -63,6 +63,10 @@ namespace Warehouse.Picking.Api.Services
             await _intakeDeviceHubContext.Clients
                 .Client(_connectionMapping.GetConnection(correlationId))
                 .SendAsync("ArticlesListReceived", new Articles(articles));
+            
+            await _intakeDashboardHubContext.Clients
+                .Group("Dashboard")
+                .SendAsync("DeliveryArticles", articles.Select(a => new SimplifiedArticle(a)));
             
             return updatedArticle;
         }

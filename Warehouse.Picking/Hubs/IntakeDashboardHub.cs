@@ -19,8 +19,12 @@ namespace warehouse.picking.api.Hubs
         public string NoteId { get; }
         public string Name { get; }
         public string Gtin { get; }
-        public int Quantity { get; }
+        public string Quantity { get; }
         public string Bundle { get; }
+        
+        public string Location { get; }
+        
+        public string Color { get; }
 
         public SimplifiedArticle(Article article)
         {
@@ -28,8 +32,14 @@ namespace warehouse.picking.api.Hubs
             NoteId = article.NoteId;
             Name = article.Name;
             Gtin = article.Gtin;
-            Quantity = article.Quantity.Expected;
+            Quantity = $"{article.Quantity.Processed}/{article.Quantity.Expected}";
             Bundle = article.Bundle.Name;
+            Location = "123.456.7.8";
+            Color = article.IsUnfinished() switch
+            {
+                true => "#000000",
+                false => "#990000"
+            };
         }
     }
 
