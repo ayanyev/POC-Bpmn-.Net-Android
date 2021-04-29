@@ -50,7 +50,7 @@ class IntakeViewModel : ViewModel() {
             Base64.encodeToString("$selectedName:ertryrtytr".toByteArray(), Base64.NO_WRAP)
 
         hubConnection = HubConnectionBuilder
-            .create("http://10.0.2.2:5000/intakedevicehub")
+            .create("http://10.0.11.185:5000/intakedevicehub")
             .withHeader("Authorization", "Basic $credentials")
             .build()
 
@@ -65,7 +65,9 @@ class IntakeViewModel : ViewModel() {
                     Log.d("SignalR", "Used credentials: $credentials")
                     Log.d("SignalR", "ConnectionId: ${hubConnection.connectionId}")
                 },
-                { Log.e("SignalR", it?.message ?: "Error connecting to hub") }
+                {
+                    Log.e("SignalR", it?.message ?: "Error connecting to hub")
+                }
             )
     }
 
