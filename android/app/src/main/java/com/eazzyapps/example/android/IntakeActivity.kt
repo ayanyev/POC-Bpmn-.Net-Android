@@ -219,7 +219,9 @@ fun DrawerLayout(
                 modifier = Modifier
                     .wrapContentHeight()
                     .fillMaxWidth(),
-                onClick = { viewModel.startProcess() },
+                onClick = {
+                    viewModel.startProcess()
+                          },
                 enabled = isConnected && !isRunning
             ) {
                 Text(

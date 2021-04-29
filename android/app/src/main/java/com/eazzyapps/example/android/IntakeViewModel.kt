@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eazzyapps.example.android.domain.*
+import com.eazzyapps.example.android.ui.ActivityDelegate
 import com.microsoft.signalr.HubConnection
 import com.microsoft.signalr.HubConnectionBuilder
 import com.microsoft.signalr.TypeReference
@@ -13,8 +14,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinApiExtension
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class IntakeViewModel : ViewModel() {
+@KoinApiExtension
+class IntakeViewModel : ViewModel(), KoinComponent {
+
+    private val delegate by inject<ActivityDelegate>()
 
     private lateinit var hubConnection: HubConnection
 
@@ -101,6 +108,7 @@ class IntakeViewModel : ViewModel() {
 
     fun sendInputData(map: Map<String, Any>) {
         Log.d("SignalR", "UserTask output: $map")
+        delegate.showLoading(true)
         hubConnection.send("SendInput", map)
     }
 
@@ -112,6 +120,7 @@ class IntakeViewModel : ViewModel() {
                 "ProcessStartConfirmed",
                 { name ->
                     Log.d("SignalR", "Intake process started")
+                    delegate.showLoading(false)
                     screenTitle.value = name
                     isProcessRunning.value = true
                 },
@@ -120,6 +129,7 @@ class IntakeViewModel : ViewModel() {
 
             hubConnection.on("ProcessStopConfirmed") {
                 Log.d("SignalR", "Intake process stopped")
+                delegate.showLoading(false)
                 isProcessRunning.value = false
                 screenTitle.value = "<<<  Start process"
             }
@@ -139,6 +149,7 @@ class IntakeViewModel : ViewModel() {
                 "DoInput",
                 { task: Task<Any> ->
                     Log.d("SignalR", "Client input task received: $task")
+                    delegate.showLoading(false)
                     currentTask.value = task
                 },
                 (object : TypeReference<Task<Any>>() {}).type
@@ -148,6 +159,7 @@ class IntakeViewModel : ViewModel() {
                 "DoInputScan",
                 { task: Task<ValidBarcodes> ->
                     Log.d("SignalR", "Client scanning task received: $task")
+                    delegate.showLoading(false)
                     currentTask.value = task
                 },
                 (object : TypeReference<Task<ValidBarcodes>>() {}).type
@@ -157,6 +169,7 @@ class IntakeViewModel : ViewModel() {
                 "DoInputSelection",
                 { task: Task<SelectionOptions> ->
                     Log.d("SignalR", "Client selection task received: $task")
+                    delegate.showLoading(false)
                     currentTask.value = task
                 },
                 (object : TypeReference<Task<SelectionOptions>>() {}).type
