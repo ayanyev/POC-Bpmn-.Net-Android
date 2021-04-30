@@ -10,7 +10,7 @@ import Vue from "vue";
 import VueSignalR from "@latelier/vue-signalr";
 import ArticlesList from "@/components/ArticlesList";
 
-Vue.use(VueSignalR, 'http://localhost:5000/intakedashboardhub')
+Vue.use(VueSignalR, 'http://10.0.11.185:5000/intakedashboardhub')
 
 export default {
   name: "IntakeApp",

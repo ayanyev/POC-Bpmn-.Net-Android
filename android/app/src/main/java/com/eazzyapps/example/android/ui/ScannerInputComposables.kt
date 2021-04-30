@@ -1,18 +1,13 @@
 package com.eazzyapps.example.android.ui
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
+import androidx.compose.material.TextField
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -31,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.eazzyapps.example.android.R
 import com.eazzyapps.example.android.getViewModel
-import com.eazzyapps.example.android.ui.theme.grey
 import com.eazzyapps.example.android.ui.theme.typography
 import com.eazzyapps.example.android.ui.viewmodel.DexScannerViewModel
 import org.koin.core.parameter.parametersOf
@@ -46,7 +40,7 @@ fun ScannerInputComposable(
 
     val viewModel = getViewModel<DexScannerViewModel> { parametersOf(onItemScanned) }
 
-    val input = viewModel.input.collectAsState()
+    val barcode by viewModel.input.collectAsState()
 
     val isInputEnabled = viewModel.showInput.collectAsState()
 
@@ -56,11 +50,14 @@ fun ScannerInputComposable(
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
+    var input by remember(barcode, isError) { mutableStateOf(if (isError) "" else barcode) }
+
     Column {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
+
                 modifier = Modifier.weight(0.2f),
                 painter = painterResource(R.drawable.ic_scan),
                 contentDescription = null
@@ -69,22 +66,22 @@ fun ScannerInputComposable(
                 modifier = Modifier
                     .weight(1f)
             ) {
-                if (viewModel.input.value.isEmpty() && !isInputEnabled.value) {
-                    Text(
-                        text = hint,
-                        textAlign = TextAlign.Center,
-                        color = grey.copy(alpha = ContentAlpha.medium),
-                        fontSize = 24.sp,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
-                }
-                BasicTextField(
+                TextField(
+                    placeholder = {
+                        Text(
+                            text = hint,
+                            textAlign = TextAlign.Center,
+                            fontSize = 24.sp,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .focusRequester(focusRequester),
-                    value = input.value,
-                    onValueChange = { viewModel.onInputChange(it) },
+                    value = input,
+                    onValueChange = {
+                        input = it
+                    },
                     textStyle = TextStyle(
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Medium,
@@ -92,7 +89,7 @@ fun ScannerInputComposable(
                     ),
                     keyboardActions = KeyboardActions(
                         onSend = {
-                            viewModel.onInputSubmit(input.value)
+                            viewModel.onInputSubmit(input)
                         }
                     ),
                     keyboardOptions = KeyboardOptions(
@@ -128,7 +125,9 @@ fun ScannerInputComposable(
                 text = errorMsg,
                 color = Color.Red,
                 fontSize = 14.sp,
-                modifier = Modifier.align(Alignment.Start).padding(horizontal = 16.dp)
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .padding(horizontal = 16.dp)
             )
         }
 
@@ -138,7 +137,7 @@ fun ScannerInputComposable(
 @Composable
 fun ScanInfoComposable(
     title : String,
-    availableBarcodes : List<String>
+    availableBarcodes : List<String>?
 ){
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -147,7 +146,7 @@ fun ScanInfoComposable(
     {
         Text(text = title, style = typography.h6)
         Spacer(modifier = Modifier.height(8.dp))
-        Text (text = availableBarcodes.joinToString(), style = typography.subtitle1, textAlign = TextAlign.Center )
+        Text (text = availableBarcodes?.joinToString() ?: "", style = typography.subtitle1, textAlign = TextAlign.Center )
         Spacer(modifier = Modifier.height(8.dp))
     }
 

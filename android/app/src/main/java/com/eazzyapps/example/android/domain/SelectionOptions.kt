@@ -10,5 +10,5 @@ data class SelectionOption(
 )
 
 data class ValidBarcodes(
-    val barcodes: List<String>
+    val barcodes: List<String>?
 )

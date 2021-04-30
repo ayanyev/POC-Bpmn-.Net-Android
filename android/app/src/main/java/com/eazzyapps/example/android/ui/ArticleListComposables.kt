@@ -24,8 +24,10 @@ import com.eazzyapps.example.android.ui.theme.typography
 
 @Composable
 fun ArticleListComposable(articles: List<Article>) {
+
     LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        items(articles) { article ->
+        val sorted = articles.sortedWith(compareBy<Article> { it.isCompleted() }.thenBy { !it.isSelected() })
+        items(sorted) { article ->
             ArticleItemRow(article)
             Divider(color = grey.copy(alpha = 0.3f), thickness = 1.dp)
         }
@@ -42,8 +44,7 @@ fun ArticleItemRow(article: Article) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            modifier = Modifier
-                .weight(0.2f),
+            modifier = Modifier.weight(0.2f),
             painter = painterResource(R.drawable.ic_bundle),
             contentDescription = null
         )

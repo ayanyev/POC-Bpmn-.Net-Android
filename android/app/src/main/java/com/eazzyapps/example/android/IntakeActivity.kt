@@ -1,7 +1,6 @@
 package com.eazzyapps.example.android
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
@@ -220,7 +219,9 @@ fun DrawerLayout(
                 modifier = Modifier
                     .wrapContentHeight()
                     .fillMaxWidth(),
-                onClick = { viewModel.startProcess() },
+                onClick = {
+                    viewModel.startProcess()
+                          },
                 enabled = isConnected && !isRunning
             ) {
                 Text(
@@ -303,7 +304,7 @@ fun MainContent(
 
                     val scanType = ScanEvent.of(currentTask.id)
 
-                    val availableBarcodes = (currentTask.payload as ValidBarcodes).barcodes
+                    val availableBarcodes = (currentTask.payload as? ValidBarcodes)?.barcodes
 
                     ScanInfoComposable(
                         title = scanType.label,
@@ -314,14 +315,16 @@ fun MainContent(
                         isError = isInputError,
                         errorMsg = scanType.errorMsg,
                         onItemScanned = {
-                            if ((currentTask.payload as ValidBarcodes).barcodes.contains(it)) {
-                                viewModel.apply {
-                                    selectScannedItem(it)
-                                    setInputError(false)
-                                    sendInputData(currentTask.toResult(it))
+                            if (it.isNotBlank()) {
+                                if (availableBarcodes == null || availableBarcodes.contains(it)) {
+                                    viewModel.apply {
+                                        selectScannedItem(it)
+                                        setInputError(false)
+                                        sendInputData(currentTask.toResult(it))
+                                    }
+                                } else if (it.isNotEmpty()) {
+                                    viewModel.setInputError(true)
                                 }
-                            } else if (it.isNotEmpty()) {
-                                viewModel.setInputError(true)
                             }
                         }
                     )
