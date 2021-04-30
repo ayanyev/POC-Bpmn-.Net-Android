@@ -4,9 +4,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Minimize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,11 +32,31 @@ import com.eazzyapps.example.android.ui.theme.typography
 fun ArticleListComposable(articles: List<Article>) {
 
     LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        val sorted = articles.sortedWith(compareBy<Article> { it.isCompleted() }.thenBy { !it.isSelected() })
+        val sorted =
+            articles.sortedWith(compareBy<Article> { it.isCompleted() }.thenBy { !it.isSelected() })
         items(sorted) { article ->
             ArticleItemRow(article)
             Divider(color = grey.copy(alpha = 0.3f), thickness = 1.dp)
         }
+    }
+}
+
+@Composable
+fun ArticlesListHeader(count: Int, isCollapsed: Boolean) {
+    Column(
+        modifier = Modifier.height(64.dp).fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Articles: $count",
+            modifier = Modifier.padding(top = 8.dp),
+            style = MaterialTheme.typography.h6
+        )
+        Icon(
+            modifier = Modifier.padding(bottom = 8.dp),
+            imageVector = if (isCollapsed) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+            contentDescription = null
+        )
     }
 }
 

@@ -10,5 +10,7 @@ namespace Warehouse.Picking.Api.Repositories
         
         List<Article> FindByNoteId(string noteId);
         
+        Task<List<ArticleBundle>> FetchKnownBundlesByGtin(string gtin);
+        
     }
 }

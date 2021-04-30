@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using warehouse.picking.api.Domain;
 
@@ -44,6 +45,14 @@ namespace Warehouse.Picking.Api.Repositories
         public List<Article> FindByNoteId(string noteId)
         {
             return _noteArticles[noteId];
+        }
+
+        public Task<List<ArticleBundle>> FetchKnownBundlesByGtin(string gtin)
+        {
+            var result = Note1Articles.FindAll(a => a.Gtin.Equals(gtin))
+                .Select(a => a.Bundle).ToList();
+            result.Add(new ArticleBundle(999, "48x0.2L"));
+            return Task.FromResult(result);
         }
     }
 }

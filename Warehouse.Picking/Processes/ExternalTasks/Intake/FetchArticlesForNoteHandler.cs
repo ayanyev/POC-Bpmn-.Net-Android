@@ -28,12 +28,12 @@ namespace Warehouse.Picking.Api.Processes.ExternalTasks.Intake
             catch (KeyNotFoundException e)
             {
                 Console.WriteLine(e);
-                throw new Exceptions.UnknownNoteIdException(input.NoteId);
+                throw new UnknownNoteIdException(input.NoteId, e);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw new Exceptions.UnhandledException(e);
+                throw new UnhandledException(e);
             }
         }
     }

@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -13,8 +15,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -26,6 +31,7 @@ import com.eazzyapps.example.android.domain.ValidBarcodes
 import com.eazzyapps.example.android.ui.*
 import com.eazzyapps.example.android.ui.composables.StartAsLayout
 import com.eazzyapps.example.android.ui.theme.AndroidTheme
+import com.eazzyapps.example.android.ui.theme.grey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -280,15 +286,21 @@ fun MainContent(
 
         val isInputError by viewModel.isError.collectAsState()
 
+        val bottomSheetState = rememberBottomSheetState(BottomSheetValue.Collapsed)
+
         val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
-            bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
+            bottomSheetState = bottomSheetState
         )
 
         BottomSheetScaffold(
+            scaffoldState = bottomSheetScaffoldState,
+            sheetShape = RoundedCornerShape(20.dp),
             sheetContent = {
+                ArticlesListHeader(articles.count(), bottomSheetState.isCollapsed)
+                Divider(color = grey.copy(alpha = 0.3f), thickness = 1.dp)
                 ArticleListComposable(articles = articles)
             },
-            sheetPeekHeight = if (articles.isNotEmpty()) 250.dp else 0.dp
+            sheetPeekHeight = if (articles.isNotEmpty()) 64.dp else 0.dp
         ) {
 
             when (currentTask.category) {
@@ -335,7 +347,9 @@ fun MainContent(
                         optionList = (currentTask.payload as SelectionOptions).items,
                         doOnConfirm = {
                             viewModel.sendInputData(currentTask.toResult(it))
-                        }
+                        },
+                        isError = currentTask.error != null,
+                        errorMsg = currentTask.error?.message ?: ""
                     )
                 }
 

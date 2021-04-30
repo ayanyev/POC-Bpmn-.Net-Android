@@ -1,16 +1,20 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using AtlasEngine.UserTasks;
+using Warehouse.Picking.Api.Utilities;
 
 namespace Warehouse.Picking.Api.Processes.UserTasks
 {
     public class ClientTaskFactory
     {
         private readonly IUserTaskPayloadFactory _payloadFactory;
+        private readonly IProcessClient _processClient;
 
-        public ClientTaskFactory(IUserTaskPayloadFactory payloadFactory)
+        public ClientTaskFactory(IUserTaskPayloadFactory payloadFactory, IProcessClient processClient)
         {
             _payloadFactory = payloadFactory;
+            _processClient = processClient;
         }
 
         public ClientTask Create(UserTask userTask)
@@ -33,16 +37,28 @@ namespace Warehouse.Picking.Api.Processes.UserTasks
             var resultTemplate = userTask.Configuration.FormFields
                 .ToDictionary(f => f.Id, f => Parse(f.DefaultValue, f.Type));
 
-            IClientTaskPayload payload = type switch
-            {
-                "Selection" => _payloadFactory.CreateSelectionOptionsPayload(userTask),
-                "Scan" => _payloadFactory.CreateScanPayload(userTask),
-                _ => null
-            };
+            var payload = CreatePayload(userTask, type).Result;
 
             resultTemplate.Add("taskId", userTask.Id);
 
             return new ClientTask(userTask.Id, type, resultKey, label, error, payload, resultTemplate);
+        }
+
+        private async Task<IClientTaskPayload> CreatePayload(UserTask task, string type)
+        {
+            if (task.HasErrorPayload())
+            {
+                task = await _processClient.GetPrevFinishedTaskOfSameKind(task)
+                       ?? throw new Exception(
+                           $"Cannot create payload because no previous finished task found ({task.Id})");
+            }
+
+            return type switch
+            {
+                "Selection" => _payloadFactory.CreateSelectionOptionsPayload(task),
+                "Scan" => _payloadFactory.CreateScanPayload(task),
+                _ => null
+            };
         }
 
         private static object Parse(string value, FormFieldType type)

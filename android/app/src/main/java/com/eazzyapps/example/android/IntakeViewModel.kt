@@ -57,7 +57,7 @@ class IntakeViewModel : ViewModel(), KoinComponent {
             Base64.encodeToString("$selectedName:ertryrtytr".toByteArray(), Base64.NO_WRAP)
 
         hubConnection = HubConnectionBuilder
-            .create("http://10.0.11.185:5000/intakedevicehub")
+            .create("http://10.0.11.185:5000/intakedevicehub") //10.0.11.185, 192.168.0.38
             .withHeader("Authorization", "Basic $credentials")
             .build()
 
