@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AtlasEngine.UserTasks;
 using Warehouse.Picking.Api.Utilities;
+using static Warehouse.Picking.Api.Processes.UserTasks.ClientTaskType;
 
 namespace Warehouse.Picking.Api.Processes.UserTasks
 {
@@ -19,15 +20,11 @@ namespace Warehouse.Picking.Api.Processes.UserTasks
 
         public ClientTask Create(UserTask userTask)
         {
-            // UT.Input.<Type>.<ResultKey>
+            // UT.<Type>.<ResultKey>.<Qualifier>
 
-            var a = userTask.Id.Split(".");
+            var type = userTask.GetClientTaskType();
 
-            if (a.Length < 4) throw new ArgumentException($"Wrong user task id: {userTask.Id}");
-
-            var type = a[2];
-
-            var resultKey = a[3];
+            var resultKey = userTask.GetResultKey();
 
             var label = userTask.Configuration.FormFields.ToList().Find(f => f.Id.Equals(resultKey))?.Label
                         ?? throw new ArgumentException($"No form field for result key ({resultKey}) found");
@@ -35,7 +32,7 @@ namespace Warehouse.Picking.Api.Processes.UserTasks
             var error = userTask.Tokens[0].Payload.GetPayload<TaskError>();
 
             var resultTemplate = userTask.Configuration.FormFields
-                .ToDictionary(f => f.Id, f => Parse(f.DefaultValue, f.Type));
+                .ToDictionary(f => f.Id, f => f.ParseValue());
 
             var payload = CreatePayload(userTask, type).Result;
 
@@ -44,7 +41,7 @@ namespace Warehouse.Picking.Api.Processes.UserTasks
             return new ClientTask(userTask.Id, type, resultKey, label, error, payload, resultTemplate);
         }
 
-        private async Task<IClientTaskPayload> CreatePayload(UserTask task, string type)
+        private async Task<object> CreatePayload(UserTask task, ClientTaskType type)
         {
             if (task.HasErrorPayload())
             {
@@ -55,20 +52,10 @@ namespace Warehouse.Picking.Api.Processes.UserTasks
 
             return type switch
             {
-                "Selection" => _payloadFactory.CreateSelectionOptionsPayload(task),
-                "Scan" => _payloadFactory.CreateScanPayload(task),
+                Selection => _payloadFactory.CreateSelectionOptionsPayload(task),
+                Scan => _payloadFactory.CreateScanPayload(task),
+                Info => _payloadFactory.CreateInfoPayload(task),
                 _ => null
-            };
-        }
-
-        private static object Parse(string value, FormFieldType type)
-        {
-            return type switch
-            {
-                FormFieldType.Boolean => bool.TryParse(value, out var result) && result,
-                FormFieldType.Number => int.TryParse(value, out var result) ? result : 0,
-                FormFieldType.Long => long.TryParse(value, out var result) ? result : 0,
-                _ => value
             };
         }
     }

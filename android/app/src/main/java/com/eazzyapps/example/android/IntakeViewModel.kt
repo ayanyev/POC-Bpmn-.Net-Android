@@ -176,6 +176,16 @@ class IntakeViewModel : ViewModel(), KoinComponent {
                 (object : TypeReference<Task<SelectionOptions>>() {}).type
             )
 
+            hubConnection.on(
+                "ShowInfo",
+                { task: Task<String> ->
+                    Log.d("SignalR", "Client info task received: $task")
+                    delegate.showLoading(false)
+                    currentTask.value = task
+                },
+                (object : TypeReference<Task<String>>() {}).type
+            )
+
         }
 
     }

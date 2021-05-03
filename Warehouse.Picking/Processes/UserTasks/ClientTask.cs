@@ -4,12 +4,21 @@ using System.Collections.Generic;
 #nullable enable
 namespace Warehouse.Picking.Api.Processes.UserTasks
 {
+    public enum ClientTaskType
+    {
+        Info,
+        Input,
+        Scan,
+        Selection,
+        Quantity
+    }
+    
     [Serializable]
     public class ClientTask
     {
         public string Id { get; }
 
-        public string Type { get; }
+        public ClientTaskType Type { get; }
 
         public string ResultKey { get; }
         
@@ -22,7 +31,7 @@ namespace Warehouse.Picking.Api.Processes.UserTasks
         public object? Payload { get; }
 
         public ClientTask(string id,
-            string type,
+            ClientTaskType type,
             string key,
             string label,
             TaskError error,

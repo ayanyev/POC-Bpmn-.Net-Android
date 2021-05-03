@@ -2,19 +2,19 @@ package com.eazzyapps.example.android.domain
 
 sealed class TaskCategory {
     object NoTask : TaskCategory()
-    object Simple : TaskCategory()
+    object Input : TaskCategory()
     object Scan : TaskCategory()
     object Quantity : TaskCategory()
-    object AdjustQuantity : TaskCategory()
     object Selection : TaskCategory()
+    object Info : TaskCategory()
 
     companion object {
         fun of(category: String): TaskCategory = when (category) {
             "Selection" -> Selection
-            "Scan" -> Scan
             "Quantity" -> Quantity
-            "AdjustQuantity" -> AdjustQuantity
-            "Simple" -> Simple
+            "Input" -> Input
+            "Scan" -> Scan
+            "Info" -> Info
             else -> NoTask
         }
     }

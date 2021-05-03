@@ -17,12 +17,21 @@ namespace Warehouse.Picking.Api.Processes.UserTasks
             _intakeService = intakeService;
         }
 
+        public string CreateInfoPayload(UserTask task)
+        {
+            return task.GetQualifier() switch
+            {
+                "WrongArticleQuantity" => task.GetFormFieldValue<string>("Text"),
+                _ => throw new ArgumentException("User task is not of Info type")
+            };
+        }
+
         public ScanPayload CreateScanPayload(UserTask task)
         {
-            return task.Id switch
+            return task.GetQualifier() switch
             {
-                "UT.Input.Scan.Barcode.Article" => task.GetPayload<ScanPayload>(),
-                "UT.Input.Scan.Barcode.Location" => new ScanPayload(
+                "Article" => task.GetPayload<ScanPayload>(),
+                "Location" => new ScanPayload(
                     new List<string>
                     {
                         task.GetPayload<BookLocationResult>().Barcode
@@ -34,13 +43,18 @@ namespace Warehouse.Picking.Api.Processes.UserTasks
 
         public SelectionOptions CreateSelectionOptionsPayload(UserTask task)
         {
-            var payload = task.GetPayload<NoteGtinPayload>()
-                          ?? throw new NullReferenceException("Payload is not of NoteGtinPayload type");
-
-            var options = _intakeService.GetAllBundlesByGtin(payload.Barcode).Result
-                .Select(bundle => new SelectionOption(bundle.Id, bundle.Name));
-
-            return new SelectionOptions(options);
+            switch (task.GetQualifier())
+            {
+                case "Bundle":
+                {
+                    var payload = task.GetPayload<NoteGtinPayload>()
+                                  ?? throw new NullReferenceException("Payload is not of NoteGtinPayload type");
+                    var options = _intakeService.GetAllBundlesByGtin(payload.Barcode).Result
+                        .Select(bundle => new SelectionOption(bundle.Id, bundle.Name));
+                    return new SelectionOptions(options);
+                }
+                default: throw new ArgumentException("User task is not of Info type");
+            }
         }
     }
 

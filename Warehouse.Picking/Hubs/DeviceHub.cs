@@ -22,6 +22,8 @@ namespace warehouse.picking.api.Hubs
         Task DoInputScan(ClientTask task);
 
         Task DoInputSelection(ClientTask task);
+        
+        Task ShowInfo(ClientTask task);
     }
 
     public class DeviceHub : Hub<IDeviceClient>
@@ -85,12 +87,16 @@ namespace warehouse.picking.api.Hubs
                         _logger.Log(LogLevel.Debug, $"Exec: Handled task: {task.Id}");
                         switch (_clientTaskFactory.Create(task))
                         {
-                            case {Type: "Selection"} t:
+                            case {Type: ClientTaskType.Selection} t:
                                 Clients.Client(connectionId).DoInputSelection(t);
                                 handledTaskId = task;
                                 break;
-                            case {Type: "Scan"} t:
+                            case {Type: ClientTaskType.Scan} t:
                                 Clients.Client(connectionId).DoInputScan(t);
+                                handledTaskId = task;
+                                break;
+                            case {Type: ClientTaskType.Info} t:
+                                Clients.Client(connectionId).ShowInfo(t);
                                 handledTaskId = task;
                                 break;
                             case { } t:
