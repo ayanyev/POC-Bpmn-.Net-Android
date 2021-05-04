@@ -28,7 +28,7 @@ Output:
       <bpmn:incoming>Flow_1d79tkg</bpmn:incoming>
       <bpmn:outgoing>Flow_1v2rmxc</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:serviceTask id="TaskGetLocation" name="determine stockyard location" camunda:type="external" camunda:topic="Intake.Article.Stockyard">
+    <bpmn:serviceTask id="TaskGetLocation" name="determine stockyard location" camunda:type="external" camunda:topic="ST.Intake.Articles.Location.Reserve">
       <bpmn:documentation>Input:
 - article id
 Output:
@@ -46,7 +46,7 @@ Output:
       <bpmn:outgoing>Flow_19toed4</bpmn:outgoing>
       <bpmn:outgoing>Flow_1d79tkg</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Activity_1hwv4ke" name="update        article info" camunda:type="external" camunda:topic="Intake.Article.Update">
+    <bpmn:serviceTask id="Activity_1hwv4ke" name="update        article info" camunda:type="external" camunda:topic="ST.Intake.Articles.Update">
       <bpmn:documentation>Updates article processed quantity
 Input:
 - articleId
@@ -114,7 +114,7 @@ Output:
         <bpmn:targetRef>NoteInfo</bpmn:targetRef>
       </bpmn:dataOutputAssociation>
     </bpmn:userTask>
-    <bpmn:serviceTask id="Activity_1une9zy" name="prefetch all articles" camunda:type="external" camunda:topic="Intake.Note.FetchArticles">
+    <bpmn:serviceTask id="Activity_1une9zy" name="prefetch all articles" camunda:type="external" camunda:topic="ST.Intake.Articles.NoteId">
       <bpmn:documentation>Input:
 {
     noteId: string
@@ -131,7 +131,7 @@ Output:
       <bpmn:incoming>Flow_1cxsag1</bpmn:incoming>
       <bpmn:outgoing>Flow_0mlaq89</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_1c5h8vu" name="get unfinished articles barcodes" camunda:type="external" camunda:topic="Intake.Note.Articles.Unfinished.Barcodes">
+    <bpmn:serviceTask id="Activity_1c5h8vu" name="get unfinished articles barcodes" camunda:type="external" camunda:topic="ST.Intake.Articles.Unfinished.Barcodes">
       <bpmn:documentation>Input:
 {
     noteId: string
@@ -197,7 +197,7 @@ dataObjects.NoteInfo.NoteId</bpmn:documentation>
     <bpmn:endEvent id="Event_0iwkenu" name="">
       <bpmn:incoming>Flow_0d2iml2</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:serviceTask id="Activity_0f7n2at" name="Match article by gtin and bundle" camunda:type="external" camunda:topic="Intake.Article.Match">
+    <bpmn:serviceTask id="Activity_0f7n2at" name="Match article by gtin and bundle" camunda:type="external" camunda:topic="ST.Intake.Articles.Match.Barcode.Bundle">
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="payload" value="{&#10;noteId: dataObjects.NoteInfo.NoteId,&#10;gtin: dataObjects.Barcode.Barcode,&#10;bundleId: token.current.BundleId&#10;}" />

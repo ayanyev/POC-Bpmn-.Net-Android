@@ -7,7 +7,7 @@ using Warehouse.Picking.Api.Services;
 
 namespace Warehouse.Picking.Api.Processes.ExternalTasks.Intake
 {
-    [ExternalTaskHandler(topic: "Intake.Article.Stockyard")]
+    [ExternalTaskHandler(topic: "ST.Intake.Articles.Location.Reserve")]
     public class BookStockyardLocationHandler : IExternalTaskHandler<StockyardLocationPayload, BookLocationResult>
     {
         private readonly IntakeService _service;

@@ -8,7 +8,7 @@ using Warehouse.Picking.Api.Services;
 
 namespace Warehouse.Picking.Api.Processes.ExternalTasks.Intake
 {
-    [ExternalTaskHandler(topic: "Intake.Note.FetchArticles")]
+    [ExternalTaskHandler(topic: "ST.Intake.Articles.NoteId")]
     public class FetchArticlesForNoteHandler : IExternalTaskHandler<NoteIdPayload, SuccessResult>
     {
         private readonly IntakeService _service;
