@@ -1,4 +1,5 @@
 using System;
+using warehouse.picking.api.Domain;
 
 namespace Warehouse.Picking.Api.Processes.ExternalTasks.Intake
 {
@@ -6,7 +7,7 @@ namespace Warehouse.Picking.Api.Processes.ExternalTasks.Intake
     {
         public string DisplayableMessage { get; }
 
-        protected ProcessException(string message, string displayableMessage, Exception? innerException)
+        protected ProcessException(string message, string displayableMessage, Exception innerException)
             : base(message, innerException)
         {
             DisplayableMessage = displayableMessage;
@@ -23,7 +24,7 @@ namespace Warehouse.Picking.Api.Processes.ExternalTasks.Intake
 
     public class UnknownNoteIdException : ProcessException
     {
-        public UnknownNoteIdException(string noteId, Exception? originalException)
+        public UnknownNoteIdException(string noteId, Exception originalException)
             : base(
                 $"Given note id ({noteId}) is unknown",
                 "Delivery for given note id not found",
@@ -33,15 +34,13 @@ namespace Warehouse.Picking.Api.Processes.ExternalTasks.Intake
         }
     }
 
-    public class BundleNotPresentInDelivery : ProcessException
+    public class SelectedBundleNotAvailable : ProcessException
     {
-        public BundleNotPresentInDelivery(string noteId, int bundleId, Exception? originalException)
-            : base(
-                $"Bundle ({bundleId}) is not in delivery ({noteId})",
-                "Bundle is not in delivery. Select proper",
-                originalException
-            )
-        {
-        }
+        public SelectedBundleNotAvailable(string noteId, int bundleId, string reason) : base(
+            $"Article with selected bundle is {reason} (noteId={noteId}, bundleId={bundleId})",
+            $"Article with selected bundle is {reason}. Select other",
+            null
+        )
+        { }
     }
 }

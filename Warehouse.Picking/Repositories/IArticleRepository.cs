@@ -12,5 +12,7 @@ namespace Warehouse.Picking.Api.Repositories
         
         Task<List<ArticleBundle>> FetchKnownBundlesByGtin(string gtin);
         
+        Task<Article> UpdateArticle(string noteId, int articleId, int quantity);
+        
     }
 }

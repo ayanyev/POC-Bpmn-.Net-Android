@@ -25,6 +25,7 @@ import com.eazzyapps.example.android.domain.SelectionOptions
 import com.eazzyapps.example.android.domain.TaskCategory.*
 import com.eazzyapps.example.android.domain.ValidBarcodes
 import com.eazzyapps.example.android.ui.*
+import com.eazzyapps.example.android.ui.composables.AlertDialogLayout
 import com.eazzyapps.example.android.ui.composables.StartAsLayout
 import com.eazzyapps.example.android.ui.theme.AndroidTheme
 import com.eazzyapps.example.android.ui.theme.grey
@@ -57,7 +58,7 @@ class IntakeActivity : AppCompatActivity() {
             val scope = remember { lifecycleScope }
 
             scope.launchWhenResumed {
-                merge(delegate.msgFlow, delegate.navFlow).collect{
+                merge(delegate.msgFlow, delegate.navFlow).collect {
                     when (it) {
                         is Message -> launch {
                             // launch in another coroutine
@@ -73,7 +74,7 @@ class IntakeActivity : AppCompatActivity() {
                             scaffoldState.snackbarHostState.currentSnackbarData?.dismiss()
                             if (it is Screen.Previous) controller.navigateUp()
                             else controller.navigate(it.route) {
-                                if(it.popBackStack){
+                                if (it.popBackStack) {
                                     controller.popBackStack()
                                 }
                             }
@@ -223,7 +224,7 @@ fun DrawerLayout(
                     .fillMaxWidth(),
                 onClick = {
                     viewModel.startProcess()
-                          },
+                },
                 enabled = isConnected && !isRunning
             ) {
                 Text(
@@ -288,6 +289,8 @@ fun MainContent(
             bottomSheetState = bottomSheetState
         )
 
+        val (isInfoDialogShown, showInfoDialog) = remember { mutableStateOf(false) }
+
         BottomSheetScaffold(
             scaffoldState = bottomSheetScaffoldState,
             sheetShape = RoundedCornerShape(20.dp),
@@ -308,6 +311,25 @@ fun MainContent(
                         isError = currentTask.hasError
                     )
                 }
+
+                is Info -> {
+
+                    val text = currentTask.payload as String
+
+                    showInfoDialog(true)
+
+                    AlertDialogLayout(
+                        isShown = isInfoDialogShown,
+                        title = "Warning",
+                        text = text,
+                        onConfirm = {
+                            showInfoDialog(false)
+                            viewModel.sendInputData(currentTask.toResult(true))
+                        }
+                    )
+
+                }
+
                 is Scan -> {
 
                     val scanType = ScanEvent.of(currentTask.id)
@@ -349,7 +371,7 @@ fun MainContent(
                     )
                 }
 
-                is Quantity, is AdjustQuantity -> {
+                is Quantity -> {
                     QuantityAdjustmentDialog(
                         title = currentTask.label,
                         doOnConfirm = {
@@ -357,7 +379,8 @@ fun MainContent(
                         }
                     )
                 }
-                else -> {}
+                else -> {
+                }
             }
 
         }

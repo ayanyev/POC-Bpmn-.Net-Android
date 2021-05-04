@@ -20,11 +20,30 @@ namespace Warehouse.Picking.Api.Processes.ExternalTasks.Intake
         public Task<Article> HandleAsync(MatchArticlePayload input, ExternalTask task)
         {
             var article = _service.MatchUnfinishedArticleByGtinAndBundle(input.NoteId, input.Gtin, input.BundleId);
-            return article != null
-                ? Task.FromResult(article)
-                : Task.FromException<Article>(
-                    new BundleNotPresentInDelivery(input.NoteId, input.BundleId, null)
+
+            string faultReason = null;
+
+            if (article == null)
+            {
+                faultReason = "absent in delivery";
+            }
+            else if (article.IsSuspended)
+            {
+                faultReason = "suspended";
+            }
+            else if (!article.IsUnfinished)
+            {
+                faultReason = "completed";
+            }
+
+            if (faultReason != null)
+            {
+                return Task.FromException<Article>(
+                    new SelectedBundleNotAvailable(input.NoteId, input.BundleId, faultReason)
                 );
+            }
+
+            return Task.FromResult(article);
         }
     }
 }

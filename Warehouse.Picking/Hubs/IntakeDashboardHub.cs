@@ -35,7 +35,7 @@ namespace warehouse.picking.api.Hubs
             Quantity = $"{article.Quantity.Processed}/{article.Quantity.Expected}";
             Bundle = article.Bundle.Name;
             Location = "123.456.7.8";
-            Color = article.IsUnfinished() switch
+            Color = article.IsUnfinished switch
             {
                 true => "#000000",
                 false => "#990000"

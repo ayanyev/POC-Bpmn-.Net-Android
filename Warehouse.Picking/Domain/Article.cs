@@ -13,6 +13,8 @@ namespace warehouse.picking.api.Domain
         public string Name { get; set; }
 
         public string Gtin { get; set; }
+        
+        public bool IsSuspended { get; set; }
 
         public ArticleQuantity Quantity { get; set; }
 
@@ -23,12 +25,9 @@ namespace warehouse.picking.api.Domain
             Quantity.Processed += q;
         }
 
-        public bool IsUnfinished()
-        {
-            return Quantity.Processed < Quantity.Expected;
-        }
+        public bool IsUnfinished => Quantity.Processed < Quantity.Expected;
 
-        public Article(int id, string noteId, string name, string gtin, ArticleQuantity quantity, ArticleBundle bundle)
+        public Article(int id, string noteId, string name, string gtin, ArticleQuantity quantity, ArticleBundle bundle, bool isSuspended)
         {
             Id = id;
             NoteId = noteId;
@@ -36,6 +35,7 @@ namespace warehouse.picking.api.Domain
             Gtin = gtin;
             Quantity = quantity;
             Bundle = bundle;
+            IsSuspended = isSuspended;
         }
     }
 

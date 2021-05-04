@@ -19,8 +19,7 @@ namespace Warehouse.Picking.Api.Services
         private readonly IHubContext<DeviceHub> _intakeDeviceHubContext;
 
         private readonly IHubContext<IntakeDashboardHub> _intakeDashboardHubContext;
-
-
+        
         public IntakeService(IArticleRepository articleRepository, ILocationRepository locationRepository,
             IHubContext<DeviceHub> intakeDeviceHubContext,
             IHubContext<IntakeDashboardHub> intakeDashboardHubContext, ConnectionMapping connectionMapping)
@@ -31,7 +30,7 @@ namespace Warehouse.Picking.Api.Services
             _intakeDashboardHubContext = intakeDashboardHubContext;
             _connectionMapping = connectionMapping;
         }
-
+        
         public async Task<bool> FetchArticlesForDeliveryNote(string correlationId, string noteId)
         {
             var articles = await _articleRepository.FetchByNoteId(noteId);
@@ -47,19 +46,18 @@ namespace Warehouse.Picking.Api.Services
         public HashSet<string> GetBarcodesForUnfinishedArticles(string noteId)
         {
             return _articleRepository.FindByNoteId(noteId)
-                .Where(a => a.IsUnfinished())
+                .Where(a => !a.IsSuspended && a.IsUnfinished)
                 .Select(a => a.Gtin)
                 .ToHashSet();
         }
-
-        public async Task<Article> UpdateArticleQuantity(string correlationId, string noteId, int articleId,
-            int quantity)
+        
+        public async Task<Article> UpdateArticleQuantity(string correlationId, string noteId, int articleId, int quantity)
         {
+            //updates remotely and locally
+            var updatedArticle = await _articleRepository.UpdateArticle(noteId, articleId, quantity);
+            
             var articles = _articleRepository.FindByNoteId(noteId);
-            var updatedArticle = articles.Find(a => a.Id.Equals(articleId));
-
-            updatedArticle?.UpdateProcessedQuantity(quantity);
-
+            
             await _intakeDeviceHubContext.Clients
                 .Client(_connectionMapping.GetConnection(correlationId))
                 .SendAsync("ArticlesListReceived", new Articles(articles));
@@ -74,7 +72,7 @@ namespace Warehouse.Picking.Api.Services
         private List<Article> GetUnfinishedArticlesByGtin(string noteId, string gtin)
         {
             return _articleRepository.FindByNoteId(noteId)
-                .Where(a => a.Gtin == gtin && a.IsUnfinished())
+                .Where(a => a.Gtin == gtin && a.IsUnfinished)
                 .ToList();
         }
 

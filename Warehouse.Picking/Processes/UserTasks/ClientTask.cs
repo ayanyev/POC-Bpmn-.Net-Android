@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 #nullable enable
 namespace Warehouse.Picking.Api.Processes.UserTasks
@@ -18,6 +19,7 @@ namespace Warehouse.Picking.Api.Processes.UserTasks
     {
         public string Id { get; }
 
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public ClientTaskType Type { get; }
 
         public string ResultKey { get; }

@@ -9,6 +9,7 @@ import com.eazzyapps.example.android.domain.*
 import com.eazzyapps.example.android.ui.ActivityDelegate
 import com.microsoft.signalr.HubConnection
 import com.microsoft.signalr.HubConnectionBuilder
+import com.microsoft.signalr.HubProtocol
 import com.microsoft.signalr.TypeReference
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -140,8 +141,8 @@ class IntakeViewModel : ViewModel(), KoinComponent {
                 { articles ->
                     Log.d("SignalR", "$articles")
                     // TODO maybe move this logic to BE
-                    val isProcessComplete = articles.items.all { it.isCompleted() }
-                    articleList.value = if(!isProcessComplete) articles.items else listOf()
+                    val isProcessComplete = articles.items.all { it.isCompleted }
+                    articleList.value = if (!isProcessComplete) articles.items else listOf()
                 },
                 Articles::class.java
             )
@@ -190,29 +191,21 @@ class IntakeViewModel : ViewModel(), KoinComponent {
 
     }
 
-    fun setInputError(value : Boolean){
+    fun setInputError(value: Boolean) {
         isError.value = value
     }
 
     fun selectScannedItem(gtin: String) {
-        val items = articleList.value.map { it.copy() }.toMutableList()
-        items.setInitialState()
-        val scannedArticle = items.findArticleByBarcode(gtin)
-        if (scannedArticle != null) {
-            items.remove(scannedArticle)
-            scannedArticle.setState(Article.State.SELECTED)
-            items.add(0, scannedArticle)
-        }
+        val items = articleList.value
+        items
+            .onEach {
+                if (it.isUnfinished) {
+                    it.setState(Article.State.INITIAL)
+                    if (it.gtin == gtin && !it.isSuspended)
+                        it.setState(Article.State.SELECTED)
+                }
+            }
         articleList.value = items
-    }
-
-    private fun List<Article>.findArticleByBarcode(barcode: String) =
-        find { it.gtin == barcode && !it.isCompleted() }
-
-    private fun List<Article>.setInitialState() = forEach {
-        if (!it.isCompleted()) {
-            it.setState(Article.State.INITIAL)
-        }
     }
 
 }
