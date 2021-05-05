@@ -9,17 +9,14 @@ import com.eazzyapps.example.android.domain.*
 import com.eazzyapps.example.android.ui.ActivityDelegate
 import com.microsoft.signalr.HubConnection
 import com.microsoft.signalr.HubConnectionBuilder
-import com.microsoft.signalr.HubProtocol
 import com.microsoft.signalr.TypeReference
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-@KoinApiExtension
 class IntakeViewModel : ViewModel(), KoinComponent {
 
     private val delegate by inject<ActivityDelegate>()
@@ -58,7 +55,7 @@ class IntakeViewModel : ViewModel(), KoinComponent {
             Base64.encodeToString("$selectedName:ertryrtytr".toByteArray(), Base64.NO_WRAP)
 
         hubConnection = HubConnectionBuilder
-            .create("http://10.0.11.185:5000/intakedevicehub") //10.0.11.185, 192.168.0.38
+            .create("${BuildConfig.PROCESS_APP_URL}:5000/intakedevicehub") //10.0.11.185, 192.168.0.38
             .withHeader("Authorization", "Basic $credentials")
             .build()
 

@@ -1,37 +1,63 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     id("com.android.application")
-    kotlin("android")
     id("kotlin-android")
 }
 
-val composeVersion = "1.0.0-beta04"
-val ktor_version = "1.5.1"
-val lifecycle_version = "2.3.0"
-val koin_version = "2.2.2"
-val kotlin_version = "1.4.32"
+val composeVersion = "1.0.0-beta05"
+val ktor_version = "1.5.4"
+val koin_version = "3.0.1"
+val kotlin_version = "1.5.0"
+
+val properties = gradleLocalProperties(rootDir)
+var processAppUrl: String? = System.getenv("PROCESS_APP_URL")
+val processAppUrlHome = properties.getProperty("ip.home") ?: "NoBuildNumberFound"
+val processAppUrlWork = properties.getProperty("ip.work") ?: "NoBuildNumberFound"
 
 android {
-    compileSdkVersion(30)
+    compileSdk = 30
 
     defaultConfig {
-        applicationId("com.eazzyapps.example.android")
-        minSdkVersion(27)
-        targetSdkVersion(30)
-        versionCode(1)
-        versionName("1.0")
+        applicationId = "com.eazzyapps.example.android"
+        minSdk = 27
+        targetSdk = 30
+        versionCode = 1
+        versionName = "1.0"
 
-        testInstrumentationRunner("androidx.test.runner.AndroidJUnitRunner")
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         debug {
-            debuggable(true)
+            isDebuggable = true
         }
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
         }
     }
+
+    flavorDimensions.addAll(listOf("target", "location"))
+
+    productFlavors {
+        create("emulator") {
+            dimension = "target"
+            buildConfigField("String", "PROCESS_APP_URL", "\"http://10.0.2.2\"")
+        }
+        create("device") {
+            dimension = "target"
+        }
+        create("home") {
+            dimension = "location"
+            buildConfigField("String", "PROCESS_APP_URL", "\"$processAppUrlHome\"")
+        }
+        create("work") {
+            dimension = "location"
+            buildConfigField("String", "PROCESS_APP_URL", "\"$processAppUrlWork\"")
+        }
+    }
+
     compileOptions {
         sourceCompatibility(JavaVersion.VERSION_1_8)
         targetCompatibility(JavaVersion.VERSION_1_8)
@@ -47,14 +73,14 @@ android {
             "-Xskip-prerelease-check"
         )
         jvmTarget = "1.8"
-        useIR = true
     }
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = composeVersion
-    }
+//    composeOptions {
+//        kotlinCompilerVersion
+//        kotlinCompilerExtensionVersion = composeVersion
+//    }
 }
 
 dependencies {
@@ -75,9 +101,9 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:1.0.0-alpha10")
 
 
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha03")
-    implementation("androidx.activity:activity-compose:1.3.0-alpha03")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha04")
+    implementation("androidx.activity:activity-compose:1.3.0-alpha07")
 
     implementation("io.ktor:ktor-client-core:$ktor_version")
     implementation("io.ktor:ktor-client-okhttp:$ktor_version")
@@ -86,14 +112,14 @@ dependencies {
     implementation("com.microsoft.signalr:signalr:6.0.0-preview.3.21201.13")
 //    implementation("org.slf4j:slf4j-android:1.7.30")
 
-    implementation("org.koin:koin-android:$koin_version")
-    implementation("org.koin:koin-androidx-ext:$koin_version")
-    implementation("org.koin:koin-androidx-viewmodel:$koin_version")
-    implementation("org.koin:koin-androidx-scope:$koin_version")
-    implementation("org.koin:koin-androidx-compose:$koin_version")
-    implementation("org.koin:koin-test:$koin_version")
+    implementation("io.insert-koin:koin-android:$koin_version")
+    implementation("io.insert-koin:koin-android-ext:$koin_version")
+//    implementation("io.insert-koin:koin-androidx-viewmodel:2.2.2")
+//    implementation("io.insert-koin:koin-androidx-scope:2.2.2")
+    implementation("io.insert-koin:koin-androidx-compose:$koin_version")
+    implementation("io.insert-koin:koin-test:$koin_version")
 
-    testImplementation("junit:junit:4.13.1")
+    testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
 }

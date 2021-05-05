@@ -16,7 +16,7 @@ inline fun <reified T : ViewModel> getViewModel(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    val owner = LocalViewModelStoreOwner.current!!.viewModelStore
+    val owner = LocalViewModelStoreOwner.current!!
     return remember {
         GlobalContext.get().getViewModel(
             qualifier,
