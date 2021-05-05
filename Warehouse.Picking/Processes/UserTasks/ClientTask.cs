@@ -1,15 +1,26 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 #nullable enable
 namespace Warehouse.Picking.Api.Processes.UserTasks
 {
+    public enum ClientTaskType
+    {
+        Info,
+        Input,
+        Scan,
+        Selection,
+        Quantity
+    }
+    
     [Serializable]
     public class ClientTask
     {
         public string Id { get; }
 
-        public string Type { get; }
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public ClientTaskType Type { get; }
 
         public string ResultKey { get; }
         
@@ -21,12 +32,22 @@ namespace Warehouse.Picking.Api.Processes.UserTasks
 
         public object? Payload { get; }
 
-        public ClientTask(string id, string type, string key, string label, TaskError? error, object? payload, Dictionary<string, object> resultTemplate)
+        public ClientTask(string id,
+            ClientTaskType type,
+            string key,
+            string label,
+            TaskError error,
+            object? payload,
+            Dictionary<string, object> resultTemplate)
         {
             Id = id;
             Type = type;
             Label = label;
-            Error = error;
+            Error = error.IsEmpty() switch
+            {
+                true => null,
+                false => error
+            };
             Payload = payload;
             ResultKey = key;
             ResultTemplate = resultTemplate;
@@ -38,15 +59,34 @@ namespace Warehouse.Picking.Api.Processes.UserTasks
     {
         public string? Code { get; }
 
-        public string Name { get; }
+        public string? Name { get; }
 
-        public string Message { get; }
+        public string? Message => AdditionalInformation?.DisplayableMessage;
+        
+        public AdditionalInformation? AdditionalInformation { get; }
 
-        public TaskError(string code, string name, string message)
+        public TaskError(string code, string name, AdditionalInformation? additionalInformation)
         {
             Code = code;
             Name = name;
-            Message = message;
+            AdditionalInformation = additionalInformation;
+        }
+
+        internal bool IsEmpty() => Code == null;
+
+    }
+
+    [Serializable]
+    public class AdditionalInformation
+    {
+        public string DisplayableMessage { get; }
+        
+        public object Payload { get; }
+
+        public AdditionalInformation(string displayableMessage, object payload)
+        {
+            DisplayableMessage = displayableMessage;
+            Payload = payload;
         }
     }
 }

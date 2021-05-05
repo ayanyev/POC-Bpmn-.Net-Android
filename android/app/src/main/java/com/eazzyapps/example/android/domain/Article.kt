@@ -10,7 +10,9 @@ data class Article(
     val name: String,
     val gtin: String,
     val quantity: ArticleQuantity,
-    val bundle: ArticleBundle
+    val bundle: ArticleBundle,
+    val isUnfinished: Boolean,
+    val isSuspended: Boolean
 )
 {
     enum class State { INITIAL, SELECTED }
@@ -21,9 +23,9 @@ data class Article(
         currentState = state
     }
 
-    fun isSelected() = currentState == State.SELECTED
+    val isSelected get() = currentState == State.SELECTED
 
-    fun isCompleted() = quantity.processed >= quantity.expected
+    val isCompleted get() = !isUnfinished
 
     override fun equals(other: Any?): Boolean {
         return (other as Article).let {

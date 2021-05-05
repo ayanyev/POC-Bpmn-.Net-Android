@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using AtlasEngine.UserTasks;
 using Warehouse.Picking.Api.Processes.ExternalTasks.Intake;
 using Warehouse.Picking.Api.Services;
+using Warehouse.Picking.Api.Utilities;
 
 namespace Warehouse.Picking.Api.Processes.UserTasks
 {
@@ -17,15 +17,24 @@ namespace Warehouse.Picking.Api.Processes.UserTasks
             _intakeService = intakeService;
         }
 
+        public string CreateInfoPayload(UserTask task)
+        {
+            return task.GetQualifier() switch
+            {
+                "WrongArticleQuantity" => task.GetFormFieldValue<string>("Text"),
+                _ => throw new ArgumentException("User task is not of Info type")
+            };
+        }
+
         public ScanPayload CreateScanPayload(UserTask task)
         {
-            return task.Id switch
+            return task.GetQualifier() switch
             {
-                "UT.Input.Scan.Barcode.Article" => task.Tokens[0].Payload.GetPayload<ScanPayload>(),
-                "UT.Input.Scan.Barcode.Location" => new ScanPayload(
+                "Article" => task.GetPayload<ScanPayload>(),
+                "Location" => new ScanPayload(
                     new List<string>
                     {
-                        task.Tokens[0].Payload.GetPayload<BookLocationResult>().Barcode
+                        task.GetPayload<BookLocationResult>().Barcode
                     }
                 ),
                 _ => new ScanPayload(new List<string>())
@@ -34,31 +43,24 @@ namespace Warehouse.Picking.Api.Processes.UserTasks
 
         public SelectionOptions CreateSelectionOptionsPayload(UserTask task)
         {
-            var rawPayload = task.Tokens.Find(t => t.Type == TokenType.OnEnter)?.Payload?.RawPayload
-                             ?? throw new NullReferenceException("Payload of OnEnter type not found");
-
-            var payload = JsonSerializer.Deserialize<NoteGtinPayload>(rawPayload)
-                          ?? throw new NullReferenceException("Payload is not of NoteGtinPayload type");
-
-            var options = _intakeService
-                .GetBundlesForUnfinishedArticlesByGtin(payload.NoteId, payload.Barcode)
-                .Select(bundle => new SelectionOption(bundle.Id, bundle.Name));
-
-            return new SelectionOptions(options);
+            switch (task.GetQualifier())
+            {
+                case "Bundle":
+                {
+                    var payload = task.GetPayload<NoteGtinPayload>()
+                                  ?? throw new NullReferenceException("Payload is not of NoteGtinPayload type");
+                    var options = _intakeService.GetAllBundlesByGtin(payload.Barcode).Result
+                        .Select(bundle => new SelectionOption(bundle.Id, bundle.Name));
+                    return new SelectionOptions(options);
+                }
+                default: throw new ArgumentException("User task is not of Info type");
+            }
         }
     }
 
-    [Serializable]
-    // ReSharper disable once ClassNeverInstantiated.Global
-    internal class NoteGtinPayload
+    public class NoteGtinPayload
     {
-        public string NoteId { get; }
-        public string Barcode { get; }
-
-        public NoteGtinPayload(string barcode, string noteId)
-        {
-            Barcode = barcode;
-            NoteId = noteId;
-        }
+        public string NoteId { get; set; }
+        public string Barcode { get; set; }
     }
 }

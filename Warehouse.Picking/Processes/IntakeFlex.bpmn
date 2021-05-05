@@ -1,0 +1,805 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://bpmn.io/schema/bpmn" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:yaoqiang="http://bpmn.sourceforge.net" exporter="BPMN Studio" exporterVersion="1" expressionLanguage="http://www.w3.org/1999/XPath" id="Definition_f5151e2e-a756-437d-a216-de0c31e7f53e" name="" targetNamespace="http://bpmn.io/schema/bpmn" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://bpmn.sourceforge.net/schemas/BPMN20.xsd">
+  <bpmn:error errorCode="UnknownNoteIdException" id="Error_etwx8acR" name="Note Id not found"/>
+  <bpmn:error errorCode="UnhandledException" id="Error_HoqCmKWZ" name="Unhandled"/>
+  <bpmn:error errorCode="BundleNotPresentInDelivery" id="Error_JdhkyUZ2" name="Bundle not in delivery"/>
+  <bpmn:collaboration id="Collaboration_1cidyxu" isClosed="false">
+    <bpmn:documentation id="Collaboration_1cidyxu_D_1" textFormat="text/plain">
+      <![CDATA[Input:
+- article id
+Output:
+- article info]]>
+    </bpmn:documentation>
+    <bpmn:extensionElements>
+      <yaoqiang:description/>
+      <yaoqiang:pageFormat height="841.8897637795276" imageableHeight="831.8897637795276" imageableWidth="588.1102362204724" imageableX="5.0" imageableY="5.0" orientation="0" width="598.1102362204724"/>
+      <yaoqiang:page background="#FFFFFF" horizontalCount="3" verticalCount="1"/>
+    </bpmn:extensionElements>
+    <bpmn:participant id="Participant_0px403d" name="WH.Intake" processRef="WH.Intake">
+      <bpmn:participantMultiplicity maximum="1" minimum="0"/>
+    </bpmn:participant>
+  </bpmn:collaboration>
+  <bpmn:process id="WH.Intake" isClosed="false" isExecutable="true" name="WH.Intake" processType="None">
+    <bpmn:exclusiveGateway default="Flow_0hxsukl" gatewayDirection="Unspecified" id="Gateway_1saly70" name="valid?">
+      <bpmn:incoming>Flow_0lnum3g</bpmn:incoming>
+      <bpmn:outgoing>Flow_0nv6e22</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0hxsukl</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask camunda:formKey="Form Key" completionQuantity="1" id="UT.Input.Scan.Barcode.Location" implementation="##unspecified" isForCompensation="false" name="scan    stockyard location" startQuantity="1">
+      <bpmn:documentation id="UT.Input.Scan.Barcode.Location_D_1" textFormat="text/plain">
+        <![CDATA[Input:
+- stockyard location (barcode?)
+Output:
+- no]]>
+      </bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <formData>
+            <camunda:formField defaultValue="123.456.7.8" id="Barcode" label="Location barcode" type="string"/>
+          </formData>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0118jh7</bpmn:incoming>
+      <bpmn:incoming>Flow_1d79tkg</bpmn:incoming>
+      <bpmn:outgoing>Flow_1v2rmxc</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask camunda:topic="Intake.Article.Stockyard" camunda:type="external" completionQuantity="1" id="TaskGetLocation" implementation="##WebService" isForCompensation="false" name="determine stockyard location" startQuantity="1">
+      <bpmn:documentation id="TaskGetLocation_D_1" textFormat="text/plain">
+        <![CDATA[Input:
+- article id
+Output:
+- stockyard location (barcode?)]]>
+      </bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <properties>
+            <camunda:property name="payload" value="{&#10;noteId: dataObjects.NoteInfo.NoteId,&#10;articleId: dataObjects.ArticleInfo.id,&#10;quantity: dataObjects.IterationInfo.Quantity&#10;}"/>
+          </properties>
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0nv6e22</bpmn:incoming>
+      <bpmn:outgoing>Flow_0118jh7</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway default="Flow_1d79tkg" gatewayDirection="Unspecified" id="Gateway_0asxaek">
+      <bpmn:incoming>Flow_1v2rmxc</bpmn:incoming>
+      <bpmn:outgoing>Flow_19toed4</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1d79tkg</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask camunda:topic="Intake.Article.Update" camunda:type="external" completionQuantity="1" id="Activity_1hwv4ke" implementation="##WebService" isForCompensation="false" name="update        article info" startQuantity="1">
+      <bpmn:documentation id="Activity_1hwv4ke_D_1" textFormat="text/plain">
+        <![CDATA[Updates article processed quantity
+Input:
+- articleId
+- iteration quantity
+Output:
+- updated article object]]>
+      </bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <properties>
+            <camunda:property name="payload" value="{&#10;noteId: dataObjects.NoteInfo.NoteId,&#10;articleId: dataObjects.ArticleInfo.id,&#10;quantity: dataObjects.IterationInfo.quantity&#10;}"/>
+          </properties>
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_19toed4</bpmn:incoming>
+      <bpmn:outgoing>Flow_1gxeppg</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1d79tkg" name="no" sourceRef="Gateway_0asxaek" targetRef="UT.Input.Scan.Barcode.Location"/>
+    <bpmn:sequenceFlow id="Flow_19toed4" name="yes" sourceRef="Gateway_0asxaek" targetRef="Activity_1hwv4ke">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">
+        <![CDATA[token.current.Barcode == token.history.TaskGetLocation.barcode]]>
+      </bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1sze9gy" name="yes" sourceRef="Gateway_00n2q11" targetRef="UT.Input.Scan.Barcode.Article">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <properties>
+            <camunda:property name="sss" value="1"/>
+          </properties>
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">
+        <![CDATA[dataObjects.Barcodes.length > 0]]>
+      </bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0nv6e22" name="yes" sourceRef="Gateway_1saly70" targetRef="TaskGetLocation">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">
+        <![CDATA[token.current.valid]]>
+      </bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0imho6z" sourceRef="UT.Input.Selection.BundleId" targetRef="Activity_0f7n2at"/>
+    <bpmn:sequenceFlow id="Flow_0d58h5u" sourceRef="UT.Input.Quantity.Quantity" targetRef="Activity_1qrq2et"/>
+    <bpmn:sequenceFlow id="Flow_0lnum3g" sourceRef="Activity_1qrq2et" targetRef="Gateway_1saly70"/>
+    <bpmn:sequenceFlow id="Flow_1v2rmxc" sourceRef="UT.Input.Scan.Barcode.Location" targetRef="Gateway_0asxaek"/>
+    <bpmn:sequenceFlow id="Flow_0hxsukl" name="no" sourceRef="Gateway_1saly70" targetRef="Gateway_0a5fztf"/>
+    <bpmn:sequenceFlow id="Flow_1gxeppg" sourceRef="Activity_1hwv4ke" targetRef="Activity_1c5h8vu"/>
+    <bpmn:sequenceFlow id="Flow_0118jh7" sourceRef="TaskGetLocation" targetRef="UT.Input.Scan.Barcode.Location"/>
+    <bpmn:sequenceFlow id="Flow_0pz98iz" sourceRef="UT.Input.Scan.Barcode.Article" targetRef="Gateway_0j0867g"/>
+    <bpmn:sequenceFlow id="Flow_0o9v2wx" name="yes" sourceRef="Gateway_0j0867g" targetRef="UT.Input.Selection.BundleId">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">
+        <![CDATA[dataObjects.Barcodes.includes(token.current.Barcode)]]>
+      </bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0qse2lc" name="no" sourceRef="Gateway_0j0867g" targetRef="UT.Input.Scan.Barcode.Article"/>
+    <bpmn:sequenceFlow id="Flow_0zyxwqu" sourceRef="Activity_1c5h8vu" targetRef="Gateway_00n2q11"/>
+    <bpmn:sequenceFlow id="Flow_0mlaq89" sourceRef="Activity_1une9zy" targetRef="Activity_1c5h8vu"/>
+    <bpmn:sequenceFlow id="Flow_1cxsag1" sourceRef="UT.Input.Simple.NoteId" targetRef="Activity_1une9zy"/>
+    <bpmn:sequenceFlow id="Flow_117r828" sourceRef="StartEvent_1mox3jl" targetRef="UT.Input.Simple.NoteId"/>
+    <bpmn:sequenceFlow id="Flow_0sh45hg" name="no" sourceRef="Event_09rl4qr" targetRef="UT.Input.Scan.Barcode.Article"/>
+    <bpmn:startEvent id="StartEvent_1mox3jl" isInterrupting="true" name="Start Event" parallelMultiple="false">
+      <bpmn:outgoing>Flow_117r828</bpmn:outgoing>
+      <bpmn:outputSet/>
+    </bpmn:startEvent>
+    <bpmn:userTask camunda:formKey="Form Key" completionQuantity="1" id="UT.Input.Simple.NoteId" implementation="##unspecified" isForCompensation="false" name="delivery note id" startQuantity="1">
+      <bpmn:documentation id="UT.Input.Simple.NoteId_D_1" textFormat="text/plain">
+        <![CDATA[Input:
+- delNote id
+Output:
+- success (true/false)]]>
+      </bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <formData>
+            <camunda:formField defaultValue="note1" id="NoteId" label="Delivery note id" type="string"/>
+          </formData>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_117r828</bpmn:incoming>
+      <bpmn:incoming>Flow_1smtjz4</bpmn:incoming>
+      <bpmn:incoming>Flow_12qf1gh</bpmn:incoming>
+      <bpmn:outgoing>Flow_1cxsag1</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_003hykd">
+        <bpmn:targetRef>NoteInfo</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    </bpmn:userTask>
+    <bpmn:serviceTask camunda:topic="Intake.Note.FetchArticles" camunda:type="external" completionQuantity="1" id="Activity_1une9zy" implementation="##WebService" isForCompensation="false" name="prefetch all articles" startQuantity="1">
+      <bpmn:documentation id="Activity_1une9zy_D_1" textFormat="text/plain">
+        <![CDATA[Input:
+{
+    noteId: string
+}
+Output:
+{
+    done: bool
+}]]>
+      </bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <properties>
+            <camunda:property name="payload" value="{noteId: dataObjects.NoteInfo.NoteId}"/>
+          </properties>
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1cxsag1</bpmn:incoming>
+      <bpmn:outgoing>Flow_0mlaq89</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask camunda:topic="Intake.Note.Articles.Unfinished.Barcodes" camunda:type="external" completionQuantity="1" id="Activity_1c5h8vu" implementation="##WebService" isForCompensation="false" name="get unfinished articles barcodes" startQuantity="1">
+      <bpmn:documentation id="Activity_1c5h8vu_D_1" textFormat="text/plain">
+        <![CDATA[Input:
+{
+    noteId: string
+}
+Output:
+{
+    codes: string[]
+}]]>
+      </bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <properties>
+            <camunda:property name="payload" value="{noteId: dataObjects.NoteInfo.NoteId}"/>
+          </properties>
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0mlaq89</bpmn:incoming>
+      <bpmn:incoming>Flow_1gxeppg</bpmn:incoming>
+      <bpmn:incoming>Flow_1cnl7vt</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zyxwqu</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_0hxhrid">
+        <bpmn:extensionElements>
+          <camunda:properties>
+            <properties>
+              <camunda:property name="dataSource" value="token.current.barcodes"/>
+            </properties>
+          </camunda:properties>
+        </bpmn:extensionElements>
+        <bpmn:targetRef>Barcodes</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway default="Flow_12qf1gh" gatewayDirection="Unspecified" id="Gateway_00n2q11" name="more articles left?">
+      <bpmn:incoming>Flow_0zyxwqu</bpmn:incoming>
+      <bpmn:outgoing>Flow_1sze9gy</bpmn:outgoing>
+      <bpmn:outgoing>Flow_12qf1gh</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask camunda:formKey="Form Key" completionQuantity="1" id="UT.Input.Scan.Barcode.Article" implementation="##unspecified" isForCompensation="false" name="scan article" startQuantity="1">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <formData>
+            <camunda:formField id="Barcode" label="Article barcode" type="string"/>
+            <camunda:formField defaultValue="${dataObjects.NoteInfo.NoteId}" id="NoteId" label="note Id" type="string"/>
+          </formData>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1sze9gy</bpmn:incoming>
+      <bpmn:incoming>Flow_0qse2lc</bpmn:incoming>
+      <bpmn:incoming>Flow_0sh45hg</bpmn:incoming>
+      <bpmn:outgoing>Flow_0pz98iz</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_0anxe1m">
+        <bpmn:targetRef>Barcode</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1kdcp3l" sourceRef="Activity_0f7n2at" targetRef="UT.Input.Quantity.Quantity"/>
+    <bpmn:sequenceFlow id="Flow_0d2iml2" sourceRef="Event_09pvgwz" targetRef="Event_0iwkenu"/>
+    <bpmn:boundaryEvent attachedToRef="Activity_1une9zy" cancelActivity="true" id="Event_09pvgwz" parallelMultiple="false">
+      <bpmn:outgoing>Flow_0d2iml2</bpmn:outgoing>
+      <bpmn:outputSet/>
+      <bpmn:errorEventDefinition errorRef="Error_HoqCmKWZ" id="ErrorEventDefinition_11f2swd"/>
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent attachedToRef="Activity_1une9zy" cancelActivity="true" id="Event_0bz3j0m" parallelMultiple="false">
+      <bpmn:outgoing>Flow_1smtjz4</bpmn:outgoing>
+      <bpmn:outputSet/>
+      <bpmn:errorEventDefinition errorRef="Error_etwx8acR" id="ErrorEventDefinition_1ek2d88"/>
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_1smtjz4" sourceRef="Event_0bz3j0m" targetRef="UT.Input.Simple.NoteId"/>
+    <bpmn:dataObjectReference dataObjectRef="DataObject_0erf8oa" id="NoteInfo" name="Note info">
+      <bpmn:documentation id="NoteInfo_D_1" textFormat="text/plain">
+        <![CDATA[- get current note id
+dataObjects.NoteInfo.NoteId]]>
+      </bpmn:documentation>
+    </bpmn:dataObjectReference>
+    <bpmn:dataObject id="DataObject_0erf8oa" isCollection="false"/>
+    <bpmn:sequenceFlow id="Flow_12qf1gh" name="no" sourceRef="Gateway_00n2q11" targetRef="UT.Input.Simple.NoteId"/>
+    <bpmn:endEvent id="Event_0iwkenu">
+      <bpmn:incoming>Flow_0d2iml2</bpmn:incoming>
+      <bpmn:inputSet/>
+    </bpmn:endEvent>
+    <bpmn:serviceTask camunda:topic="Intake.Article.Match" camunda:type="external" completionQuantity="1" id="Activity_0f7n2at" implementation="##WebService" isForCompensation="false" name="Match article by gtin and bundle" startQuantity="1">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <properties>
+            <camunda:property name="payload" value="{&#10;noteId: dataObjects.NoteInfo.NoteId,&#10;gtin: dataObjects.Barcode.Barcode,&#10;bundleId: token.current.BundleId&#10;}"/>
+          </properties>
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0imho6z</bpmn:incoming>
+      <bpmn:outgoing>Flow_1kdcp3l</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_0e8xwt4">
+        <bpmn:targetRef>ArticleInfo</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent attachedToRef="Activity_0f7n2at" cancelActivity="true" id="Event_09rl4qr" parallelMultiple="false">
+      <bpmn:outgoing>Flow_0sh45hg</bpmn:outgoing>
+      <bpmn:outputSet/>
+      <bpmn:errorEventDefinition errorRef="Error_JdhkyUZ2" id="ErrorEventDefinition_0dtzpb7"/>
+    </bpmn:boundaryEvent>
+    <bpmn:userTask camunda:formKey="Form Key" completionQuantity="1" id="UT.Input.Selection.BundleId" implementation="##unspecified" isForCompensation="false" name="determine bundle" startQuantity="1">
+      <bpmn:documentation id="UT.Input.Selection.BundleId_D_1" textFormat="text/plain">
+        <![CDATA[Manually selects correct article from the list of bundles for the given barcode
+Input:
+- barcode
+Output:
+- article info]]>
+      </bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <formData>
+            <camunda:formField defaultValue="1" id="BundleId" label="Select bundle" type="long"/>
+          </formData>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0o9v2wx</bpmn:incoming>
+      <bpmn:outgoing>Flow_0imho6z</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway default="Flow_0qse2lc" gatewayDirection="Unspecified" id="Gateway_0j0867g" name="is in the list?">
+      <bpmn:documentation id="Gateway_0j0867g_D_1" textFormat="text/plain">
+        <![CDATA[Checks if scanned article in the list of note's ids]]>
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_0pz98iz</bpmn:incoming>
+      <bpmn:outgoing>Flow_0qse2lc</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0o9v2wx</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask camunda:formKey="Form Key" completionQuantity="1" id="UT.Input.Quantity.Quantity" implementation="##unspecified" isForCompensation="false" name="determine iteration  quantity" startQuantity="1">
+      <bpmn:documentation id="UT.Input.Quantity.Quantity_D_1" textFormat="text/plain">
+        <![CDATA[Input:
+- expected article quantity
+Output:
+{
+    "quantity": xxx;
+    "forced_valid": false;
+}]]>
+      </bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <formData>
+            <camunda:formField defaultValue="20" id="Quantity" label="Quantity" type="long"/>
+          </formData>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1kdcp3l</bpmn:incoming>
+      <bpmn:outgoing>Flow_0d58h5u</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_1hzdauj">
+        <bpmn:extensionElements>
+          <camunda:properties>
+            <properties>
+              <camunda:property name="dataSource" value="{&#10;quantity: token.current.Quantity&#10;}"/>
+            </properties>
+          </camunda:properties>
+        </bpmn:extensionElements>
+        <bpmn:targetRef>IterationInfo</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    </bpmn:userTask>
+    <bpmn:dataObjectReference dataObjectRef="DataObject_0d452k8" id="ArticleInfo" name="Article info">
+      <bpmn:documentation id="ArticleInfo_D_1" textFormat="text/plain">
+        <![CDATA[1. list of articles for given barcode
+2. Article for given barcode and bundle]]>
+      </bpmn:documentation>
+    </bpmn:dataObjectReference>
+    <bpmn:dataObject id="DataObject_0d452k8" isCollection="false"/>
+    <bpmn:dataObjectReference dataObjectRef="DataObject_0vh8sj2" id="IterationInfo" name="Iteration info"/>
+    <bpmn:dataObject id="DataObject_0vh8sj2" isCollection="false"/>
+    <bpmn:dataObjectReference dataObjectRef="DataObject_1bc0uwg" id="Barcode" name="Current barcode"/>
+    <bpmn:dataObject id="DataObject_1bc0uwg" isCollection="false"/>
+    <bpmn:dataObjectReference dataObjectRef="DataObject_0msduab" id="Barcodes" name="Article barcodes">
+      <bpmn:documentation id="Barcodes_D_1" textFormat="text/plain">
+        <![CDATA[contains list of article ids for the given delivery note
+{
+codes: String[]
+}]]>
+      </bpmn:documentation>
+    </bpmn:dataObjectReference>
+    <bpmn:dataObject id="DataObject_0msduab" isCollection="false"/>
+    <bpmn:sequenceFlow id="Flow_1fjo1me" sourceRef="Gateway_0a5fztf" targetRef="UT.Input.Info.Acknowledged.WrongQuantity"/>
+    <bpmn:parallelGateway gatewayDirection="Unspecified" id="Gateway_0a5fztf">
+      <bpmn:incoming>Flow_0hxsukl</bpmn:incoming>
+      <bpmn:outgoing>Flow_1fjo1me</bpmn:outgoing>
+      <bpmn:outgoing>Flow_06vnhmz</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_1cnl7vt" sourceRef="UT.Input.Info.Acknowledged.WrongQuantity" targetRef="Activity_1c5h8vu"/>
+    <bpmn:sequenceFlow id="Flow_06vnhmz" sourceRef="Gateway_0a5fztf" targetRef="Activity_1vm294h"/>
+    <bpmn:serviceTask camunda:type="external" completionQuantity="1" id="Activity_1vm294h" implementation="##WebService" isForCompensation="false" name="Mark article as problematic" startQuantity="1">
+      <bpmn:incoming>Flow_06vnhmz</bpmn:incoming>
+    </bpmn:serviceTask>
+    <bpmn:scriptTask completionQuantity="1" id="Activity_1qrq2et" isForCompensation="false" name="validate aggregated quantity" startQuantity="1">
+      <bpmn:documentation id="Activity_1qrq2et_D_1" textFormat="text/plain">
+        <![CDATA[Input:
+{
+    "quantity": int;
+    "forced_valid": boolean; // default false
+}
+Output:
+{
+    "valid": boolean; // default false
+}]]>
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_0d58h5u</bpmn:incoming>
+      <bpmn:outgoing>Flow_0lnum3g</bpmn:outgoing>
+      <bpmn:script>
+        <![CDATA[var ex =  dataObjects.ArticleInfo.quantity.expected
+var it =  token.current.Quantity
+var ag =  it + dataObjects.ArticleInfo.quantity.processed
+return { "valid": it > 0 && ag <= ex };]]>
+      </bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:userTask camunda:formKey="Form Key" completionQuantity="1" id="UT.Input.Info.Acknowledged.WrongQuantity" implementation="##unspecified" isForCompensation="false" name="Inform about wrong quantity" startQuantity="1">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <formData>
+            <camunda:formField defaultValue="true" id="Acknowledged" type="boolean"/>
+            <camunda:formField defaultValue="Overall quantity for this article exceeds expected. Article skipped until decision made" id="Text" type="string"/>
+          </formData>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1fjo1me</bpmn:incoming>
+      <bpmn:outgoing>Flow_1cnl7vt</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Yaoqiang_Diagram-Collaboration_1cidyxu" name="Untitled Diagram" resolution="96.0">
+    <bpmndi:BPMNPlane bpmnElement="Collaboration_1cidyxu">
+      <bpmndi:BPMNShape bpmnElement="Participant_0px403d" id="Yaoqiang-Participant_0px403d" isExpanded="true" isHorizontal="true">
+        <dc:Bounds height="580.0" width="2390.0" x="-480.0" y="-210.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="78.0" width="22.49" x="-473.74" y="41.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Gateway_1saly70" id="Yaoqiang-Gateway_1saly70" isMarkerVisible="true">
+        <dc:Bounds height="42.0" width="42.0" x="1175.0" y="102.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="36.0" x="1182.5" y="162.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="UT.Input.Scan.Barcode.Location" id="Yaoqiang-UT.Input.Scan.Barcode.Location">
+        <dc:Bounds height="80.0" width="100.0" x="1439.0" y="87.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="46.96" width="59.0" x="1459.5" y="105.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="TaskGetLocation" id="Yaoqiang-TaskGetLocation">
+        <dc:Bounds height="80.0" width="100.0" x="1280.0" y="87.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="46.96" width="60.0" x="1300.0" y="105.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Gateway_0asxaek" id="Yaoqiang-Gateway_0asxaek" isMarkerVisible="true">
+        <dc:Bounds height="42.0" width="42.0" x="1585.0" y="102.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="1603.0" y="146.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Activity_1hwv4ke" id="Yaoqiang-Activity_1hwv4ke">
+        <dc:Bounds height="80.0" width="100.0" x="1690.0" y="87.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="32.96" width="63.0" x="1708.5" y="112.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="StartEvent_1mox3jl" id="Yaoqiang-StartEvent_1mox3jl">
+        <dc:Bounds height="32.0" width="32.0" x="-388.0" y="109.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="63.0" x="-403.5" y="149.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="UT.Input.Simple.NoteId" id="Yaoqiang-UT.Input.Simple.NoteId">
+        <dc:Bounds height="80.0" width="100.0" x="-310.0" y="87.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="88.0" x="-304.0" y="119.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Activity_1une9zy" id="Yaoqiang-Activity_1une9zy">
+        <dc:Bounds height="80.0" width="100.0" x="-150.0" y="87.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="32.96" width="66.0" x="-133.0" y="112.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Activity_1c5h8vu" id="Yaoqiang-Activity_1c5h8vu">
+        <dc:Bounds height="80.0" width="100.0" x="20.0" y="87.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="46.96" width="83.0" x="28.5" y="105.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Gateway_00n2q11" id="Yaoqiang-Gateway_00n2q11" isMarkerVisible="true">
+        <dc:Bounds height="42.0" width="42.0" x="165.0" y="102.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="101.0" x="141.0" y="159.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="UT.Input.Scan.Barcode.Article" id="Yaoqiang-UT.Input.Scan.Barcode.Article">
+        <dc:Bounds height="80.0" width="100.0" x="270.0" y="87.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="67.0" x="286.5" y="119.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="NoteInfo" id="Yaoqiang-NoteInfo">
+        <dc:Bounds height="38.0" width="29.0" x="-298.0" y="-85.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="-286.5" y="-45.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Event_0iwkenu" id="Yaoqiang-Event_0iwkenu">
+        <dc:Bounds height="32.0" width="32.0" x="-88.0" y="232.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="-75.0" y="272.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Activity_0f7n2at" id="Yaoqiang-Activity_0f7n2at">
+        <dc:Bounds height="80.0" width="100.0" x="700.0" y="87.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="32.96" width="90.0" x="705.0" y="112.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="UT.Input.Selection.BundleId" id="Yaoqiang-UT.Input.Selection.BundleId">
+        <dc:Bounds height="80.0" width="100.0" x="530.0" y="87.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="32.96" width="60.0" x="550.0" y="112.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Gateway_0j0867g" id="Yaoqiang-Gateway_0j0867g" isMarkerVisible="true">
+        <dc:Bounds height="42.0" width="42.0" x="415.0" y="102.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="72.0" x="404.5" y="159.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="UT.Input.Quantity.Quantity" id="Yaoqiang-UT.Input.Quantity.Quantity">
+        <dc:Bounds height="80.0" width="100.0" x="870.0" y="87.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="46.96" width="60.0" x="890.0" y="105.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ArticleInfo" id="Yaoqiang-ArticleInfo">
+        <dc:Bounds height="38.0" width="29.0" x="732.0" y="-145.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="743.5" y="-105.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="IterationInfo" id="Yaoqiang-IterationInfo">
+        <dc:Bounds height="38.0" width="29.0" x="902.0" y="-145.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="913.5" y="-105.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Barcode" id="Yaoqiang-Barcode">
+        <dc:Bounds height="38.0" width="29.0" x="282.0" y="-145.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="293.5" y="-105.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Barcodes" id="Yaoqiang-Barcodes">
+        <dc:Bounds height="38.0" width="29.0" x="32.0" y="-145.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="43.5" y="-105.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Gateway_0a5fztf" id="Yaoqiang-Gateway_0a5fztf">
+        <dc:Bounds height="42.0" width="42.0" x="1175.0" y="-65.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="1193.0" y="-21.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Activity_1vm294h" id="Yaoqiang-Activity_1vm294h">
+        <dc:Bounds height="80.0" width="100.0" x="1280.0" y="-80.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="32.96" width="83.0" x="1288.5" y="-54.48"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Activity_1qrq2et" id="Yaoqiang-Activity_1qrq2et">
+        <dc:Bounds height="80.0" width="100.0" x="1030.0" y="87.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="46.96" width="67.0" x="1046.5" y="105.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="UT.Input.Info.Acknowledged.WrongQuantity" id="Yaoqiang-UT.Input.Info.Acknowledged.WrongQuantity">
+        <dc:Bounds height="80.0" width="100.0" x="1030.0" y="-80.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="32.96" width="87.0" x="1036.5" y="-54.48"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Event_0bz3j0m" id="Yaoqiang-Event_0bz3j0m">
+        <dc:Bounds height="32.0" width="32.0" x="-103.0" y="151.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="-90.0" y="191.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Event_09pvgwz" id="Yaoqiang-Event_09pvgwz">
+        <dc:Bounds height="32.0" width="32.0" x="-103.0" y="151.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="-90.0" y="191.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Event_09rl4qr" id="Yaoqiang-Event_09rl4qr">
+        <dc:Bounds height="32.0" width="32.0" x="747.0" y="151.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="760.0" y="191.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="Flow_06vnhmz" id="Yaoqiang-Flow_06vnhmz">
+        <di:waypoint x="1216.611111111111" y="-44.0"/>
+        <di:waypoint x="1280.0" y="-40.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="1245.5" y="-51.67"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="DataOutputAssociation_0anxe1m" id="Yaoqiang-DataOutputAssociation_0anxe1m">
+        <di:waypoint x="296.5" y="87.38888888888891"/>
+        <di:waypoint x="296.5" y="-106.61111111111109"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="293.5" y="-19.09"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_1fjo1me" id="Yaoqiang-Flow_1fjo1me">
+        <di:waypoint x="1175.388888888889" y="-44.0"/>
+        <di:waypoint x="1130.0" y="-40.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="1149.5" y="-51.67"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_1sze9gy" id="Yaoqiang-Flow_1sze9gy">
+        <di:waypoint x="206.6111111111111" y="123.0"/>
+        <di:waypoint x="270.0" y="127.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="32.96" width="181.0" x="148.0" y="108.33"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="DataOutputAssociation_003hykd" id="Yaoqiang-DataOutputAssociation_003hykd">
+        <di:waypoint x="-283.5" y="87.38888888888891"/>
+        <di:waypoint x="-283.5" y="-46.611111111111086"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="-286.5" y="10.91"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_0118jh7" id="Yaoqiang-Flow_0118jh7">
+        <di:waypoint x="1380.0" y="127.0"/>
+        <di:waypoint x="1439.0" y="127.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="1406.5" y="117.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_0nv6e22" id="Yaoqiang-Flow_0nv6e22">
+        <di:waypoint x="1216.611111111111" y="123.0"/>
+        <di:waypoint x="1280.0" y="127.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="32.96" width="107.0" x="1195.0" y="108.33"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_0sh45hg" id="Yaoqiang-Flow_0sh45hg">
+        <di:waypoint x="750.0" y="176.71626794197772"/>
+        <di:waypoint x="750.0" y="250.0"/>
+        <di:waypoint x="320.0" y="250.0"/>
+        <di:waypoint x="320.0" y="167.3888888888889"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="23.0" x="518.84" y="240.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_1cxsag1" id="Yaoqiang-Flow_1cxsag1">
+        <di:waypoint x="-210.0" y="127.0"/>
+        <di:waypoint x="-150.0" y="127.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="-183.0" y="117.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_1gxeppg" id="Yaoqiang-Flow_1gxeppg">
+        <di:waypoint x="1790.0" y="127.0"/>
+        <di:waypoint x="1850.0" y="127.0"/>
+        <di:waypoint x="1850.0" y="300.0"/>
+        <di:waypoint x="70.0" y="300.0"/>
+        <di:waypoint x="120.0" y="127.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="1012.0" y="117.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_1v2rmxc" id="Yaoqiang-Flow_1v2rmxc">
+        <di:waypoint x="1539.0" y="127.0"/>
+        <di:waypoint x="1585.388888888889" y="123.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="1559.0" y="115.33"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_0o9v2wx" id="Yaoqiang-Flow_0o9v2wx">
+        <di:waypoint x="456.6111111111111" y="123.0"/>
+        <di:waypoint x="530.0" y="127.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="32.96" width="297.0" x="345.0" y="108.33"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_0zyxwqu" id="Yaoqiang-Flow_0zyxwqu">
+        <di:waypoint x="120.0" y="127.0"/>
+        <di:waypoint x="165.3888888888889" y="123.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="139.5" y="115.33"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_1cnl7vt" id="Yaoqiang-Flow_1cnl7vt">
+        <di:waypoint x="1030.0" y="-40.0"/>
+        <di:waypoint x="90.0" y="-40.0"/>
+        <di:waypoint x="90.0" y="87.38888888888891"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="493.31" y="-49.48"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_0qse2lc" id="Yaoqiang-Flow_0qse2lc">
+        <di:waypoint x="440.0" y="106.38888888888893"/>
+        <di:waypoint x="440.0" y="20.0"/>
+        <di:waypoint x="340.0" y="20.0"/>
+        <di:waypoint x="320.0" y="87.38888888888891"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="20.0" x="379.5" y="10.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="DataOutputAssociation_1hzdauj" id="Yaoqiang-DataOutputAssociation_1hzdauj">
+        <di:waypoint x="916.5" y="87.38888888888891"/>
+        <di:waypoint x="916.5" y="-106.61111111111109"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="913.5" y="-19.09"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_0imho6z" id="Yaoqiang-Flow_0imho6z">
+        <di:waypoint x="630.0" y="127.0"/>
+        <di:waypoint x="700.0" y="127.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="662.0" y="117.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_0lnum3g" id="Yaoqiang-Flow_0lnum3g">
+        <di:waypoint x="1130.0" y="127.0"/>
+        <di:waypoint x="1175.388888888889" y="123.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="1149.5" y="115.33"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_19toed4" id="Yaoqiang-Flow_19toed4">
+        <di:waypoint x="1626.611111111111" y="123.0"/>
+        <di:waypoint x="1690.0" y="127.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="32.96" width="359.0" x="1479.0" y="108.33"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="DataOutputAssociation_0e8xwt4" id="Yaoqiang-DataOutputAssociation_0e8xwt4">
+        <di:waypoint x="746.5" y="87.38888888888891"/>
+        <di:waypoint x="746.5" y="-106.61111111111109"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="743.5" y="-19.09"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_12qf1gh" id="Yaoqiang-Flow_12qf1gh">
+        <di:waypoint x="190.0" y="106.38888888888893"/>
+        <di:waypoint x="190.0" y="20.0"/>
+        <di:waypoint x="-240.0" y="20.0"/>
+        <di:waypoint x="-260.0" y="87.38888888888891"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="20.0" x="-35.5" y="10.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_0hxsukl" id="Yaoqiang-Flow_0hxsukl">
+        <di:waypoint x="1196.0" y="102.38888888888891"/>
+        <di:waypoint x="1196.0" y="-22.611111111111086"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="20.0" x="1186.0" y="30.41"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="DataOutputAssociation_0hxhrid" id="Yaoqiang-DataOutputAssociation_0hxhrid">
+        <di:waypoint x="46.5" y="87.38888888888891"/>
+        <di:waypoint x="46.5" y="-106.61111111111109"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="43.5" y="-19.09"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_0d58h5u" id="Yaoqiang-Flow_0d58h5u">
+        <di:waypoint x="970.0" y="127.0"/>
+        <di:waypoint x="1030.0" y="127.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="997.0" y="117.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_1smtjz4" id="Yaoqiang-Flow_1smtjz4">
+        <di:waypoint x="-87.0" y="183.3888888888889"/>
+        <di:waypoint x="-120.0" y="260.0"/>
+        <di:waypoint x="-240.0" y="260.0"/>
+        <di:waypoint x="-260.0" y="167.3888888888889"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="-184.5" y="250.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_1d79tkg" id="Yaoqiang-Flow_1d79tkg">
+        <di:waypoint x="1610.0" y="106.38888888888893"/>
+        <di:waypoint x="1610.0" y="10.0"/>
+        <di:waypoint x="1490.0" y="10.0"/>
+        <di:waypoint x="1489.0" y="87.38888888888891"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="20.0" x="1549.0" y="0.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_0mlaq89" id="Yaoqiang-Flow_0mlaq89">
+        <di:waypoint x="-50.0" y="127.0"/>
+        <di:waypoint x="20.0" y="127.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="-18.0" y="117.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_0d2iml2" id="Yaoqiang-Flow_0d2iml2">
+        <di:waypoint x="-79.5" y="181.5221829139915"/>
+        <di:waypoint x="-79.5" y="234.25559486378634"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="-82.5" y="198.41"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_117r828" id="Yaoqiang-Flow_117r828">
+        <di:waypoint x="-356.004726778448" y="125.0"/>
+        <di:waypoint x="-310.0" y="127.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="-336.0" y="116.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_1kdcp3l" id="Yaoqiang-Flow_1kdcp3l">
+        <di:waypoint x="800.0" y="127.0"/>
+        <di:waypoint x="870.0" y="127.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="832.0" y="117.52"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_0pz98iz" id="Yaoqiang-Flow_0pz98iz">
+        <di:waypoint x="370.0" y="127.0"/>
+        <di:waypoint x="415.3888888888889" y="123.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="18.96" width="6.0" x="389.5" y="115.33"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

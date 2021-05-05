@@ -8,15 +8,19 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.eazzyapps.example.android.domain.SelectionOption
 import com.eazzyapps.example.android.ui.theme.typography
 
 @Composable
 fun OptionSelectionUI(
     optionList: List<SelectionOption>,
-    doOnConfirm: (Int) -> Unit = {}
+    doOnConfirm: (Int) -> Unit = {},
+    isError : Boolean,
+    errorMsg : String
 ) {
     val selectedItem = rememberSaveable { mutableStateOf(NO_SELECTION) }
 
@@ -43,6 +47,17 @@ fun OptionSelectionUI(
                     }
                 )
             }
+        }
+        if (isError) {
+            Spacer(modifier = Modifier.height(32.dp))
+            Text(
+                text = errorMsg,
+                color = Color.Red,
+                fontSize = 14.sp,
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .padding(horizontal = 16.dp)
+            )
         }
         Spacer(modifier = Modifier.height(32.dp))
         OutlinedButton(

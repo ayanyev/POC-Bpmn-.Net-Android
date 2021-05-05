@@ -7,8 +7,8 @@ using Warehouse.Picking.Api.Services;
 
 namespace Warehouse.Picking.Api.Processes.ExternalTasks.Intake
 {
-    [ExternalTaskHandler(topic: "Intake.Article.Stockyard")]
-    public class BookStockyardLocationHandler : IExternalTaskHandler<StockyardLocationPayload, BookLocationResult>
+    [ExternalTaskHandler(topic: "ST.Intake.Articles.Location.Reserve")]
+    public class BookStockyardLocationHandler : IExternalTaskHandler<ArticleQuantityPayload, BookLocationResult>
     {
         private readonly IntakeService _service;
 
@@ -17,7 +17,7 @@ namespace Warehouse.Picking.Api.Processes.ExternalTasks.Intake
             _service = service;
         }
 
-        public async Task<BookLocationResult> HandleAsync(StockyardLocationPayload input, ExternalTask task)
+        public async Task<BookLocationResult> HandleAsync(ArticleQuantityPayload input, ExternalTask task)
         {
             var location = await _service.BookStockYardLocation(input.NoteId, input.ArticleId, input.Quantity);
             return new BookLocationResult(location);

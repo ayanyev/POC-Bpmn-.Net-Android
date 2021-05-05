@@ -28,5 +28,7 @@ namespace Warehouse.Picking.Api.Processes
         Task FinishUserTask(string taskId, string correlationId, Dictionary<string, object> result);
 
         void SubscribeForPendingUserTasks(string correlationId, Func<IEnumerable<UserTask>, UserTask> action);
+
+        Task<UserTask> GetPrevFinishedTaskOfSameKind(UserTask task);
     }
 }

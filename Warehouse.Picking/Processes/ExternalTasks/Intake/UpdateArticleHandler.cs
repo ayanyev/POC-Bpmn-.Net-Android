@@ -7,8 +7,8 @@ using Warehouse.Picking.Api.Services;
 
 namespace Warehouse.Picking.Api.Processes.ExternalTasks.Intake
 {
-    [ExternalTaskHandler(topic: "Intake.Article.Update")]
-    public class UpdateArticleHandler : IExternalTaskHandler<StockyardLocationPayload, Article>
+    [ExternalTaskHandler(topic: "ST.Intake.Articles.Update")]
+    public class UpdateArticleHandler : IExternalTaskHandler<ArticleQuantityPayload, Article>
     {
         private readonly IntakeService _service;
 
@@ -17,7 +17,7 @@ namespace Warehouse.Picking.Api.Processes.ExternalTasks.Intake
             _service = service;
         }
 
-        public Task<Article> HandleAsync(StockyardLocationPayload input, ExternalTask task)
+        public Task<Article> HandleAsync(ArticleQuantityPayload input, ExternalTask task)
         {
             return _service.UpdateArticleQuantity(task.CorrelationId, input.NoteId, input.ArticleId, input.Quantity);;
         }

@@ -20,7 +20,7 @@ class DexScannerViewModel(
         input.value = it
         if (!isInputEnabled()) {
             submitInput(it)
-            doOnItemScanned.invoke(it)
+//            doOnItemScanned.invoke(it)
         }
     }
 

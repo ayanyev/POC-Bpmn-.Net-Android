@@ -35,17 +35,31 @@ namespace Warehouse.Picking.Api.Processes
                 logger: ConsoleLogger.Default);
         }
 
+        public async Task<UserTask> GetPrevFinishedTaskOfSameKind(UserTask task)
+        {
+            var tasks = await _userTaskClient.QueryAsync(
+                o =>
+                {
+                    o.FilterByProcessInstanceId(task.ProcessInstanceId);
+                    o.FilterByState(UserTaskState.Finished);
+                });
+            var prevTask = tasks.ToList().LastOrDefault(
+                t => t.Id.Equals(task.Id)
+            );
+            return prevTask;
+        }
+
         public void SubscribeForPendingUserTasks(string correlationId, Func<IEnumerable<UserTask>, UserTask> action)
         {
             var queryOptions = new QueryUserTasksOptions();
-            queryOptions.FilterByState(UserTaskState.Suspended);
             queryOptions.FilterByCorrelationId(correlationId);
+            queryOptions.FilterByState(UserTaskState.Suspended);
 
             var subscriptionSettings = new SubscriptionSettings {SubscribeOnce = false};
             subscriptionSettings.ConfigureQuery(queryOptions);
-            
+
             var handledTaskId = "";
-            
+
             var handledErrorTaskNodeId = "";
 
             Action<UserTask> updateRecentTaskId = task =>
@@ -57,14 +71,14 @@ namespace Warehouse.Picking.Api.Processes
                     if (task != null && task.HasErrorPayload())
                     {
                         handledErrorTaskNodeId = task.FlowNodeInstanceId;
-                    } 
+                    }
                 }
             };
 
-            Func <string> getRecentTaskId = () => handledTaskId;
-            
-            Func <string> getRecentErrorTaskId = () => handledErrorTaskNodeId;
-            
+            Func<string> getRecentTaskId = () => handledTaskId;
+
+            Func<string> getRecentErrorTaskId = () => handledErrorTaskNodeId;
+
             void Callback(IEnumerable<UserTask> tasks)
             {
                 try
@@ -106,7 +120,6 @@ namespace Warehouse.Picking.Api.Processes
                 Console.WriteLine(e);
                 throw;
             }
-
         }
 
         public async Task FinishUserTask(UserTask task, Dictionary<string, object> result)
@@ -130,9 +143,11 @@ namespace Warehouse.Picking.Api.Processes
             return res.Count > 0 && res.First().State == ProcessState.Running;
         }
 
-        public async Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string correlationId, ProcessInfo processInfo, T token)
+        public async Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string correlationId,
+            ProcessInfo processInfo, T token)
         {
-            return await CreateProcessInstanceByModelId(processInfo.ModelId, processInfo.StartEvent, token, correlationId);
+            return await CreateProcessInstanceByModelId(processInfo.ModelId, processInfo.StartEvent, token,
+                correlationId);
         }
 
         public async Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string modelId,
@@ -175,7 +190,7 @@ namespace Warehouse.Picking.Api.Processes
                 return false;
             }
         }
-        
+
         public async Task<bool> TerminateProcessCorrelationId(string correlationId)
         {
             try
@@ -187,6 +202,7 @@ namespace Warehouse.Picking.Api.Processes
                 {
                     await _instanceClient.TerminateProcessInstanceAsync(p.Id);
                 }
+
                 return true;
             }
             catch (Exception e)
@@ -195,6 +211,5 @@ namespace Warehouse.Picking.Api.Processes
                 return false;
             }
         }
-        
     }
 }

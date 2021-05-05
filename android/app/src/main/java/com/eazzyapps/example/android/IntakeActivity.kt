@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -24,8 +25,10 @@ import com.eazzyapps.example.android.domain.SelectionOptions
 import com.eazzyapps.example.android.domain.TaskCategory.*
 import com.eazzyapps.example.android.domain.ValidBarcodes
 import com.eazzyapps.example.android.ui.*
+import com.eazzyapps.example.android.ui.composables.AlertDialogLayout
 import com.eazzyapps.example.android.ui.composables.StartAsLayout
 import com.eazzyapps.example.android.ui.theme.AndroidTheme
+import com.eazzyapps.example.android.ui.theme.grey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -55,7 +58,7 @@ class IntakeActivity : AppCompatActivity() {
             val scope = remember { lifecycleScope }
 
             scope.launchWhenResumed {
-                merge(delegate.msgFlow, delegate.navFlow).collect{
+                merge(delegate.msgFlow, delegate.navFlow).collect {
                     when (it) {
                         is Message -> launch {
                             // launch in another coroutine
@@ -71,7 +74,7 @@ class IntakeActivity : AppCompatActivity() {
                             scaffoldState.snackbarHostState.currentSnackbarData?.dismiss()
                             if (it is Screen.Previous) controller.navigateUp()
                             else controller.navigate(it.route) {
-                                if(it.popBackStack){
+                                if (it.popBackStack) {
                                     controller.popBackStack()
                                 }
                             }
@@ -221,7 +224,7 @@ fun DrawerLayout(
                     .fillMaxWidth(),
                 onClick = {
                     viewModel.startProcess()
-                          },
+                },
                 enabled = isConnected && !isRunning
             ) {
                 Text(
@@ -280,19 +283,27 @@ fun MainContent(
 
         val isInputError by viewModel.isError.collectAsState()
 
+        val bottomSheetState = rememberBottomSheetState(BottomSheetValue.Collapsed)
+
         val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
-            bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
+            bottomSheetState = bottomSheetState
         )
 
+        val (isInfoDialogShown, showInfoDialog) = remember { mutableStateOf(false) }
+
         BottomSheetScaffold(
+            scaffoldState = bottomSheetScaffoldState,
+            sheetShape = RoundedCornerShape(20.dp),
             sheetContent = {
+                ArticlesListHeader(articles.count(), bottomSheetState.isCollapsed)
+                Divider(color = grey.copy(alpha = 0.3f), thickness = 1.dp)
                 ArticleListComposable(articles = articles)
             },
-            sheetPeekHeight = if (articles.isNotEmpty()) 250.dp else 0.dp
+            sheetPeekHeight = if (articles.isNotEmpty()) 64.dp else 0.dp
         ) {
 
             when (currentTask.category) {
-                is Simple -> {
+                is Input -> {
                     DeliveryNoteInputComposable(
                         onInputSubmit = {
                             viewModel.sendInputData(currentTask.toResult(it))
@@ -300,6 +311,25 @@ fun MainContent(
                         isError = currentTask.hasError
                     )
                 }
+
+                is Info -> {
+
+                    val text = currentTask.payload as String
+
+                    showInfoDialog(true)
+
+                    AlertDialogLayout(
+                        isShown = isInfoDialogShown,
+                        title = "Warning",
+                        text = text,
+                        onConfirm = {
+                            showInfoDialog(false)
+                            viewModel.sendInputData(currentTask.toResult(true))
+                        }
+                    )
+
+                }
+
                 is Scan -> {
 
                     val scanType = ScanEvent.of(currentTask.id)
@@ -335,11 +365,13 @@ fun MainContent(
                         optionList = (currentTask.payload as SelectionOptions).items,
                         doOnConfirm = {
                             viewModel.sendInputData(currentTask.toResult(it))
-                        }
+                        },
+                        isError = currentTask.error != null,
+                        errorMsg = currentTask.error?.message ?: ""
                     )
                 }
 
-                is Quantity, is AdjustQuantity -> {
+                is Quantity -> {
                     QuantityAdjustmentDialog(
                         title = currentTask.label,
                         doOnConfirm = {
@@ -347,7 +379,8 @@ fun MainContent(
                         }
                     )
                 }
-                else -> {}
+                else -> {
+                }
             }
 
         }

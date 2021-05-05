@@ -1,15 +1,10 @@
 namespace Warehouse.Picking.Api.Processes.ExternalTasks.Intake.Payloads
 {
-    public class StockyardLocationPayload
+    // ReSharper disable once ClassNeverInstantiated.Global
+    public class ArticleQuantityPayload
     {
         public string NoteId { get; set; }
-        
         public int ArticleId { get; set; }
-        
         public int Quantity { get; set; }
-
-        public StockyardLocationPayload()
-        {
-        }
     }
 }
