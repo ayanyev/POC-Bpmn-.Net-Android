@@ -11,14 +11,23 @@ namespace warehouse.picking.api.Processes.Extensions
         {
             services.AddSingleton(ProcessEngineClient.CreateExternalTaskClient());
             services.AddSingleton<IProcessClient, ProcessEngineClient>();
-            services.AddSingleton<ClientTaskFactory>();
+            
+            // external task handlers
+            // intake
             services.AddSingleton<FetchArticlesForNoteHandler>();
             services.AddSingleton<UnfinishedArticlesBarcodesHandler>();
             services.AddSingleton<MatchArticleByGtinAndBundleHandler>();
             services.AddSingleton<BookStockyardLocationHandler>();
             services.AddSingleton<UpdateArticleHandler>();
-            services.AddSingleton<IUserTaskPayloadFactory, IntakeUserTaskPayloadFactory>();
+            
+            // kind of identity provider
             services.AddSingleton<IProcessInfoProvider, ProcessInfoProvider>();
+
+            // client task related
+            services.AddSingleton<IPayloadCreatorFactory, PayloadCreatorFactory>();
+            services.AddTransient<ClientTaskFactory>();
+            services.AddTransient<IntakeClientTaskPayloadCreator>();
+            
             return services;
         }
     }

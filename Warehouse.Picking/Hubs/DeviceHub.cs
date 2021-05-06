@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AtlasEngine.UserTasks;
 using Microsoft.AspNetCore.SignalR;
 using AtlasEngine.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using Warehouse.Picking.Api.Processes;
 using Warehouse.Picking.Api.Processes.UserTasks;
 using Warehouse.Picking.Api.Utilities;
@@ -22,7 +23,7 @@ namespace warehouse.picking.api.Hubs
         Task DoInputScan(ClientTask task);
 
         Task DoInputSelection(ClientTask task);
-        
+
         Task ShowInfo(ClientTask task);
     }
 
@@ -34,17 +35,19 @@ namespace warehouse.picking.api.Hubs
 
         private readonly ConnectionMapping _connectionMapping;
 
-        private readonly ClientTaskFactory _clientTaskFactory;
-        
         private readonly IProcessInfoProvider _processInfoProvider;
+        
+        private readonly IServiceProvider _serviceProvider;
+
+        private readonly ClientTaskFactory _clientTaskFactory;
 
         public DeviceHub(IProcessClient processClient, ConnectionMapping connectionMapping,
-            ClientTaskFactory clientTaskFactory, IProcessInfoProvider processInfoProvider)
+            IProcessInfoProvider processInfoProvider, ClientTaskFactory clientTaskFactory)
         {
             _processClient = processClient;
             _connectionMapping = connectionMapping;
-            _clientTaskFactory = clientTaskFactory;
             _processInfoProvider = processInfoProvider;
+            _clientTaskFactory = clientTaskFactory;
         }
 
         public override Task OnConnectedAsync()
@@ -64,7 +67,7 @@ namespace warehouse.picking.api.Hubs
             var correlationId = Context.GetUserId();
 
             var processId = _connectionMapping.GetProcess(correlationId);
-            
+
             var processInfo = _processInfoProvider.Get(correlationId);
 
             if (processId == null || !await _processClient.IsProcessInstanceRunning(processId))
@@ -76,46 +79,52 @@ namespace warehouse.picking.api.Hubs
             }
 
             var connectionId = _connectionMapping.GetConnection(correlationId);
+            
+            await Clients.Caller.ProcessStartConfirmed(processInfo.ModelId);
 
-            _processClient.SubscribeForPendingUserTasks(correlationId, tasks =>
+            // ReSharper disable once ConvertToUsingDeclaration
+            using (var scope = _serviceProvider.CreateScope())
             {
-                UserTask handledTaskId = null;
-                foreach (var task in tasks)
+                var clientTaskFactory = scope.ServiceProvider.GetRequiredService<ClientTaskFactory>();
+                
+                _processClient.SubscribeForPendingUserTasks(correlationId, tasks =>
                 {
-                    try
+                    UserTask handledTaskId = null;
+                    foreach (var task in tasks)
                     {
-                        _logger.Log(LogLevel.Debug, $"Exec: Handled task: {task.Id}");
-                        switch (_clientTaskFactory.Create(task))
+                        try
                         {
-                            case {Type: ClientTaskType.Selection} t:
-                                Clients.Client(connectionId).DoInputSelection(t);
-                                handledTaskId = task;
-                                break;
-                            case {Type: ClientTaskType.Scan} t:
-                                Clients.Client(connectionId).DoInputScan(t);
-                                handledTaskId = task;
-                                break;
-                            case {Type: ClientTaskType.Info} t:
-                                Clients.Client(connectionId).ShowInfo(t);
-                                handledTaskId = task;
-                                break;
-                            case { } t:
-                                Clients.Client(connectionId).DoInput(t);
-                                handledTaskId = task;
-                                break;
+                            _logger.Log(LogLevel.Debug, $"Exec: Handled task: {task.Id}");
+                            switch (clientTaskFactory.Create(task))
+                            {
+                                case {Type: ClientTaskType.Selection} t:
+                                    Clients.Client(connectionId).DoInputSelection(t);
+                                    handledTaskId = task;
+                                    break;
+                                case {Type: ClientTaskType.Scan} t:
+                                    Clients.Client(connectionId).DoInputScan(t);
+                                    handledTaskId = task;
+                                    break;
+                                case {Type: ClientTaskType.Info} t:
+                                    Clients.Client(connectionId).ShowInfo(t);
+                                    handledTaskId = task;
+                                    break;
+                                case { } t:
+                                    Clients.Client(connectionId).DoInput(t);
+                                    handledTaskId = task;
+                                    break;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e);
+                            throw;
                         }
                     }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
-                        throw;
-                    }
-                }
 
-                return handledTaskId;
-            });
-
-            await Clients.Caller.ProcessStartConfirmed(processInfo.ModelId);
+                    return handledTaskId;
+                });
+            }
         }
 
         public async Task StopProcess()
