@@ -1,4 +1,4 @@
-package com.eazzyapps.example.android
+package com.eazzyapps.example.android.obsolete
 
 import android.os.Bundle
 import androidx.activity.compose.setContent

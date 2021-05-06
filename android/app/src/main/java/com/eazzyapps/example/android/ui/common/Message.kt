@@ -1,4 +1,4 @@
-package com.eazzyapps.example.android.ui
+package com.eazzyapps.example.android.ui.common
 
 import android.content.Context
 import androidx.annotation.StringRes

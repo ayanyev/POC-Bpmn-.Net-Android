@@ -1,12 +1,13 @@
-package com.eazzyapps.example.android
+package com.eazzyapps.example.android.ui.viewmodel
 
 import android.annotation.SuppressLint
 import android.util.Base64
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.eazzyapps.example.android.BuildConfig
 import com.eazzyapps.example.android.domain.*
-import com.eazzyapps.example.android.ui.ActivityDelegate
+import com.eazzyapps.example.android.ui.common.ActivityDelegate
 import com.microsoft.signalr.HubConnection
 import com.microsoft.signalr.HubConnectionBuilder
 import com.microsoft.signalr.TypeReference

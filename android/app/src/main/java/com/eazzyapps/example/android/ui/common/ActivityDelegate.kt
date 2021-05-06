@@ -1,6 +1,6 @@
-package com.eazzyapps.example.android.ui
+package com.eazzyapps.example.android.ui.common
 
-import com.eazzyapps.example.android.Screen
+import com.eazzyapps.example.android.ui.nav.Screen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

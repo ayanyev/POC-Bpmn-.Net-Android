@@ -1,11 +1,10 @@
-package com.eazzyapps.example.android.ui
+package com.eazzyapps.example.android.ui.nav
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.eazzyapps.example.android.Screen
 
 @ExperimentalComposeUiApi
 @Composable

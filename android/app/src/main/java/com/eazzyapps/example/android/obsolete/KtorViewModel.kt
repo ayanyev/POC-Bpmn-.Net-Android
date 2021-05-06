@@ -1,4 +1,4 @@
-package com.eazzyapps.example.android
+package com.eazzyapps.example.android.obsolete
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

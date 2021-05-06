@@ -1,4 +1,4 @@
-package com.eazzyapps.example.android
+package com.eazzyapps.example.android.ui.nav
 
 import android.os.Parcelable
 import androidx.navigation.NavController
