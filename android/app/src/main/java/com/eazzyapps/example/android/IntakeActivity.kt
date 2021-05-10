@@ -18,12 +18,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.eazzyapps.example.android.domain.ScanEvent
-import com.eazzyapps.example.android.domain.SelectionOptions
 import com.eazzyapps.example.android.domain.TaskCategory.*
-import com.eazzyapps.example.android.domain.ValidBarcodes
 import com.eazzyapps.example.android.ui.*
 import com.eazzyapps.example.android.ui.composables.AlertDialogLayout
 import com.eazzyapps.example.android.ui.composables.StartAsLayout
@@ -123,7 +120,9 @@ class IntakeActivity : AppCompatActivity() {
                             content = {
                                 MainContent(
                                     isRunning = isRunning,
-                                    viewModel = viewModel
+                                    viewModel = viewModel,
+                                    navController = controller,
+                                    delegate = delegate
                                 )
                             }
                         )
@@ -271,7 +270,9 @@ fun DrawerLayout(
 @Composable
 fun MainContent(
     isRunning: Boolean,
-    viewModel: IntakeViewModel
+    viewModel: IntakeViewModel,
+    navController: NavHostController,
+    delegate : ActivityDelegate
 ) {
     if (isRunning) {
 
@@ -301,9 +302,17 @@ fun MainContent(
             },
             sheetPeekHeight = if (articles.isNotEmpty()) 64.dp else 0.dp
         ) {
+            AppNavHost(controller = navController)
 
             when (currentTask.category) {
 
+                is Input -> delegate.navigate(Screen.NoteIdInput)
+
+                is Scan ->  delegate.navigate(Screen.Scan)
+
+                is Selection -> delegate.navigate(Screen.BundleSelection)
+
+                is Quantity -> delegate.navigate(Screen.QuantityAdjustment)
 
                 is Info -> {
 
