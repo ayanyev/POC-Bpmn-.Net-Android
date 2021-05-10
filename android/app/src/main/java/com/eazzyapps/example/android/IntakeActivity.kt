@@ -88,7 +88,7 @@ class IntakeActivity : AppCompatActivity() {
                 Surface {
                     Box(modifier = Modifier.fillMaxSize()) {
 
-                        val viewModel: IntakeViewModel = viewModel()
+                        val viewModel by inject<IntakeViewModel>()
 
                         val isReadyToConnect by viewModel.isLoggedIn.collectAsState()
 
@@ -303,14 +303,7 @@ fun MainContent(
         ) {
 
             when (currentTask.category) {
-                is Input -> {
-                    DeliveryNoteInputComposable(
-                        onInputSubmit = {
-                            viewModel.sendInputData(currentTask.toResult(it))
-                        },
-                        isError = currentTask.hasError
-                    )
-                }
+
 
                 is Info -> {
 
@@ -330,55 +323,6 @@ fun MainContent(
 
                 }
 
-                is Scan -> {
-
-                    val scanType = ScanEvent.of(currentTask.id)
-
-                    val availableBarcodes = (currentTask.payload as? ValidBarcodes)?.barcodes
-
-                    ScanInfoComposable(
-                        title = scanType.label,
-                        availableBarcodes = availableBarcodes
-                    )
-                    ScannerInputComposable(
-                        hint = currentTask.label,
-                        isError = isInputError,
-                        errorMsg = scanType.errorMsg,
-                        onItemScanned = {
-                            if (it.isNotBlank()) {
-                                if (availableBarcodes == null || availableBarcodes.contains(it)) {
-                                    viewModel.apply {
-                                        selectScannedItem(it)
-                                        setInputError(false)
-                                        sendInputData(currentTask.toResult(it))
-                                    }
-                                } else if (it.isNotEmpty()) {
-                                    viewModel.setInputError(true)
-                                }
-                            }
-                        }
-                    )
-                }
-
-                is Selection -> {
-                    OptionSelectionUI(
-                        optionList = (currentTask.payload as SelectionOptions).items,
-                        doOnConfirm = {
-                            viewModel.sendInputData(currentTask.toResult(it))
-                        },
-                        isError = currentTask.error != null,
-                        errorMsg = currentTask.error?.message ?: ""
-                    )
-                }
-
-                is Quantity -> {
-                    QuantityAdjustmentDialog(
-                        title = currentTask.label,
-                        doOnConfirm = {
-                            viewModel.sendInputData(currentTask.toResult(it))
-                        }
-                    )
-                }
                 else -> {
                 }
             }

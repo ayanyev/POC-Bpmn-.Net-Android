@@ -12,17 +12,30 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.eazzyapps.example.android.IntakeActivity
+import com.eazzyapps.example.android.IntakeViewModel
 import com.eazzyapps.example.android.domain.SelectionOption
+import com.eazzyapps.example.android.domain.SelectionOptions
+import com.eazzyapps.example.android.get
 import com.eazzyapps.example.android.ui.theme.typography
 
 @Composable
 fun OptionSelectionUI(
-    optionList: List<SelectionOption>,
-    doOnConfirm: (Int) -> Unit = {},
-    isError : Boolean,
-    errorMsg : String
+    sharedViewModel: IntakeViewModel = get(),
 ) {
     val selectedItem = rememberSaveable { mutableStateOf(NO_SELECTION) }
+
+    val currentTask = sharedViewModel.currentTask.value
+
+    val doOnConfirm: (Int) -> Unit = {
+        sharedViewModel.sendInputData(currentTask.toResult(it))
+    }
+
+    val isError = currentTask.error != null
+
+    val errorMsg = currentTask.error?.message ?: ""
+
+    val optionList = (currentTask.payload as SelectionOptions).items
 
     Column(
         modifier = Modifier
@@ -61,7 +74,7 @@ fun OptionSelectionUI(
         }
         Spacer(modifier = Modifier.height(32.dp))
         OutlinedButton(
-            onClick = { doOnConfirm(selectedItem.value)},
+            onClick = { doOnConfirm(selectedItem.value) },
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
             Text(text = "CONFIRM", style = typography.button)
