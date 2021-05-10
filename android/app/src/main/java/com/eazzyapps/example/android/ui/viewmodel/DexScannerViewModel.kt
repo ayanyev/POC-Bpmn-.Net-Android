@@ -18,10 +18,6 @@ class DexScannerViewModel(
 
     override val scanResultsObserver: Observer<String> = Observer {
         input.value = it
-        if (!isInputEnabled()) {
-            submitInput(it)
-//            doOnItemScanned.invoke(it)
-        }
     }
 
     init {
@@ -33,8 +29,9 @@ class DexScannerViewModel(
     }
 
     fun onInputSubmit(barcode: String) {
-        submitInput(barcode)
         showInput.value = false
+        doOnItemScanned.invoke(barcode)
+        clearInput()
     }
 
     private fun submitInput(barcode: String) {
