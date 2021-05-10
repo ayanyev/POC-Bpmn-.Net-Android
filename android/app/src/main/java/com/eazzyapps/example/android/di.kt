@@ -21,6 +21,10 @@ val uiModule = module {
         ActivityDelegate()
     }
 
+    single {
+        IntakeViewModel()
+    }
+
     viewModel {
         QuantityAdjustmentViewModel()
     }
