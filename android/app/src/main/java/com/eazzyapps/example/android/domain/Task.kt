@@ -69,7 +69,7 @@ sealed class ScanEvent(val id: String, val label: String, val errorMsg: String) 
         fun of(taskId: String) = when (taskId) {
             "UT.Scan.Barcode.Article" -> ArticleScan
             "UT.Scan.Barcode.Location" -> LocationScan
-            else -> throw Exception("Unknown scan event !")
+            else -> throw Exception("Unknown scan event ($taskId)")
         }
     }
 }

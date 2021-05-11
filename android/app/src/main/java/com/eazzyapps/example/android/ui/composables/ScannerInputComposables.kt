@@ -3,7 +3,10 @@ package com.eazzyapps.example.android.ui
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -19,7 +22,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.eazzyapps.example.android.IntakeViewModel
 import com.eazzyapps.example.android.R
 import com.eazzyapps.example.android.domain.ScanEvent
 import com.eazzyapps.example.android.domain.ValidBarcodes
@@ -27,6 +29,7 @@ import com.eazzyapps.example.android.get
 import com.eazzyapps.example.android.getViewModel
 import com.eazzyapps.example.android.ui.theme.typography
 import com.eazzyapps.example.android.ui.viewmodel.DexScannerViewModel
+import com.eazzyapps.example.android.ui.viewmodel.IntakeViewModel
 import org.koin.core.parameter.parametersOf
 
 @ExperimentalComposeUiApi

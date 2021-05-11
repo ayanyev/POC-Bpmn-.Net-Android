@@ -24,8 +24,8 @@ import com.eazzyapps.example.android.domain.TaskCategory.*
 import com.eazzyapps.example.android.ui.*
 import com.eazzyapps.example.android.ui.common.ActivityDelegate
 import com.eazzyapps.example.android.ui.common.Message
-import com.eazzyapps.example.android.ui.composables.AlertDialogLayout
 import com.eazzyapps.example.android.ui.composables.StartAsLayout
+import com.eazzyapps.example.android.ui.nav.AppNavHost
 import com.eazzyapps.example.android.ui.nav.Screen
 import com.eazzyapps.example.android.ui.nav.navigate
 import com.eazzyapps.example.android.ui.theme.AndroidTheme
@@ -85,7 +85,7 @@ class IntakeActivity : AppCompatActivity() {
                 }
             }
 
-            AndroidTheme() {
+            AndroidTheme(darkTheme = false) {
                 // A surface container using the 'background' color from the theme
                 Surface {
                     Box(modifier = Modifier.fillMaxSize()) {
@@ -126,8 +126,7 @@ class IntakeActivity : AppCompatActivity() {
                                 MainContent(
                                     isRunning = isRunning,
                                     viewModel = viewModel,
-                                    navController = controller,
-                                    delegate = delegate
+                                    navController = controller
                                 )
                             }
                         )
@@ -276,26 +275,17 @@ fun DrawerLayout(
 fun MainContent(
     isRunning: Boolean,
     viewModel: IntakeViewModel,
-    navController: NavHostController,
-    delegate : ActivityDelegate
+    navController: NavHostController
 ) {
     if (isRunning) {
 
-        val currentTask by viewModel.currentTask.collectAsState()
-
-        val isConnected by viewModel.isConnected.collectAsState()
-
         val articles by viewModel.articleList.collectAsState()
-
-        val isInputError by viewModel.isError.collectAsState()
 
         val bottomSheetState = rememberBottomSheetState(BottomSheetValue.Collapsed)
 
         val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
             bottomSheetState = bottomSheetState
         )
-
-        val (isInfoDialogShown, showInfoDialog) = remember { mutableStateOf(false) }
 
         BottomSheetScaffold(
             scaffoldState = bottomSheetScaffoldState,
@@ -308,39 +298,6 @@ fun MainContent(
             sheetPeekHeight = if (articles.isNotEmpty()) 64.dp else 0.dp
         ) {
             AppNavHost(controller = navController)
-
-            when (currentTask.category) {
-
-                is Input -> delegate.navigate(Screen.NoteIdInput)
-
-                is Scan ->  delegate.navigate(Screen.Scan)
-
-                is Selection -> delegate.navigate(Screen.BundleSelection)
-
-                is Quantity -> delegate.navigate(Screen.QuantityAdjustment)
-
-                is Info -> {
-
-                    val text = currentTask.payload as String
-
-                    showInfoDialog(true)
-
-                    AlertDialogLayout(
-                        isShown = isInfoDialogShown,
-                        title = "Warning",
-                        text = text,
-                        onConfirm = {
-                            showInfoDialog(false)
-                            viewModel.sendInputData(currentTask.toResult(true))
-                        }
-                    )
-
-                }
-
-                else -> {
-                }
-            }
-
         }
     }
 }

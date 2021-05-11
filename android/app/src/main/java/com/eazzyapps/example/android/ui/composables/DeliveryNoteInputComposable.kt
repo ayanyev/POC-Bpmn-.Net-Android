@@ -14,8 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.eazzyapps.example.android.IntakeViewModel
 import com.eazzyapps.example.android.get
+import com.eazzyapps.example.android.ui.viewmodel.IntakeViewModel
 
 
 @Composable

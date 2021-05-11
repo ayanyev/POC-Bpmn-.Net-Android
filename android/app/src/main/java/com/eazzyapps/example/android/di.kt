@@ -2,6 +2,7 @@ package com.eazzyapps.example.android
 
 import com.eazzyapps.example.android.ui.common.ActivityDelegate
 import com.eazzyapps.example.android.ui.viewmodel.DexScannerViewModel
+import com.eazzyapps.example.android.ui.viewmodel.IntakeViewModel
 import com.eazzyapps.example.android.ui.viewmodel.QuantityAdjustmentViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module

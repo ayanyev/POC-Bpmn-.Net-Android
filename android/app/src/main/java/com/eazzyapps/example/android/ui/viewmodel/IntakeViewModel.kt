@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.eazzyapps.example.android.BuildConfig
 import com.eazzyapps.example.android.domain.*
 import com.eazzyapps.example.android.ui.common.ActivityDelegate
+import com.eazzyapps.example.android.ui.nav.Screen
 import com.microsoft.signalr.HubConnection
 import com.microsoft.signalr.HubConnectionBuilder
 import com.microsoft.signalr.TypeReference
@@ -149,6 +150,7 @@ class IntakeViewModel : ViewModel(), KoinComponent {
                 "DoInput",
                 { task: Task<Any> ->
                     Log.d("SignalR", "Client input task received: $task")
+                    navigate(task)
                     delegate.showLoading(false)
                     currentTask.value = task
                 },
@@ -159,6 +161,7 @@ class IntakeViewModel : ViewModel(), KoinComponent {
                 "DoInputScan",
                 { task: Task<ValidBarcodes> ->
                     Log.d("SignalR", "Client scanning task received: $task")
+                    navigate(task)
                     delegate.showLoading(false)
                     currentTask.value = task
                 },
@@ -169,6 +172,7 @@ class IntakeViewModel : ViewModel(), KoinComponent {
                 "DoInputSelection",
                 { task: Task<SelectionOptions> ->
                     Log.d("SignalR", "Client selection task received: $task")
+                    navigate(task)
                     delegate.showLoading(false)
                     currentTask.value = task
                 },
@@ -204,6 +208,38 @@ class IntakeViewModel : ViewModel(), KoinComponent {
                 }
             }
         articleList.value = items
+    }
+
+    private fun navigate(task: Task<*>) = when (task.category) {
+
+        is TaskCategory.Input -> delegate.navigate(Screen.NoteIdInput)
+
+        is TaskCategory.Scan -> delegate.navigate(Screen.Scan)
+
+        is TaskCategory.Selection -> delegate.navigate(Screen.BundleSelection)
+
+        is TaskCategory.Quantity -> delegate.navigate(Screen.QuantityAdjustment)
+
+//        is TaskCategory.Info -> {
+//
+//            val text = task.payload as String
+//
+//            showInfoDialog(true)
+//
+//            AlertDialogLayout(
+//                isShown = isInfoDialogShown,
+//                title = "Warning",
+//                text = text,
+//                onConfirm = {
+//                    showInfoDialog(false)
+//                    viewModel.sendInputData(currentTask.toResult(true))
+//                }
+//            )
+//
+//        }
+
+        else -> {
+        }
     }
 
 }
