@@ -24,6 +24,7 @@ import com.eazzyapps.example.android.domain.TaskCategory.*
 import com.eazzyapps.example.android.ui.*
 import com.eazzyapps.example.android.ui.common.ActivityDelegate
 import com.eazzyapps.example.android.ui.common.Message
+import com.eazzyapps.example.android.ui.composables.AlertDialogLayout
 import com.eazzyapps.example.android.ui.composables.StartAsLayout
 import com.eazzyapps.example.android.ui.nav.AppNavHost
 import com.eazzyapps.example.android.ui.nav.Screen
@@ -59,10 +60,12 @@ class IntakeActivity : AppCompatActivity() {
 
             val scope = remember { lifecycleScope }
 
+            var dialog by remember { mutableStateOf<Message.Dialog?>(null) }
+
             scope.launchWhenResumed {
                 merge(delegate.msgFlow, delegate.navFlow).collect {
                     when (it) {
-                        is Message -> launch {
+                        is Message.SnackBar -> launch {
                             // launch in another coroutine
                             // to avoid waiting showSnackbar returning result
                             scaffoldState.snackbarHostState.apply {
@@ -80,6 +83,10 @@ class IntakeActivity : AppCompatActivity() {
                                     controller.popBackStack()
                                 }
                             }
+                        }
+                        is Message.Dialog -> {
+                            it.doDismiss = { dialog = null }
+                            dialog = it
                         }
                     }
                 }
@@ -126,7 +133,8 @@ class IntakeActivity : AppCompatActivity() {
                                 MainContent(
                                     isRunning = isRunning,
                                     viewModel = viewModel,
-                                    navController = controller
+                                    navController = controller,
+                                    dialog = dialog
                                 )
                             }
                         )
@@ -275,7 +283,8 @@ fun DrawerLayout(
 fun MainContent(
     isRunning: Boolean,
     viewModel: IntakeViewModel,
-    navController: NavHostController
+    navController: NavHostController,
+    dialog: Message.Dialog?
 ) {
     if (isRunning) {
 
@@ -297,7 +306,20 @@ fun MainContent(
             },
             sheetPeekHeight = if (articles.isNotEmpty()) 64.dp else 0.dp
         ) {
+
             AppNavHost(controller = navController)
+
+            if (dialog != null) {
+
+                AlertDialogLayout(
+                    title = dialog.title,
+                    text = dialog.text,
+                    onConfirm = {
+                        dialog.onClick()
+                        dialog.doDismiss()
+                    }
+                )
+            }
         }
     }
 }

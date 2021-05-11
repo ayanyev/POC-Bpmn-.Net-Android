@@ -5,10 +5,10 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.eazzyapps.example.android.ui.DeliveryNoteInputComposable
-import com.eazzyapps.example.android.ui.OptionSelectionUI
-import com.eazzyapps.example.android.ui.QuantityAdjustmentDialog
-import com.eazzyapps.example.android.ui.ScannerInputComposable
+import com.eazzyapps.example.android.ui.composables.DeliveryNoteInputComposable
+import com.eazzyapps.example.android.ui.composables.OptionSelectionUI
+import com.eazzyapps.example.android.ui.composables.QuantityAdjustmentDialog
+import com.eazzyapps.example.android.ui.composables.ScannerInputComposable
 
 @ExperimentalComposeUiApi
 @Composable

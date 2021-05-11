@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.eazzyapps.example.android.BuildConfig
 import com.eazzyapps.example.android.domain.*
 import com.eazzyapps.example.android.ui.common.ActivityDelegate
+import com.eazzyapps.example.android.ui.common.Message
 import com.eazzyapps.example.android.ui.nav.Screen
 import com.microsoft.signalr.HubConnection
 import com.microsoft.signalr.HubConnectionBuilder
@@ -119,7 +120,7 @@ class IntakeViewModel : ViewModel(), KoinComponent {
             hubConnection.on(
                 "ProcessStartConfirmed",
                 { name ->
-                    Log.d("SignalR", "Intake process started")
+                    Log.d("SignalR", "$name process started")
                     delegate.showLoading(false)
                     screenTitle.value = name
                     isProcessRunning.value = true
@@ -184,6 +185,7 @@ class IntakeViewModel : ViewModel(), KoinComponent {
                 { task: Task<String> ->
                     Log.d("SignalR", "Client info task received: $task")
                     delegate.showLoading(false)
+                    navigate(task)
                     currentTask.value = task
                 },
                 (object : TypeReference<Task<String>>() {}).type
@@ -220,23 +222,18 @@ class IntakeViewModel : ViewModel(), KoinComponent {
 
         is TaskCategory.Quantity -> delegate.navigate(Screen.QuantityAdjustment)
 
-//        is TaskCategory.Info -> {
-//
-//            val text = task.payload as String
-//
-//            showInfoDialog(true)
-//
-//            AlertDialogLayout(
-//                isShown = isInfoDialogShown,
-//                title = "Warning",
-//                text = text,
-//                onConfirm = {
-//                    showInfoDialog(false)
-//                    viewModel.sendInputData(currentTask.toResult(true))
-//                }
-//            )
-//
-//        }
+        is TaskCategory.Info -> {
+
+            delegate.showMessage(Message.Dialog(
+                title = "Warning",
+                text = task.payload as String,
+                buttonText = "Ok",
+                onClick = {
+                    sendInputData(currentTask.value.toResult(true))
+                }
+            ))
+
+        }
 
         else -> {
         }
