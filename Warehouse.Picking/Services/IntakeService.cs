@@ -1,14 +1,16 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using warehouse.picking.api.Domain;
 using warehouse.picking.api.Hubs;
+using Warehouse.Picking.Api.Processes;
 using Warehouse.Picking.Api.Repositories;
 
 namespace Warehouse.Picking.Api.Services
 {
-    public class IntakeService
+    public class IntakeService : ProcessReattachHandler
     {
         private readonly ConnectionMapping _connectionMapping;
 
@@ -19,7 +21,7 @@ namespace Warehouse.Picking.Api.Services
         private readonly IHubContext<DeviceHub> _intakeDeviceHubContext;
 
         private readonly IHubContext<IntakeDashboardHub> _intakeDashboardHubContext;
-        
+
         public IntakeService(IArticleRepository articleRepository, ILocationRepository locationRepository,
             IHubContext<DeviceHub> intakeDeviceHubContext,
             IHubContext<IntakeDashboardHub> intakeDashboardHubContext, ConnectionMapping connectionMapping)
@@ -30,9 +32,19 @@ namespace Warehouse.Picking.Api.Services
             _intakeDashboardHubContext = intakeDashboardHubContext;
             _connectionMapping = connectionMapping;
         }
-        
+
+        protected override Action DoOnReattach { get; set; }
+
         public async Task<bool> FetchArticlesForDeliveryNote(string correlationId, string noteId)
         {
+            DoOnReattach = async () =>
+            {
+                var a = await _articleRepository.FetchByNoteId(noteId);
+                await _intakeDeviceHubContext.Clients
+                    .Client(_connectionMapping.GetConnection(correlationId))
+                    .SendAsync("ArticlesListReceived", new Articles(a));
+            };
+            
             var articles = await _articleRepository.FetchByNoteId(noteId);
             await _intakeDeviceHubContext.Clients
                 .Client(_connectionMapping.GetConnection(correlationId))
@@ -50,14 +62,15 @@ namespace Warehouse.Picking.Api.Services
                 .Select(a => a.Gtin)
                 .ToHashSet();
         }
-        
-        public async Task<Article> UpdateArticleQuantity(string correlationId, string noteId, int articleId, int quantity)
+
+        public async Task<Article> UpdateArticleQuantity(string correlationId, string noteId, int articleId,
+            int quantity)
         {
             //updates remotely and locally
             var updatedArticle = await _articleRepository.UpdateArticle(noteId, articleId, quantity);
-            
+
             var articles = _articleRepository.FindByNoteId(noteId);
-            
+
             await _intakeDeviceHubContext.Clients
                 .Client(_connectionMapping.GetConnection(correlationId))
                 .SendAsync("ArticlesListReceived", new Articles(articles));

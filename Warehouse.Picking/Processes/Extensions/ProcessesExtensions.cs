@@ -24,9 +24,9 @@ namespace warehouse.picking.api.Processes.Extensions
             services.AddSingleton<IProcessInfoProvider, ProcessInfoProvider>();
 
             // client task related
-            services.AddSingleton<IPayloadCreatorFactory, PayloadCreatorFactory>();
+            services.AddSingleton<IProcessHandlersFactory, ProcessHandlersFactory>();
             services.AddTransient<ClientTaskFactory>();
-            services.AddTransient<IntakeClientTaskPayloadCreator>();
+            services.AddTransient<IntakeClientTaskPayloadHandler>();
             
             return services;
         }

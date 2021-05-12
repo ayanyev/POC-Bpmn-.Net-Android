@@ -9,12 +9,12 @@ namespace Warehouse.Picking.Api.Processes.UserTasks
 {
     public class ClientTaskFactory
     {
-        private readonly IPayloadCreatorFactory _payloadCreatorFactory;
+        private readonly IProcessHandlersFactory _processHandlersFactory;
         private readonly IProcessClient _processClient;
 
-        public ClientTaskFactory(IPayloadCreatorFactory payloadCreatorFactory, IProcessClient processClient)
+        public ClientTaskFactory(IProcessHandlersFactory processHandlersFactory, IProcessClient processClient)
         {
-            _payloadCreatorFactory = payloadCreatorFactory;
+            _processHandlersFactory = processHandlersFactory;
             _processClient = processClient;
         }
 
@@ -43,7 +43,7 @@ namespace Warehouse.Picking.Api.Processes.UserTasks
 
         private async Task<object> CreatePayload(UserTask task, ClientTaskType type)
         {
-            var payloadCreator = _payloadCreatorFactory.Get(task.ProcessModelId);
+            var payloadCreator = _processHandlersFactory.GetPayloadHandler(task.ProcessModelId);
             
             if (task.HasErrorPayload())
             {
@@ -54,9 +54,9 @@ namespace Warehouse.Picking.Api.Processes.UserTasks
 
             return type switch
             {
-                Selection => payloadCreator.CreateSelectionOptionsPayload(task),
-                Scan => payloadCreator.CreateScanPayload(task),
-                Info => payloadCreator.CreateInfoPayload(task),
+                Selection => payloadCreator?.CreateSelectionOptionsPayload(task),
+                Scan => payloadCreator?.CreateScanPayload(task),
+                Info => payloadCreator?.CreateInfoPayload(task),
                 _ => null
             };
         }

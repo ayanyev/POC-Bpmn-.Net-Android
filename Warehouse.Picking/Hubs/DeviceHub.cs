@@ -38,13 +38,17 @@ namespace warehouse.picking.api.Hubs
 
         private readonly ClientTaskFactory _clientTaskFactory;
 
+        private readonly IProcessHandlersFactory _processHandlersFactory;
+
         public DeviceHub(IProcessClient processClient, ConnectionMapping connectionMapping,
-            IProcessInfoProvider processInfoProvider, ClientTaskFactory clientTaskFactory)
+            IProcessInfoProvider processInfoProvider, ClientTaskFactory clientTaskFactory,
+            IProcessHandlersFactory processHandlersFactory)
         {
             _processClient = processClient;
             _connectionMapping = connectionMapping;
             _processInfoProvider = processInfoProvider;
             _clientTaskFactory = clientTaskFactory;
+            _processHandlersFactory = processHandlersFactory;
         }
 
         public override Task OnConnectedAsync()
@@ -64,19 +68,29 @@ namespace warehouse.picking.api.Hubs
             var correlationId = Context.GetUserId();
 
             var processId = _connectionMapping.GetProcess(correlationId);
-            
+
             var processInfo = _processInfoProvider.Get(correlationId);
+
+            var isRestarted = true;
 
             if (processId == null || !await _processClient.IsProcessInstanceRunning(processId))
             {
                 var result = await _processClient.CreateProcessInstanceByModelId<string>(
                     correlationId, processInfo, null
                 );
+                isRestarted = false;
                 _connectionMapping.MapProcess(result.CorrelationId, result.ProcessInstanceId);
             }
-
+            
             await Clients.Caller.ProcessStartConfirmed(processInfo.ModelId);
 
+            if (isRestarted)
+            {
+                _processHandlersFactory
+                    .GetReattachHandler(processInfo.ModelId)?
+                    .OnReattach();
+            }
+            
             _processClient.SubscribeForPendingUserTasks(correlationId, tasks =>
             {
                 UserTask handledTaskId = null;
@@ -134,7 +148,6 @@ namespace warehouse.picking.api.Hubs
                 _connectionMapping.UnmapProcess(correlationId);
                 await Clients.Caller.ProcessStopConfirmed();
             }
-            
         }
 
         public async Task SendInput(Dictionary<string, object> input)
