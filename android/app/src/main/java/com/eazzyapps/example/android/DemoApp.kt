@@ -5,6 +5,7 @@ import eu.durstexpress.modules.scanner.scannerModule_Module
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
+import org.koin.core.logger.Level
 
 class DemoApp : Application() {
 
@@ -15,7 +16,7 @@ class DemoApp : Application() {
 
     private fun initKoin() {
         startKoin {
-            androidLogger()
+            androidLogger(Level.ERROR)
             androidContext(this@DemoApp)
             modules(
                 scannerModule_Module,

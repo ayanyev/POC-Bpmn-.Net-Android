@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AtlasEngine.ProcessDefinitions.Requests;
+using AtlasEngine.ProcessInstances;
 using AtlasEngine.UserTasks;
 
 namespace Warehouse.Picking.Api.Processes
@@ -12,12 +13,13 @@ namespace Warehouse.Picking.Api.Processes
 
         Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string modelId, string startEvent, T token,
             string correlationId);
-        
-        Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string correlationId, ProcessInfo processInfo, T token);
+
+        Task<StartProcessInstanceResponse> CreateProcessInstanceByModelId<T>(string correlationId,
+            ProcessInfo processInfo, T token);
 
         Task<bool> TerminateProcessInstanceById(string processId);
 
-        Task<bool> TerminateProcessCorrelationId(string correlationId);
+        Task<bool> TerminateProcessByCorrelationId(string correlationId);
 
         Task<bool> IsProcessInstanceRunning(string processId);
 
@@ -30,5 +32,7 @@ namespace Warehouse.Picking.Api.Processes
         void SubscribeForPendingUserTasks(string correlationId, Func<IEnumerable<UserTask>, UserTask> action);
 
         Task<UserTask> GetPrevFinishedTaskOfSameKind(UserTask task);
+
+        void SubscribeForProcessInstanceStateChange(string processId, Func<ProcessInstance, ProcessState> action);
     }
 }

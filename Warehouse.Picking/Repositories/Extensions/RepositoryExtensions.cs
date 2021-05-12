@@ -4,19 +4,10 @@ namespace Warehouse.Picking.Api.Repositories.Extensions
 {
     public static class ServicesExtensions
     {
-        public static IServiceCollection AddRepositories(this IServiceCollection services, AppName appName)
+        public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
-            switch (appName)
-            {
-                case AppName.PickingApp:
-                    services.AddSingleton<IPickerRepository, PickersRepository>();
-                    services.AddSingleton<ITaskRepository, TasksRepository>();
-                    break;
-                case AppName.IntakeApp:
-                    services.AddSingleton<IArticleRepository, FakeArticleRepository>();
-                    services.AddSingleton<ILocationRepository, FakeLocationRepository>();
-                    break;
-            }
+            services.AddSingleton<IArticleRepository, FakeArticleRepository>();
+            services.AddSingleton<ILocationRepository, FakeLocationRepository>();
             return services;
         }
     }

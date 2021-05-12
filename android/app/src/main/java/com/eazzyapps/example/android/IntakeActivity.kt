@@ -18,17 +18,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.eazzyapps.example.android.domain.ScanEvent
-import com.eazzyapps.example.android.domain.SelectionOptions
 import com.eazzyapps.example.android.domain.TaskCategory.*
-import com.eazzyapps.example.android.domain.ValidBarcodes
 import com.eazzyapps.example.android.ui.*
+import com.eazzyapps.example.android.ui.common.ActivityDelegate
+import com.eazzyapps.example.android.ui.common.Message
 import com.eazzyapps.example.android.ui.composables.AlertDialogLayout
 import com.eazzyapps.example.android.ui.composables.StartAsLayout
+import com.eazzyapps.example.android.ui.nav.AppNavHost
+import com.eazzyapps.example.android.ui.nav.Screen
+import com.eazzyapps.example.android.ui.nav.navigate
 import com.eazzyapps.example.android.ui.theme.AndroidTheme
 import com.eazzyapps.example.android.ui.theme.grey
+import com.eazzyapps.example.android.ui.viewmodel.IntakeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -57,10 +60,12 @@ class IntakeActivity : AppCompatActivity() {
 
             val scope = remember { lifecycleScope }
 
+            var dialog by remember { mutableStateOf<Message.Dialog?>(null) }
+
             scope.launchWhenResumed {
                 merge(delegate.msgFlow, delegate.navFlow).collect {
                     when (it) {
-                        is Message -> launch {
+                        is Message.SnackBar -> launch {
                             // launch in another coroutine
                             // to avoid waiting showSnackbar returning result
                             scaffoldState.snackbarHostState.apply {
@@ -79,16 +84,20 @@ class IntakeActivity : AppCompatActivity() {
                                 }
                             }
                         }
+                        is Message.Dialog -> {
+                            it.doDismiss = { dialog = null }
+                            dialog = it
+                        }
                     }
                 }
             }
 
-            AndroidTheme() {
+            AndroidTheme(darkTheme = false) {
                 // A surface container using the 'background' color from the theme
                 Surface {
                     Box(modifier = Modifier.fillMaxSize()) {
 
-                        val viewModel: IntakeViewModel = viewModel()
+                        val viewModel by inject<IntakeViewModel>()
 
                         val isReadyToConnect by viewModel.isLoggedIn.collectAsState()
 
@@ -123,7 +132,9 @@ class IntakeActivity : AppCompatActivity() {
                             content = {
                                 MainContent(
                                     isRunning = isRunning,
-                                    viewModel = viewModel
+                                    viewModel = viewModel,
+                                    navController = controller,
+                                    dialog = dialog
                                 )
                             }
                         )
@@ -271,25 +282,19 @@ fun DrawerLayout(
 @Composable
 fun MainContent(
     isRunning: Boolean,
-    viewModel: IntakeViewModel
+    viewModel: IntakeViewModel,
+    navController: NavHostController,
+    dialog: Message.Dialog?
 ) {
     if (isRunning) {
 
-        val currentTask by viewModel.currentTask.collectAsState()
-
-        val isConnected by viewModel.isConnected.collectAsState()
-
         val articles by viewModel.articleList.collectAsState()
-
-        val isInputError by viewModel.isError.collectAsState()
 
         val bottomSheetState = rememberBottomSheetState(BottomSheetValue.Collapsed)
 
         val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
             bottomSheetState = bottomSheetState
         )
-
-        val (isInfoDialogShown, showInfoDialog) = remember { mutableStateOf(false) }
 
         BottomSheetScaffold(
             scaffoldState = bottomSheetScaffoldState,
@@ -302,87 +307,19 @@ fun MainContent(
             sheetPeekHeight = if (articles.isNotEmpty()) 64.dp else 0.dp
         ) {
 
-            when (currentTask.category) {
-                is Input -> {
-                    DeliveryNoteInputComposable(
-                        onInputSubmit = {
-                            viewModel.sendInputData(currentTask.toResult(it))
-                        },
-                        isError = currentTask.hasError
-                    )
-                }
+            AppNavHost(controller = navController)
 
-                is Info -> {
+            if (dialog != null) {
 
-                    val text = currentTask.payload as String
-
-                    showInfoDialog(true)
-
-                    AlertDialogLayout(
-                        isShown = isInfoDialogShown,
-                        title = "Warning",
-                        text = text,
-                        onConfirm = {
-                            showInfoDialog(false)
-                            viewModel.sendInputData(currentTask.toResult(true))
-                        }
-                    )
-
-                }
-
-                is Scan -> {
-
-                    val scanType = ScanEvent.of(currentTask.id)
-
-                    val availableBarcodes = (currentTask.payload as? ValidBarcodes)?.barcodes
-
-                    ScanInfoComposable(
-                        title = scanType.label,
-                        availableBarcodes = availableBarcodes
-                    )
-                    ScannerInputComposable(
-                        hint = currentTask.label,
-                        isError = isInputError,
-                        errorMsg = scanType.errorMsg,
-                        onItemScanned = {
-                            if (it.isNotBlank()) {
-                                if (availableBarcodes == null || availableBarcodes.contains(it)) {
-                                    viewModel.apply {
-                                        selectScannedItem(it)
-                                        setInputError(false)
-                                        sendInputData(currentTask.toResult(it))
-                                    }
-                                } else if (it.isNotEmpty()) {
-                                    viewModel.setInputError(true)
-                                }
-                            }
-                        }
-                    )
-                }
-
-                is Selection -> {
-                    OptionSelectionUI(
-                        optionList = (currentTask.payload as SelectionOptions).items,
-                        doOnConfirm = {
-                            viewModel.sendInputData(currentTask.toResult(it))
-                        },
-                        isError = currentTask.error != null,
-                        errorMsg = currentTask.error?.message ?: ""
-                    )
-                }
-
-                is Quantity -> {
-                    QuantityAdjustmentDialog(
-                        title = currentTask.label,
-                        doOnConfirm = {
-                            viewModel.sendInputData(currentTask.toResult(it))
-                        }
-                    )
-                }
-                else -> {
-                }
+                AlertDialogLayout(
+                    title = dialog.title,
+                    text = dialog.text,
+                    onConfirm = {
+                        dialog.onClick()
+                        dialog.doDismiss()
+                    }
+                )
             }
-
         }
     }
 }

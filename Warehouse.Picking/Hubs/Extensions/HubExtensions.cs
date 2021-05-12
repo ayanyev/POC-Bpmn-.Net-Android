@@ -5,7 +5,7 @@ namespace Warehouse.Picking.Api.Hubs.Extensions
 {
     public static class HubsTasksExtensions
     {
-        public static IServiceCollection AddHubServices(this IServiceCollection services, AppName appName)
+        public static IServiceCollection AddHubServices(this IServiceCollection services)
         {
             services.AddSingleton(new ConnectionMapping());
             return services;

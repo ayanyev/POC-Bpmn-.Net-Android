@@ -1,4 +1,4 @@
-package com.eazzyapps.example.android
+package com.eazzyapps.example.android.ui.nav
 
 import android.os.Parcelable
 import androidx.navigation.NavController
@@ -9,7 +9,10 @@ import androidx.navigation.compose.navigate
 // generic way without copypasting
 sealed class Screen(val route: String, val popBackStack : Boolean = false) {
     object Previous : Screen("back")
-    object Main : Screen("startScreen")
+    object NoteIdInput : Screen("noteIdInputScreen", true)
+    object Scan : Screen("scanInputScreen", true)
+    object BundleSelection : Screen("bundleSelectionScreen", true)
+    object QuantityAdjustment : Screen("quantityAdjustmentScreen", true)
 }
 
 fun NavController.navigate(

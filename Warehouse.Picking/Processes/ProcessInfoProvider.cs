@@ -8,7 +8,7 @@ namespace Warehouse.Picking.Api.Processes
             {
                 "Max" => new ProcessInfo("WH.Intake", ""),
                 "Jorg" => new ProcessInfo("WH.Test.1", ""),
-                "Michael" => new ProcessInfo("intake", ""),
+                "Michael" => new ProcessInfo("WH.Intake", ""),
                 _ => null
             };
         }

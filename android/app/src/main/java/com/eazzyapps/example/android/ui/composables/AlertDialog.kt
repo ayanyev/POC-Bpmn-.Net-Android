@@ -10,11 +10,11 @@ import androidx.compose.ui.window.DialogProperties
 @Preview
 @Composable
 fun AlertDialogLayoutPreview() {
-    AlertDialogLayout(isShown = true, title = "Hooray!", text = "We did it!", onConfirm = {})
+    AlertDialogLayout(title = "Hooray!", text = "We did it!", onConfirm = {})
 }
 
 @Composable
-fun AlertDialogLayout(isShown: Boolean, title: String, text: String, onConfirm: () -> Unit) {
+fun AlertDialogLayout(title: String, text: String, onConfirm: () -> Unit) {
     AlertDialog(
         onDismissRequest = { },
         title = { Text(title) },

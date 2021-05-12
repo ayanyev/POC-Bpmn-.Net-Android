@@ -8,11 +8,11 @@ using Warehouse.Picking.Api.Utilities;
 
 namespace Warehouse.Picking.Api.Processes.UserTasks
 {
-    public class IntakeUserTaskPayloadFactory : IUserTaskPayloadFactory
+    public class IntakeClientTaskPayloadCreator : IClientTaskPayloadCreator
     {
         private readonly IntakeService _intakeService;
 
-        public IntakeUserTaskPayloadFactory(IntakeService intakeService)
+        public IntakeClientTaskPayloadCreator(IntakeService intakeService)
         {
             _intakeService = intakeService;
         }

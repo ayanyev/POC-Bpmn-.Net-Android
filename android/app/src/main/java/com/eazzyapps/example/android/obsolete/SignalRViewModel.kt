@@ -1,14 +1,12 @@
-package com.eazzyapps.example.android
+package com.eazzyapps.example.android.obsolete
 
 import android.util.Base64
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.microsoft.signalr.HubConnection
 import com.microsoft.signalr.HubConnectionBuilder
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import java.util.Base64.getEncoder
 
 class SignalRViewModel : ViewModel() {
 

@@ -1,10 +1,12 @@
-package com.eazzyapps.example.android.ui
+package com.eazzyapps.example.android.ui.composables
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -12,13 +14,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.eazzyapps.example.android.get
+import com.eazzyapps.example.android.ui.viewmodel.IntakeViewModel
 
 
 @Composable
 fun DeliveryNoteInputComposable(
-    onInputSubmit: (String) -> Unit,
-    isError: Boolean = false
+    sharedViewModel: IntakeViewModel = get()
 ) {
+
+    val currentTask by sharedViewModel.currentTask.collectAsState()
 
     val input = rememberSaveable { mutableStateOf("") }
 
@@ -35,9 +40,9 @@ fun DeliveryNoteInputComposable(
             label = {
                 Text("Enter Delivery Note id")
             },
-            isError = isError
+            isError = currentTask.hasError
         )
-        if (isError) {
+        if (currentTask.hasError) {
             Spacer(Modifier.height(8.dp))
             Text(
                 "Please enter a valid Delivery Note id",
@@ -48,7 +53,7 @@ fun DeliveryNoteInputComposable(
         }
         Spacer(Modifier.height(16.dp))
         OutlinedButton(onClick = {
-            onInputSubmit.invoke(input.value)
+            sharedViewModel.sendInputData(currentTask.toResult(input.value))
         }) {
             Text("Submit")
         }

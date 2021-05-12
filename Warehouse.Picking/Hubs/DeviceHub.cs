@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
+using AtlasEngine.Logging;
 using AtlasEngine.UserTasks;
 using Microsoft.AspNetCore.SignalR;
-using AtlasEngine.Logging;
 using Warehouse.Picking.Api.Processes;
 using Warehouse.Picking.Api.Processes.UserTasks;
 using Warehouse.Picking.Api.Utilities;
@@ -22,7 +22,7 @@ namespace warehouse.picking.api.Hubs
         Task DoInputScan(ClientTask task);
 
         Task DoInputSelection(ClientTask task);
-        
+
         Task ShowInfo(ClientTask task);
     }
 
@@ -34,28 +34,28 @@ namespace warehouse.picking.api.Hubs
 
         private readonly ConnectionMapping _connectionMapping;
 
-        private readonly ClientTaskFactory _clientTaskFactory;
-        
         private readonly IProcessInfoProvider _processInfoProvider;
 
+        private readonly ClientTaskFactory _clientTaskFactory;
+
         public DeviceHub(IProcessClient processClient, ConnectionMapping connectionMapping,
-            ClientTaskFactory clientTaskFactory, IProcessInfoProvider processInfoProvider)
+            IProcessInfoProvider processInfoProvider, ClientTaskFactory clientTaskFactory)
         {
             _processClient = processClient;
             _connectionMapping = connectionMapping;
-            _clientTaskFactory = clientTaskFactory;
             _processInfoProvider = processInfoProvider;
+            _clientTaskFactory = clientTaskFactory;
         }
 
         public override Task OnConnectedAsync()
         {
-            _connectionMapping.AddConnection(Context.GetUserId(), Context.ConnectionId);
+            _connectionMapping.MapConnection(Context.GetUserId(), Context.ConnectionId);
             return base.OnConnectedAsync();
         }
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            _connectionMapping.RemoveConnection(Context.GetUserId());
+            _connectionMapping.UnmapConnection(Context.GetUserId());
             return base.OnDisconnectedAsync(exception);
         }
 
@@ -72,10 +72,10 @@ namespace warehouse.picking.api.Hubs
                 var result = await _processClient.CreateProcessInstanceByModelId<string>(
                     correlationId, processInfo, null
                 );
-                _connectionMapping.AddProcess(result.CorrelationId, result.ProcessInstanceId);
+                _connectionMapping.MapProcess(result.CorrelationId, result.ProcessInstanceId);
             }
 
-            var connectionId = _connectionMapping.GetConnection(correlationId);
+            await Clients.Caller.ProcessStartConfirmed(processInfo.ModelId);
 
             _processClient.SubscribeForPendingUserTasks(correlationId, tasks =>
             {
@@ -84,7 +84,8 @@ namespace warehouse.picking.api.Hubs
                 {
                     try
                     {
-                        _logger.Log(LogLevel.Debug, $"Exec: Handled task: {task.Id}");
+                        var connectionId = _connectionMapping.GetConnection(correlationId);
+                        _logger.Log(LogLevel.Debug, $"Exec: Handled task: {correlationId}/{task.Id}");
                         switch (_clientTaskFactory.Create(task))
                         {
                             case {Type: ClientTaskType.Selection} t:
@@ -115,13 +116,25 @@ namespace warehouse.picking.api.Hubs
                 return handledTaskId;
             });
 
-            await Clients.Caller.ProcessStartConfirmed(processInfo.ModelId);
+
+            _processClient.SubscribeForProcessInstanceStateChange(_connectionMapping.GetProcess(correlationId),
+                instance =>
+                {
+                    Clients.Client(_connectionMapping.GetConnection(correlationId)).ProcessStopConfirmed();
+                    return instance.State;
+                });
         }
+
 
         public async Task StopProcess()
         {
-            await _processClient.TerminateProcessCorrelationId(Context.GetUserId());
-            await Clients.Caller.ProcessStopConfirmed();
+            var correlationId = Context.GetUserId();
+            if (await _processClient.TerminateProcessByCorrelationId(correlationId))
+            {
+                _connectionMapping.UnmapProcess(correlationId);
+                await Clients.Caller.ProcessStopConfirmed();
+            }
+            
         }
 
         public async Task SendInput(Dictionary<string, object> input)

@@ -15,22 +15,11 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Picking": {
-      "commandName": "Project",
-      "dotnetRunMessages": "true",
-      "launchBrowser": true,
-      "applicationUrl": "http://localhost:5000",
-      "launchUrl": "picking",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "APP_NAME": "PickingApp"
-      }
-    },
     "Intake": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,
-      "applicationUrl": "http://10.0.11.185:5000",
+      "applicationUrl": "http://localhost:5000",
       "launchUrl": "intake",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",

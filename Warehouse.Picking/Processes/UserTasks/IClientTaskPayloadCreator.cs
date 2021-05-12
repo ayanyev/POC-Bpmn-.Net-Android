@@ -2,7 +2,7 @@ using AtlasEngine.UserTasks;
 
 namespace Warehouse.Picking.Api.Processes.UserTasks
 {
-    public interface IUserTaskPayloadFactory
+    public interface IClientTaskPayloadCreator
     {
         public SelectionOptions CreateSelectionOptionsPayload(UserTask task);
 

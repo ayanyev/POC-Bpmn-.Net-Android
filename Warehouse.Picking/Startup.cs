@@ -15,29 +15,30 @@ using ZNetCS.AspNetCore.Authentication.Basic;
 
 namespace Warehouse.Picking.Api
 {
-    
-    public enum AppName { PickingApp, IntakeApp }
-    
+    public enum AppName
+    {
+        PickingApp,
+        IntakeApp
+    }
+
     public class Startup
     {
-
         private readonly AppName _appName;
-        
-        public Startup(IConfiguration configuration, IWebHostEnvironment env)  
-        {  
+
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
+        {
             Configuration = configuration;
             _appName = (AppName) Enum.Parse(typeof(AppName), Configuration["APP_NAME"], true);
-        }  
-  
-        public IConfiguration Configuration { get; }  
-  
+        }
+
+        public IConfiguration Configuration { get; }
+
         // This method gets called by the runtime. Use this method to add services to the container. 
         public void ConfigureServices(IServiceCollection services)
         {
-            
-            services.AddControllers();  
+            services.AddControllers();
             services.AddSignalR();
-            
+
             services.AddScoped<AuthenticationEvents>();
 
             services
@@ -48,66 +49,58 @@ namespace Warehouse.Picking.Api
                         options.Realm = "My Application";
                         options.EventsType = typeof(AuthenticationEvents);
                     });
-            
-            services.AddRepositories(_appName);
-            services.AddServices(_appName);
-            services.AddProcessServices(_appName);
-            services.AddHubServices(_appName);
+
+            services.AddRepositories();
+            services.AddServices();
+            services.AddProcessServices();
+            services.AddHubServices();
+
             // connect vue app - middleware  
-            services.AddSpaStaticFiles(options => 
+            services.AddSpaStaticFiles(options =>
                 options.RootPath = "dashboard-app"
-            );  
-        }  
-  
+            );
+        }
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.  
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)  
-        {  
-            if (env.IsDevelopment())  
-            {  
-                app.UseDeveloperExceptionPage();  
-            }  
-            else  
-            {  
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.  
-                app.UseHsts();  
-            }  
-  
-            app.UseHttpsRedirection();  
-  
-            app.UseRouting();  
-  
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
+
+            app.UseRouting();
+
             app.UseAuthorization();
 
             app.UseDefaultFiles();
-            
+
             app.UseAuthentication();
-  
-            app.UseEndpoints(endpoints =>  
-            {  
+
+            app.UseEndpoints(endpoints =>
+            {
                 endpoints.MapControllers();
-                switch (_appName)
-                {
-                    case AppName.PickingApp:
-                        endpoints.MapHub<PickingDashboardHub>("/dashboardhub");
-                        endpoints.MapHub<PickersHub>("/pickershub");
-                        break;
-                    case AppName.IntakeApp:
-                        endpoints.MapHub<IntakeDashboardHub>("/intakedashboardhub");
-                        endpoints.MapHub<DeviceHub>("/intakedevicehub");
-                        break;
-                }
-            });  
-  
+                endpoints.MapHub<IntakeDashboardHub>("/intakedashboardhub");
+                endpoints.MapHub<DeviceHub>("/intakedevicehub");
+            });
+
             // use middleware and launch server for Vue  
-            app.UseSpaStaticFiles();  
-            app.UseSpa(spa =>  
-            {  
-                spa.Options.SourcePath = "dashboard-app";  
-                if (env.IsDevelopment())  
+            app.UseSpaStaticFiles();
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "dashboard-app";
+                if (env.IsDevelopment())
                 {
                     spa.UseVueCli(npmScript: "serve");
-                }  
-            });  
-        }  
-    }  
+                }
+            });
+        }
+    }
 }

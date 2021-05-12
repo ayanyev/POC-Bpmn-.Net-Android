@@ -1,25 +1,25 @@
-package com.eazzyapps.example.android
+package com.eazzyapps.example.android.ui.viewmodel
 
 import android.annotation.SuppressLint
 import android.util.Base64
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.eazzyapps.example.android.BuildConfig
 import com.eazzyapps.example.android.domain.*
-import com.eazzyapps.example.android.ui.ActivityDelegate
+import com.eazzyapps.example.android.ui.common.ActivityDelegate
+import com.eazzyapps.example.android.ui.common.Message
+import com.eazzyapps.example.android.ui.nav.Screen
 import com.microsoft.signalr.HubConnection
 import com.microsoft.signalr.HubConnectionBuilder
-import com.microsoft.signalr.HubProtocol
 import com.microsoft.signalr.TypeReference
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-@KoinApiExtension
 class IntakeViewModel : ViewModel(), KoinComponent {
 
     private val delegate by inject<ActivityDelegate>()
@@ -58,7 +58,7 @@ class IntakeViewModel : ViewModel(), KoinComponent {
             Base64.encodeToString("$selectedName:ertryrtytr".toByteArray(), Base64.NO_WRAP)
 
         hubConnection = HubConnectionBuilder
-            .create("http://10.0.11.185:5000/intakedevicehub") //10.0.11.185, 192.168.0.38
+            .create("${BuildConfig.PROCESS_APP_URL}:5000/intakedevicehub") //10.0.11.185, 192.168.0.38
             .withHeader("Authorization", "Basic $credentials")
             .build()
 
@@ -120,7 +120,7 @@ class IntakeViewModel : ViewModel(), KoinComponent {
             hubConnection.on(
                 "ProcessStartConfirmed",
                 { name ->
-                    Log.d("SignalR", "Intake process started")
+                    Log.d("SignalR", "$name process started")
                     delegate.showLoading(false)
                     screenTitle.value = name
                     isProcessRunning.value = true
@@ -151,6 +151,7 @@ class IntakeViewModel : ViewModel(), KoinComponent {
                 "DoInput",
                 { task: Task<Any> ->
                     Log.d("SignalR", "Client input task received: $task")
+                    navigate(task)
                     delegate.showLoading(false)
                     currentTask.value = task
                 },
@@ -161,6 +162,7 @@ class IntakeViewModel : ViewModel(), KoinComponent {
                 "DoInputScan",
                 { task: Task<ValidBarcodes> ->
                     Log.d("SignalR", "Client scanning task received: $task")
+                    navigate(task)
                     delegate.showLoading(false)
                     currentTask.value = task
                 },
@@ -171,6 +173,7 @@ class IntakeViewModel : ViewModel(), KoinComponent {
                 "DoInputSelection",
                 { task: Task<SelectionOptions> ->
                     Log.d("SignalR", "Client selection task received: $task")
+                    navigate(task)
                     delegate.showLoading(false)
                     currentTask.value = task
                 },
@@ -182,6 +185,7 @@ class IntakeViewModel : ViewModel(), KoinComponent {
                 { task: Task<String> ->
                     Log.d("SignalR", "Client info task received: $task")
                     delegate.showLoading(false)
+                    navigate(task)
                     currentTask.value = task
                 },
                 (object : TypeReference<Task<String>>() {}).type
@@ -206,6 +210,33 @@ class IntakeViewModel : ViewModel(), KoinComponent {
                 }
             }
         articleList.value = items
+    }
+
+    private fun navigate(task: Task<*>) = when (task.category) {
+
+        is TaskCategory.Input -> delegate.navigate(Screen.NoteIdInput)
+
+        is TaskCategory.Scan -> delegate.navigate(Screen.Scan)
+
+        is TaskCategory.Selection -> delegate.navigate(Screen.BundleSelection)
+
+        is TaskCategory.Quantity -> delegate.navigate(Screen.QuantityAdjustment)
+
+        is TaskCategory.Info -> {
+
+            delegate.showMessage(Message.Dialog(
+                title = "Warning",
+                text = task.payload as String,
+                buttonText = "Ok",
+                onClick = {
+                    sendInputData(currentTask.value.toResult(true))
+                }
+            ))
+
+        }
+
+        else -> {
+        }
     }
 
 }

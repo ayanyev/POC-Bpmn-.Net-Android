@@ -8,6 +8,7 @@ using AtlasEngine.Logging;
 using AtlasEngine.ProcessDefinitions;
 using AtlasEngine.ProcessDefinitions.Requests;
 using AtlasEngine.ProcessInstances;
+using AtlasEngine.ProcessInstances.Requests;
 using AtlasEngine.UserTasks;
 using AtlasEngine.UserTasks.Requests;
 using Warehouse.Picking.Api.Utilities;
@@ -49,10 +50,59 @@ namespace Warehouse.Picking.Api.Processes
             return prevTask;
         }
 
+        public void SubscribeForProcessInstanceStateChange(string processId, Func<ProcessInstance, ProcessState> action)
+        {
+            var subscriptionSettings = new InstanceSubscriptionSettings
+            {
+                SubscribeOnce = false,
+                ConfigureQuery = o =>
+                {
+                    o.FilterByProcessInstanceId(processId);
+                    o.FilterByStates(ProcessState.Error, ProcessState.Finished, ProcessState.Terminated);
+                }
+            };
+
+            var handledInstance = ProcessState.Running;
+
+            Func<ProcessState> getRecentInstanceState = () => handledInstance;
+
+            Action<ProcessState> updateRecentInstanceState = instance => { handledInstance = instance; };
+
+            void Callback(IEnumerable<ProcessInstance> instances)
+            {
+                try
+                {
+                    var processInstances = instances.ToList();
+
+                    switch (processInstances.ToList().Count)
+                    {
+                        case 0: return;
+                    }
+
+                    var instance = processInstances.First();
+
+                    if (!instance.State.Equals(getRecentInstanceState()))
+                    {
+                        updateRecentInstanceState(action(instance));
+                    }
+
+                    _logger.Log(LogLevel.Debug,
+                        $"Handled instance state change: {processId}:{getRecentInstanceState()}");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+
+            _instanceClient.SubscribeForProcessesInstances(Callback, subscriptionSettings);
+        }
+
         public void SubscribeForPendingUserTasks(string correlationId, Func<IEnumerable<UserTask>, UserTask> action)
         {
             var queryOptions = new QueryUserTasksOptions();
-            queryOptions.FilterByCorrelationId(correlationId);
+            queryOptions.FilterByCorrelationId(correlationId); // does not applied
             queryOptions.FilterByState(UserTaskState.Suspended);
 
             var subscriptionSettings = new SubscriptionSettings {SubscribeOnce = false};
@@ -83,14 +133,16 @@ namespace Warehouse.Picking.Api.Processes
             {
                 try
                 {
-                    _logger.Log(LogLevel.Debug, $"Start: Handled task: {getRecentTaskId()}");
                     var filteredTasks = tasks.ToList()
                         .FindAll(t =>
+                            t.CorrelationId.Equals(correlationId) &&
                             (t.HasErrorPayload() && !t.FlowNodeInstanceId.Equals(getRecentErrorTaskId())) |
-                            !t.Id.Equals(getRecentTaskId())
+                            !t.Id.Equals(getRecentTaskId()
+                            )
                         );
+                    _logger.Log(LogLevel.Debug, $"Start: Handled task: {correlationId}/{filteredTasks.FirstOrDefault()?.Id}");
                     updateRecentTaskId(action(filteredTasks));
-                    _logger.Log(LogLevel.Debug, $"End: Handled task: {getRecentTaskId()}");
+                    _logger.Log(LogLevel.Debug, $"End: Handled task: {correlationId}/{getRecentTaskId()}");
                 }
                 catch (Exception e)
                 {
@@ -191,7 +243,7 @@ namespace Warehouse.Picking.Api.Processes
             }
         }
 
-        public async Task<bool> TerminateProcessCorrelationId(string correlationId)
+        public async Task<bool> TerminateProcessByCorrelationId(string correlationId)
         {
             try
             {
