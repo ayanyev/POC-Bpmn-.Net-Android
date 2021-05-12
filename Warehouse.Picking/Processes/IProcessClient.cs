@@ -19,7 +19,7 @@ namespace Warehouse.Picking.Api.Processes
 
         Task<bool> TerminateProcessInstanceById(string processId);
 
-        Task<bool> TerminateProcessCorrelationId(string correlationId);
+        Task<bool> TerminateProcessByCorrelationId(string correlationId);
 
         Task<bool> IsProcessInstanceRunning(string processId);
 

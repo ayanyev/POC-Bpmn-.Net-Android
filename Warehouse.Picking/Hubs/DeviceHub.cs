@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
+using AtlasEngine.Logging;
 using AtlasEngine.UserTasks;
 using Microsoft.AspNetCore.SignalR;
-using AtlasEngine.Logging;
 using Warehouse.Picking.Api.Processes;
 using Warehouse.Picking.Api.Processes.UserTasks;
 using Warehouse.Picking.Api.Utilities;
@@ -36,8 +36,6 @@ namespace warehouse.picking.api.Hubs
 
         private readonly IProcessInfoProvider _processInfoProvider;
 
-        private readonly IServiceProvider _serviceProvider;
-
         private readonly ClientTaskFactory _clientTaskFactory;
 
         public DeviceHub(IProcessClient processClient, ConnectionMapping connectionMapping,
@@ -51,13 +49,13 @@ namespace warehouse.picking.api.Hubs
 
         public override Task OnConnectedAsync()
         {
-            _connectionMapping.AddConnection(Context.GetUserId(), Context.ConnectionId);
+            _connectionMapping.MapConnection(Context.GetUserId(), Context.ConnectionId);
             return base.OnConnectedAsync();
         }
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            _connectionMapping.RemoveConnection(Context.GetUserId());
+            _connectionMapping.UnmapConnection(Context.GetUserId());
             return base.OnDisconnectedAsync(exception);
         }
 
@@ -66,7 +64,7 @@ namespace warehouse.picking.api.Hubs
             var correlationId = Context.GetUserId();
 
             var processId = _connectionMapping.GetProcess(correlationId);
-
+            
             var processInfo = _processInfoProvider.Get(correlationId);
 
             if (processId == null || !await _processClient.IsProcessInstanceRunning(processId))
@@ -74,10 +72,8 @@ namespace warehouse.picking.api.Hubs
                 var result = await _processClient.CreateProcessInstanceByModelId<string>(
                     correlationId, processInfo, null
                 );
-                _connectionMapping.AddProcess(result.CorrelationId, result.ProcessInstanceId);
+                _connectionMapping.MapProcess(result.CorrelationId, result.ProcessInstanceId);
             }
-
-            var connectionId = _connectionMapping.GetConnection(correlationId);
 
             await Clients.Caller.ProcessStartConfirmed(processInfo.ModelId);
 
@@ -88,7 +84,8 @@ namespace warehouse.picking.api.Hubs
                 {
                     try
                     {
-                        _logger.Log(LogLevel.Debug, $"Exec: Handled task: {task.Id}");
+                        var connectionId = _connectionMapping.GetConnection(correlationId);
+                        _logger.Log(LogLevel.Debug, $"Exec: Handled task: {correlationId}/{task.Id}");
                         switch (_clientTaskFactory.Create(task))
                         {
                             case {Type: ClientTaskType.Selection} t:
@@ -131,8 +128,13 @@ namespace warehouse.picking.api.Hubs
 
         public async Task StopProcess()
         {
-            await _processClient.TerminateProcessCorrelationId(Context.GetUserId());
-            await Clients.Caller.ProcessStopConfirmed();
+            var correlationId = Context.GetUserId();
+            if (await _processClient.TerminateProcessByCorrelationId(correlationId))
+            {
+                _connectionMapping.UnmapProcess(correlationId);
+                await Clients.Caller.ProcessStopConfirmed();
+            }
+            
         }
 
         public async Task SendInput(Dictionary<string, object> input)

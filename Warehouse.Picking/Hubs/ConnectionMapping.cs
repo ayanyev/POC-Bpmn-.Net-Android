@@ -10,7 +10,7 @@ namespace warehouse.picking.api.Hubs
 
         private readonly Dictionary<string, string> _processes = new();
 
-        public void AddConnection(string key, string connectionId)
+        public void MapConnection(string key, string connectionId)
         {
             lock (_mappingLock)
             {
@@ -18,7 +18,7 @@ namespace warehouse.picking.api.Hubs
             }
         }
 
-        public void AddProcess(string key, string processId)
+        public void MapProcess(string key, string processId)
         {
             lock (_mappingLock)
             {
@@ -42,7 +42,7 @@ namespace warehouse.picking.api.Hubs
             }
         }
 
-        public void RemoveConnection(string key)
+        public void UnmapConnection(string key)
         {
             lock (_mappingLock)
             {
@@ -50,7 +50,7 @@ namespace warehouse.picking.api.Hubs
             }
         }
 
-        public void RemoveProcess(string key)
+        public void UnmapProcess(string key)
         {
             lock (_mappingLock)
             {
