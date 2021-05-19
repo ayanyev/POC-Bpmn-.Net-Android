@@ -17,23 +17,20 @@ namespace Warehouse.Picking.Api.Processes
 {
     public class ProcessEngineClient : IProcessClient
     {
-        private const string BaseUrl = "http://localhost:56000";
-
+        
         private readonly ILogger _logger = ConsoleLogger.Default;
 
-        private readonly IProcessDefinitionsClient _defClient =
-            ClientFactory.CreateProcessDefinitionsClient(new Uri(BaseUrl));
+        private readonly IProcessDefinitionsClient _defClient;
 
-        private readonly IProcessInstancesClient _instanceClient =
-            ClientFactory.CreateProcessInstancesClient(new Uri(BaseUrl));
+        private readonly IProcessInstancesClient _instanceClient;
 
-        private readonly IUserTaskClient _userTaskClient =
-            ClientFactory.CreateUserTaskClient(new Uri(BaseUrl));
+        private readonly IUserTaskClient _userTaskClient;
 
-        public static IExternalTaskClient CreateExternalTaskClient()
+        public ProcessEngineClient(string processUrl)
         {
-            return ClientFactory.CreateExternalTaskClient(new Uri(BaseUrl),
-                logger: ConsoleLogger.Default);
+            _defClient = ClientFactory.CreateProcessDefinitionsClient(new Uri(processUrl));
+            _instanceClient = ClientFactory.CreateProcessInstancesClient(new Uri(processUrl));
+            _userTaskClient = ClientFactory.CreateUserTaskClient(new Uri(processUrl));
         }
 
         public async Task<UserTask> GetPrevFinishedTaskOfSameKind(UserTask task)

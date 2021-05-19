@@ -1,6 +1,7 @@
 using AtlasEngine;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Warehouse.Picking.Api.Utilities;
 
 namespace Warehouse.Picking.Api
 {
@@ -8,6 +9,7 @@ namespace Warehouse.Picking.Api
     {
         public static void Main(string[] args)
         {
+            DotEnv.Load("./.env.dev");
             CreateHostBuilder(args)
                 .UseExternalTaskWorkers()
                 .Build().Run();

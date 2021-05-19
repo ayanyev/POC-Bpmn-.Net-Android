@@ -250,15 +250,6 @@ Output:
         <bpmn:targetRef>IterationInfo</bpmn:targetRef>
       </bpmn:dataOutputAssociation>
     </bpmn:userTask>
-    <bpmn:dataObjectReference id="ArticleInfo" name="Article info" dataObjectRef="DataObject_0d452k8">
-      <bpmn:documentation>1. list of articles for given barcode
-2. Article for given barcode and bundle</bpmn:documentation>
-    </bpmn:dataObjectReference>
-    <bpmn:dataObject id="DataObject_0d452k8" />
-    <bpmn:dataObjectReference id="IterationInfo" name="Iteration info" dataObjectRef="DataObject_0vh8sj2" />
-    <bpmn:dataObject id="DataObject_0vh8sj2" />
-    <bpmn:dataObjectReference id="Barcode" name="Current barcode" dataObjectRef="DataObject_1bc0uwg" />
-    <bpmn:dataObject id="DataObject_1bc0uwg" />
     <bpmn:scriptTask id="Activity_1qrq2et" name="validate aggregated quantity">
       <bpmn:documentation>Input:
 {
@@ -287,13 +278,6 @@ return { "valid": it &gt; 0 &amp;&amp; ag &lt;= ex };</bpmn:script>
       <bpmn:outgoing>Flow_1smtjz4</bpmn:outgoing>
       <bpmn:errorEventDefinition id="ErrorEventDefinition_1ek2d88" errorRef="Error_etwx8acR" />
     </bpmn:boundaryEvent>
-    <bpmn:dataObjectReference id="Barcodes" name="Article barcodes" dataObjectRef="DataObject_0msduab">
-      <bpmn:documentation>contains list of article ids for the given delivery note
-{
-codes: String[]
-}</bpmn:documentation>
-    </bpmn:dataObjectReference>
-    <bpmn:dataObject id="DataObject_0msduab" />
     <bpmn:userTask id="UT.Info.Acknowledged.WrongArticleQuantity" name="Inform about wrong quantity" camunda:formKey="Form Key">
       <bpmn:extensionElements>
         <camunda:formData>
@@ -306,6 +290,22 @@ codes: String[]
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_11r6cff" name="no" sourceRef="Gateway_1saly70" targetRef="UT.Info.Acknowledged.WrongArticleQuantity" />
     <bpmn:sequenceFlow id="Flow_1e4bqtv" sourceRef="UT.Info.Acknowledged.WrongArticleQuantity" targetRef="Activity_1hwv4ke" />
+    <bpmn:dataObjectReference id="Barcodes" name="Article barcodes" dataObjectRef="DataObject_0msduab">
+      <bpmn:documentation>contains list of article ids for the given delivery note
+{
+codes: String[]
+}</bpmn:documentation>
+    </bpmn:dataObjectReference>
+    <bpmn:dataObject id="DataObject_0msduab" />
+    <bpmn:dataObjectReference id="Barcode" name="Current barcode" dataObjectRef="DataObject_1bc0uwg" />
+    <bpmn:dataObject id="DataObject_1bc0uwg" />
+    <bpmn:dataObjectReference id="ArticleInfo" name="Article info" dataObjectRef="DataObject_0d452k8">
+      <bpmn:documentation>1. list of articles for given barcode
+2. Article for given barcode and bundle</bpmn:documentation>
+    </bpmn:dataObjectReference>
+    <bpmn:dataObject id="DataObject_0d452k8" />
+    <bpmn:dataObjectReference id="IterationInfo" name="Iteration info" dataObjectRef="DataObject_0vh8sj2" />
+    <bpmn:dataObject id="DataObject_0vh8sj2" />
   </bpmn:process>
   <bpmn:error id="Error_etwx8acR" name="Note Id not found" errorCode="UnknownNoteIdException" />
   <bpmn:error id="Error_HoqCmKWZ" name="Unhandled" errorCode="UnhandledException" />
@@ -514,38 +514,38 @@ codes: String[]
       <bpmndi:BPMNShape id="Activity_1inpb8d_di" bpmnElement="UT.Quantity.Quantity.Article">
         <dc:Bounds x="870" y="87" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="DataObjectReference_1yoku0m_di" bpmnElement="ArticleInfo">
-        <dc:Bounds x="732" y="-145" width="36" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="722" y="-169" width="52" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="DataObjectReference_04wxunv_di" bpmnElement="IterationInfo">
-        <dc:Bounds x="902" y="-145" width="36" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="887" y="-170" width="61" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="DataObjectReference_0dwtkzw_di" bpmnElement="Barcode">
-        <dc:Bounds x="282" y="-145" width="36" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="260" y="-166" width="80" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_00rld3r_di" bpmnElement="Activity_1qrq2et">
         <dc:Bounds x="1030" y="87" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0iwkenu_di" bpmnElement="Event_0iwkenu">
         <dc:Bounds x="-108" y="-78" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="DataObjectReference_1nopgst_di" bpmnElement="Barcodes">
-        <dc:Bounds x="52" y="-145" width="36" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="31" y="-167" width="79" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_179f5yc_di" bpmnElement="UT.Info.Acknowledged.WrongArticleQuantity">
         <dc:Bounds x="1150" y="-80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_1nopgst_di" bpmnElement="Barcodes">
+        <dc:Bounds x="52" y="-85" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="31" y="-107" width="79" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_0dwtkzw_di" bpmnElement="Barcode">
+        <dc:Bounds x="282" y="-85" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="260" y="-106" width="80" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_1yoku0m_di" bpmnElement="ArticleInfo">
+        <dc:Bounds x="732" y="-85" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="722" y="-109" width="52" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_04wxunv_di" bpmnElement="IterationInfo">
+        <dc:Bounds x="902" y="-85" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="887" y="-110" width="61" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0dyx9ax_di" bpmnElement="Event_0bz3j0m">
         <dc:Bounds x="-138" y="149" width="36" height="36" />
@@ -562,19 +562,19 @@ codes: String[]
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="DataOutputAssociation_0hxhrid_di" bpmnElement="DataOutputAssociation_0hxhrid">
         <di:waypoint x="70" y="87" />
-        <di:waypoint x="72" y="-95" />
+        <di:waypoint x="72" y="-35" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="DataOutputAssociation_0anxe1m_di" bpmnElement="DataOutputAssociation_0anxe1m">
         <di:waypoint x="302" y="87" />
-        <di:waypoint x="302" y="-95" />
+        <di:waypoint x="302" y="-35" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="DataOutputAssociation_0e8xwt4_di" bpmnElement="DataOutputAssociation_0e8xwt4">
         <di:waypoint x="750" y="87" />
-        <di:waypoint x="750" y="-95" />
+        <di:waypoint x="750" y="-35" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="DataOutputAssociation_1hzdauj_di" bpmnElement="DataOutputAssociation_1hzdauj">
         <di:waypoint x="920" y="87" />
-        <di:waypoint x="920" y="-95" />
+        <di:waypoint x="920" y="-35" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

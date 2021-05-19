@@ -1,0 +1,13 @@
+version: '3.1'
+
+services:
+
+  atlas_engine_latest:
+    image: 5minds/fp_atlas_engine:${ATLAS_ENGINE_VERSION}
+    restart: always
+    ports:
+        - ${ATLAS_ENGINE_PORT}:10560
+    volumes:
+      - ~/dockerdata/atlas_engine/db:/root/.config/AtlasEngineFullstackServer/databases:delegated
+      - ./../Bpmn:/process
+    command: --seed-dir=/process
