@@ -15,20 +15,14 @@ using ZNetCS.AspNetCore.Authentication.Basic;
 
 namespace Warehouse.Picking.Api
 {
-    public enum AppName
-    {
-        PickingApp,
-        IntakeApp
-    }
-
     public class Startup
     {
-        private readonly AppName _appName;
+        private readonly string _atlasEngineUrl;
 
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
-            _appName = (AppName) Enum.Parse(typeof(AppName), Configuration["APP_NAME"], true);
+            _atlasEngineUrl = $"{Configuration["ATLAS_ENGINE_URL"]}:{Configuration["ATLAS_ENGINE_PORT"]}";
         }
 
         public IConfiguration Configuration { get; }
@@ -52,7 +46,7 @@ namespace Warehouse.Picking.Api
 
             services.AddRepositories();
             services.AddServices();
-            services.AddProcessServices();
+            services.AddProcessServices(_atlasEngineUrl);
             services.AddHubServices();
 
             // connect vue app - middleware  

@@ -45,6 +45,8 @@
         <Content Include="dashboard-app\src\components\ArticlesList.vue" />
         <Content Include="dashboard-app\src\IntakeApp.vue" />
         <Content Include="dashboard-app\src\router\index.js" />
+        <Content Include="Processes\Bpmn\IntakeFlex.bpmn" />
+        <Content Include="Processes\Bpmn\WH_Test_1.bpmn" />
         <None Remove="$(SpaRoot)**" />
         <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
         <None Include="dashboard-app\public\intake.html" />
