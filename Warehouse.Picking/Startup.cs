@@ -1,10 +1,10 @@
-using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using VueCliMiddleware;
+using Warehouse.Picking.Api.Data;
 using warehouse.picking.api.Hubs;
 using Warehouse.Picking.Api.Hubs.Extensions;
 using warehouse.picking.api.Processes.Extensions;
@@ -32,6 +32,8 @@ namespace Warehouse.Picking.Api
         {
             services.AddControllers();
             services.AddSignalR();
+
+            services.AddDbContextFactory<AppDbContext>();
 
             services.AddScoped<AuthenticationEvents>();
 

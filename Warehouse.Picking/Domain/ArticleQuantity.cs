@@ -14,5 +14,9 @@ namespace warehouse.picking.api.Domain
             Expected = expected;
             Processed = 0;
         }
+
+        public ArticleQuantity()
+        {
+        }
     }
 }

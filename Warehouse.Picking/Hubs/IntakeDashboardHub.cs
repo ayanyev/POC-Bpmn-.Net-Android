@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using warehouse.picking.api.Domain;
 using Warehouse.Picking.Api.Repositories;
+using Warehouse.Picking.Api.Repositories.Articles;
 
 namespace warehouse.picking.api.Hubs
 {

@@ -37,6 +37,10 @@ namespace warehouse.picking.api.Domain
             Bundle = bundle;
             IsSuspended = isSuspended;
         }
+
+        public Article()
+        {
+        }
     }
 
     [Serializable]

@@ -1,7 +1,7 @@
 version: '3.1'
 
 services:
-
+  
   atlas_engine_latest:
     image: 5minds/fp_atlas_engine:${ATLAS_ENGINE_VERSION}
     restart: always

@@ -7,6 +7,7 @@ using warehouse.picking.api.Domain;
 using warehouse.picking.api.Hubs;
 using Warehouse.Picking.Api.Processes;
 using Warehouse.Picking.Api.Repositories;
+using Warehouse.Picking.Api.Repositories.Articles;
 
 namespace Warehouse.Picking.Api.Services
 {

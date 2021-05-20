@@ -14,5 +14,9 @@ namespace warehouse.picking.api.Domain
             Id = id;
             Name = name;
         }
+
+        public ArticleBundle()
+        {
+        }
     }
 }

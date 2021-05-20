@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using warehouse.picking.api.Domain;
 
-namespace Warehouse.Picking.Api.Repositories
+namespace Warehouse.Picking.Api.Repositories.Articles
 {
     public interface IArticleRepository
     {
