@@ -1,5 +1,14 @@
 # POCbpmn
 
+### Proof-of-concept of how to move business logic from Android application to BPMN scheme.
+### In other words, listen and do what Bpmn engine says.
+
+## Core parts:
+1. Bpmn engine (Atlas engine .Net implementation)
+2. Middleware - .Net based backend routing triggers and data between Bpmn and Android app (websockets)
+3. Web dashboard - to reflect what the overall progress for different tasks (separate bpmn processes). Implemented in Vue.js
+5. Android app (Jetpack Compose used)
+
 Project part | Location | Can be opened with
 ------------ | ------------- | -------------
 BPMN diagram definition | /Warehouse.Picking/Processes/Shift.bpmn | BPMN Studio
